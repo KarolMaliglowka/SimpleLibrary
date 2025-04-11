@@ -30,7 +30,6 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
             .Include(b => b.Authors)
             .Include(b => b.Publisher)
             .Include(c => c.Category)
-            .AsNoTracking()
             .FirstOrDefaultAsync(b => b.Id == id);
 
     public async Task<Book?> GetBookByNameAsync(string name) =>
@@ -38,7 +37,6 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
             .Include(b => b.Authors)
             .Include(b => b.Publisher)
             .Include(c => c.Category)
-            .AsNoTracking()
             .FirstOrDefaultAsync(b => b.Name == name);
 
     public async Task UpdateBook(Book book)

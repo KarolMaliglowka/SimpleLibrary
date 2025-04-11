@@ -15,13 +15,11 @@ public class LibraryDbContext : DbContext
     
     public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
     {
-        //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
-        
     }
 }

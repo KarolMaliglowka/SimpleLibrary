@@ -11,7 +11,7 @@ public static class BorrowEndpoints
         app.MapPost("/borrow/create", async ([FromBody]BorrowDto borrowDto, IBorrowService borrowService ) =>
         {
             await borrowService.CreateBorrow(borrowDto);
-            return Results.Created($"borrow/{borrowDto.Id}", borrowDto);
+            return Results.Created();
         });
         
         app.MapDelete("/borrow/delete", async ([FromBody]BorrowDto borrowDto, IBorrowService borrowService ) =>
