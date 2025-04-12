@@ -40,4 +40,16 @@ public class UserRepository(LibraryDbContext context) : IUserRepository
         await context.Users.AddRangeAsync(users);
         await context.SaveChangesAsync();
     }
+    
+    public async Task<List<User>> GetUsersWithBooksAsync() => await 
+            context.Users
+            .Include(x => x.Borrows)
+            .ThenInclude(x => x.Book)
+            .ToListAsync();
+    
+    public async Task<List<User>> GetUsersWithBooksByUserIdAsync(Guid id) => await 
+        context.Users
+            .Include(x => x.Borrows)
+            .ThenInclude(x => x.Book)
+            .ToListAsync();
 }
