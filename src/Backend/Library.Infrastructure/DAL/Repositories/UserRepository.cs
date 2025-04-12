@@ -41,15 +41,29 @@ public class UserRepository(LibraryDbContext context) : IUserRepository
         await context.SaveChangesAsync();
     }
     
-    public async Task<List<User>> GetUsersWithBooksAsync() => await 
+    public async Task<List<User>> GetUsersWithBorrowedBooksAsync() => await 
             context.Users
             .Include(x => x.Borrows)
             .ThenInclude(x => x.Book)
-            .ToListAsync();
-    
-    public async Task<List<User>> GetUsersWithBooksByUserIdAsync(Guid id) => await 
-        context.Users
+            .ThenInclude(x => x.Category)
             .Include(x => x.Borrows)
             .ThenInclude(x => x.Book)
+            .ThenInclude(x => x.Publisher)
+            .Include(x => x.Borrows)
+            .ThenInclude(x => x.Book)
+            .ThenInclude(x => x.Authors)
             .ToListAsync();
+    
+    public async Task<User?> GetUserWithBorrowedBooksByIdAsync(Guid id) => 
+        await context.Users
+            .Include(x => x.Borrows)
+            .ThenInclude(x => x.Book)
+            .ThenInclude(x => x.Category)
+            .Include(x => x.Borrows)
+            .ThenInclude(x => x.Book)
+            .ThenInclude(x => x.Publisher)
+            .Include(x => x.Borrows)
+            .ThenInclude(x => x.Book)
+            .ThenInclude(x => x.Authors)
+            .FirstOrDefaultAsync(x => x.Id == id);
 }

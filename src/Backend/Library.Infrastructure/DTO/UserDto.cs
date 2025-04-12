@@ -13,4 +13,5 @@ public record UserDto
     public string PostalCode { get; set; }
     public bool IsActive { get; set; }
     public string FullName { get; set; }
+    public List<BookDto> Books { get; set; }
 }
