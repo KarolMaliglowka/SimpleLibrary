@@ -17,7 +17,7 @@ public class UserRepository(LibraryDbContext context) : IUserRepository
 
     public async Task<User?> GetUserByNameAsync(string name) =>
         await context.Users.FirstOrDefaultAsync(u =>
-            u.Name.ToLower() == name.ToLower());
+            u.Name.Value.ToLower() == name.ToLower());
 
     public async Task<User?> GetUserBySurnameAsync(string surname) =>
         await context.Users.FirstOrDefaultAsync(u =>

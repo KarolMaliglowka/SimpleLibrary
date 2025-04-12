@@ -31,7 +31,7 @@ public class PublisherRepository : IPublisherRepository
     
     public async Task<Publisher?> GetPublisherByNameAsync(string name) => 
         await _context.Publishers
-            .SingleOrDefaultAsync(p => p.Name.ToLower() == name.ToLower());
+            .SingleOrDefaultAsync(p => p.Name.Value.ToLower() == name.ToLower());
     
     public async Task<bool> ExistAuthorAsync(Publisher publisher) =>
         await _context.Publishers

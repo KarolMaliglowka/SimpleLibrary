@@ -5,13 +5,13 @@ public class Publisher : BaseClass
 {
     private readonly List<Book> _books = new();
 
-    public Publisher(string name)
+    public Publisher(Name name)
     {
         Id = Guid.NewGuid();
         SetPublisher(name);
         CreatedAt = DateTime.UtcNow;
     }
-    public string Name { get; set; }
+    public Name Name { get; set; }
     public IEnumerable<Book> Books => _books.AsReadOnly();
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

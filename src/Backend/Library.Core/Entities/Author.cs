@@ -1,15 +1,17 @@
-﻿namespace Library.Core.Entities;
+﻿using Library.Core.ValueObjects;
+
+namespace Library.Core.Entities;
 
 public class Author : BaseClass
 {
-    public string? Name { get; set; }
+    public Name? Name { get; set; }
     public string? Surname { get; set; }
     public ICollection<Book> Books { get; set; }
     public string FullName => $"{Name} {Surname}";
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    public Author(string? name, string? surname = null)
+    public Author(Name? name, string? surname = null)
     {
         Id = Guid.NewGuid();
         SetName(name);
