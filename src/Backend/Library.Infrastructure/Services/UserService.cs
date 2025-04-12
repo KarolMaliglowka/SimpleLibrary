@@ -171,7 +171,8 @@ public class UserService(IUserRepository userRepository) : IUserService
         var usersList = usersDto.Distinct().ToList();
         var usersExistInSystem = await userRepository.GetUsersAsync();
         var usersToImport = usersList
-            .Where(x => usersExistInSystem.All(y => y.Name.ToLower() != x.Name.ToLower()));
+            .Where(x => usersExistInSystem.All(y => 
+                y.Name.Value.ToLower() != x.Name.ToLower()));
 
         var users = usersToImport.Select(user => new User()
             {

@@ -1,4 +1,6 @@
-﻿namespace Library.Infrastructure.DTO;
+﻿using Library.Core.ValueObjects;
+
+namespace Library.Infrastructure.DTO;
 
 public record AuthorDto
 {

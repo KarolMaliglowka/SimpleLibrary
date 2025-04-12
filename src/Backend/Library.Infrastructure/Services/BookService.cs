@@ -183,7 +183,7 @@ public class BookService(
         var publishersExistInSystem = await publisherRepository.GetPublishersAsync();
         var publishersToImport = publishersList
             .Where(x => !publishersExistInSystem.Any(y =>
-                y.Name.ToLower() == x.ToLower()))
+                y.Name.Value.ToLower() == x.ToLower()))
             .Select(x => new Publisher(x)).ToList();
         if (publishersToImport.Count != 0)
         {
@@ -196,7 +196,7 @@ public class BookService(
         var authorsExistInSystem = await authorRepository.GetAuthorsAsync();
         var authorsToImport = authorsList
             .Where(x => !authorsExistInSystem.Any(y =>
-                y.Name.ToLower() == x.Name.ToLower() &&
+                y.Name.Value.ToLower() == x.Name.ToLower() &&
                 y.Surname.ToLower() == x.Surname.ToLower()))
             .Select(x => new Author(x.Name, x.Surname)).Distinct().ToList();
         if (authorsToImport.Count != 0)
@@ -343,7 +343,8 @@ public class BookService(
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x => x.Category?.Name.ToLower() == categoryInSystem.Name.ToLower())
+            .Where(x => 
+                x.Category?.Name.Value.ToLower() == categoryInSystem.Name.Value.ToLower())
             .Select(x => new BookDto()
             {
                 Id = x.Id,

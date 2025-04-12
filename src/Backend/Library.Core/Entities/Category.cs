@@ -1,4 +1,6 @@
-﻿namespace Library.Core.Entities;
+﻿using Library.Core.ValueObjects;
+
+namespace Library.Core.Entities;
 
 public class Category : BaseClass
 {
@@ -8,14 +10,14 @@ public class Category : BaseClass
     {
     }
     
-    public Category(string name)
+    public Category(Name name)
     {
         Id = Guid.NewGuid();
         SetCategory(name);
         CreatedAt = DateTime.UtcNow;
     }
     
-    public string Name { get; set; }
+    public Name Name { get; set; }
     public ICollection<Book> Books => _books.AsReadOnly();
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

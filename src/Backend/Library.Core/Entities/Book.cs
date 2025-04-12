@@ -1,4 +1,6 @@
-﻿namespace Library.Core.Entities;
+﻿using Library.Core.ValueObjects;
+
+namespace Library.Core.Entities;
 
 public class Book : BaseClass
 {
@@ -6,7 +8,7 @@ public class Book : BaseClass
     {
     }
 
-    public Book(string name, List<Author> authors, int pagesCount, string description, string isbn,
+    public Book(Name name, List<Author> authors, int pagesCount, string description, string isbn,
         string yearOfRelease, Publisher publisher, Category category)
     {
         Id = Guid.NewGuid();
@@ -21,7 +23,7 @@ public class Book : BaseClass
         Category = category;
     }
 
-    public string Name { get; set; }
+    public Name Name { get; set; }
     public int PagesCount { get; set; }
     public string Description { get; set; }
     public Guid PublisherId { get; set; }

@@ -81,6 +81,6 @@ public class AuthorRepository : IAuthorRepository
     public Task<Author?> GetAuthorAsync(string surname, string? name = null) =>
         _context.Authors.SingleOrDefaultAsync(a =>
             a.Surname.ToLower() == surname.ToLower() &&
-            a.Name.ToLower() == name.ToLower()
+            a.Name.Value.ToLower() == name.ToLower()
         );
 }
