@@ -11,6 +11,6 @@ public interface IUserRepository
     Task AddUserAsync(User user);
     Task UpdateUser(User user);
     Task AddUsersAsync(List<User> users);
-    Task<List<User>> GetUsersWithBooksAsync();
-    Task<List<User>> GetUsersWithBooksByUserIdAsync(Guid id);
+    Task<List<User>> GetUsersWithBorrowedBooksAsync();
+    Task<User?> GetUserWithBorrowedBooksByIdAsync(Guid id);
 }

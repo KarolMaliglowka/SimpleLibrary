@@ -48,5 +48,17 @@ public static class UserEndpoints
             await userService.SetUserActive(userDto.Id, userDto.IsActive);
             return Results.Ok();
         });
+        
+        app.MapGet("/user/withbooks/{id:guid}", async (Guid id, IUserService userService) =>
+        {
+            var authors = await userService.GetUserWithBorrowedBooksById(id);
+            return Results.Ok(authors);
+        });
+        
+        app.MapGet("/user/withbooks", async (IUserService userService) =>
+        {
+            var authors = await userService.GetUsersWithBorrowedBooks();
+            return Results.Ok(authors);
+        });
     }
 }
