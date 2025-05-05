@@ -1,4 +1,5 @@
 ﻿using Library.Infrastructure.Services;
+using Library.Infrastructure.Validoators;
 
 namespace Library.Api;
 
@@ -13,5 +14,7 @@ public static class ServicesRegistration
         services.AddScoped<IPublisherService, PublisherService>();
         services.AddScoped<IBorrowService, BorrowService>();
         services.AddScoped<IArchiveService, ArchiveService>();
+
+        //services.AddScoped<BookDtoValidator>();
     }
 }
