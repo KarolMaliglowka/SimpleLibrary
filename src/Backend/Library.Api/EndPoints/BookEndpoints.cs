@@ -1,4 +1,6 @@
-﻿using Library.Infrastructure.DTO;
+﻿using FluentValidation;
+using Library.Api.Extensions;
+using Library.Infrastructure.DTO;
 using Library.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,22 +13,24 @@ public static class BookEndpoints
         app.MapGet("/book", async (IBookService bookService) =>
         {
             var books = await bookService.GetAllBooksAsync();
-            return books.Count == 0 ? 
-                Results.NotFound("No books found.") : 
-                Results.Ok(books);
+            return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
         });
 
         app.MapPost("/book/create",
-            async (BookDto book, IBookService bookService) =>
+            async (BookDto book,
+                IBookService bookService,
+                [FromServices] IValidator<BookDto> bookValidator, HttpContext context) =>
             {
-                await bookService.CreateBookAsync(book); 
+                var validateResult = await bookValidator.ValidateCommandAsync(book, context);
+                if (validateResult != Results.Empty) return validateResult;
+                await bookService.CreateBookAsync(book);
                 return Results.Created();
             });
 
         app.MapPost("/book/createMany",
             async (List<BookDto> books, IBookService bookService) =>
             {
-                await bookService.CreateBooksAsync(books); 
+                await bookService.CreateBooksAsync(books);
                 return Results.Created();
             });
 
@@ -37,8 +41,13 @@ public static class BookEndpoints
         });
 
         app.MapPatch("/book/update",
-            async (BookDto book, IBookService bookService) =>
+            async (BookDto book,
+                IBookService bookService,
+                [FromServices] IValidator<BookDto> bookValidator,
+                HttpContext context) =>
             {
+                var validateResult = await bookValidator.ValidateCommandAsync(book, context);
+                if (validateResult != Results.Empty) return validateResult;
                 await bookService.UpdateBook(book);
                 return Results.NoContent();
             });
