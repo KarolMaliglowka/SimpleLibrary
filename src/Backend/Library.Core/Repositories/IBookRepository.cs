@@ -10,4 +10,5 @@ public interface IBookRepository
     Task<List<Book>> GetAllAsync();
     Task UpdateBook(Book book);
     Task<Book?> GetBookByNameAsync(string name);
+    IQueryable<Book> QueryAsNoTracking();
 }

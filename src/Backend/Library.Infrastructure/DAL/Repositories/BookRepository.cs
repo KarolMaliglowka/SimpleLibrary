@@ -44,4 +44,7 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
         context.Books.Update(book);
         await context.SaveChangesAsync();
     }
+
+    public IQueryable<Book> QueryAsNoTracking() =>
+        context.Books.AsNoTracking();
 }
