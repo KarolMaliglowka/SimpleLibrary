@@ -15,4 +15,5 @@ public interface IAuthorRepository
     Task DeleteAuthorAsync(Author author);
     Task AddAuthorsAsync(List<Author> author);
     Task<Author?> GetAuthorAsync(string surname,string? name = null);
+    Task<bool> ExistAuthorAsync(string name, string? surname = null);
 }

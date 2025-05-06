@@ -1,6 +1,4 @@
-﻿using Library.Core.ValueObjects;
-
-namespace Library.Infrastructure.DTO;
+﻿namespace Library.Infrastructure.DTO;
 
 public record BookDto
 {

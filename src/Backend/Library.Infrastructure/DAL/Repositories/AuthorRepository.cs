@@ -83,4 +83,12 @@ public class AuthorRepository : IAuthorRepository
             a.Surname.ToLower() == surname.ToLower() &&
             a.Name.Value.ToLower() == name.ToLower()
         );
+
+    public Task<bool> ExistAuthorAsync(string name, string? surname = null) =>
+        _context.Authors
+            .AsNoTracking()
+            .AnyAsync(x =>
+                x.Name == name &&
+                x.Surname == surname
+            );
 }
