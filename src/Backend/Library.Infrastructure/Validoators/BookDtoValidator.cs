@@ -1,12 +1,19 @@
 using FluentValidation;
+using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
+using Library.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Validoators;
 
 public class BookDtoValidator : AbstractValidator<BookDto>
 {
-    public BookDtoValidator()
+    private readonly IBookRepository _bookService;
+
+    public BookDtoValidator(IBookRepository bookService)
     {
+        _bookService = bookService;
+
         RuleFor(b => b.Name)
             .NotEmpty()
             .NotNull()
@@ -19,5 +26,20 @@ public class BookDtoValidator : AbstractValidator<BookDto>
             .NotEmpty()
             .NotNull()
             .WithMessage("Category is required");
+
+        RuleFor(x => x)
+            .MustAsync((model, _) => NotExists(model.Name, model.Id, model.Authors))
+            .WithMessage("Book with this name and authors already exists.");
+    }
+
+    private async Task<bool> NotExists(string bookName, Guid bookId, List<AuthorDto> authors)
+    {
+        return !await _bookService
+            .QueryAsNoTracking()
+            .AnyAsync(x =>
+                x.Id != bookId &&
+                x.Name == bookName &&
+                x.Authors == authors
+            );
     }
 }
