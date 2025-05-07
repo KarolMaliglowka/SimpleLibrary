@@ -41,4 +41,11 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
             .FirstOrDefaultAsync(x => 
                 x.BookId == bookId && x.UserId == userId);
     }
+    
+    public Task<bool> ExistBorrowAsync(Guid bookId) =>
+        context.Borrows
+            .AsNoTracking()
+            .AnyAsync(x =>
+                x.BookId == bookId
+            );
 }

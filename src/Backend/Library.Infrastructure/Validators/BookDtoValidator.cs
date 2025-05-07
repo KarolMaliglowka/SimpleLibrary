@@ -3,7 +3,7 @@ using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.Infrastructure.Validoators;
+namespace Library.Infrastructure.Validators;
 
 public class BookDtoValidator : AbstractValidator<BookDto>
 {
@@ -43,5 +43,6 @@ public class BookDtoValidator : AbstractValidator<BookDto>
                 x.Id != bookId &&
                 x.Name == bookName 
                );
+        // TODO: add authors check
     }
 }
