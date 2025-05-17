@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.DAL.Repositories;
 
-public class AuthorRepository : IAuthorRepository
+public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
 {
     public AuthorRepository()
     {
@@ -78,6 +78,7 @@ public class AuthorRepository : IAuthorRepository
         await _context.SaveChangesAsync();
     }
 
+    //TODO: fix problem with valueobject and linq 
     public Task<Author?> GetAuthorAsync(string surname, string? name = null) =>
         _context.Authors.SingleOrDefaultAsync(a =>
             a.Surname.ToLower() == surname.ToLower() &&
