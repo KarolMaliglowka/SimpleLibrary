@@ -1,8 +1,9 @@
-﻿using Library.Core.ValueObjects;
+﻿using System.Text.RegularExpressions;
+using Library.Core.ValueObjects;
 
 namespace Library.Core.Entities;
 
-public class User : BaseClass
+public sealed class User : BaseClass
 {
     public User()
     {
@@ -21,6 +22,7 @@ public class User : BaseClass
         Country = country;
         PostalCode = postalCode;
         CreatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
 
     public string UserIdentity { get; set; }
@@ -32,99 +34,84 @@ public class User : BaseClass
     public string City { get; set; }
     public string Country { get; set; }
     public string PostalCode { get; set; }
-    public List<Borrow> Borrows { get; set; }
+    public List<Borrow> Borrows { get; set; } = [];
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public bool IsActive { get; set; }
-    public string FullName => $"{Surname} {Name}";
+    public string FullName => $"{Name.Value} {Surname}";
     
 
-    public void SetName(string name)
+    public void SetName(Name name)
     {
-        if (string.IsNullOrWhiteSpace(name) || name.Length < 2)
-        {
-            throw new ArgumentException("Name cannot be empty. It requires minimum 3 characters.");
-        }
-
+        ValidateInput(name, "Name", 2);
         Name = name;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
 
     public void SetSurname(string surname)
     {
-        if (surname.Length < 2)
-        {
-            throw new ArgumentException("Surname cannot be less than 3 characters.");
-        }
-
+        ValidateInput(surname, "Surname", 2);
         Surname = surname;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
     
     public void SetEmail(string email)
     {
-        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        if (!emailRegex.IsMatch(email))
         {
-            throw new ArgumentException("Email cannot be empty and must contain '@'.");
+            throw new ArgumentException("Invalid email format.");
         }
-
         Email = email;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
     public void SetAddress(string address)
     {
-        if (string.IsNullOrWhiteSpace(address))
-        {
-            throw new ArgumentException("Address cannot be empty.");
-        }
-
+        ValidateInput(address, "Address", 2);
         Address = address;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
     public void SetPhoneNumber(string phoneNumber)
     {
-        if (string.IsNullOrWhiteSpace(phoneNumber))
-        {
-            throw new ArgumentException("Phone number cannot be empty.");
-        }
-
+        ValidateInput(phoneNumber, "PhoneNumber", 9);
         PhoneNumber = phoneNumber;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
     public void SetCity(string city)
     {
-        if (string.IsNullOrWhiteSpace(city))
-        {
-            throw new ArgumentException("City cannot be empty.");
-        }
-
+        ValidateInput(city, "City", 2);
         City = city;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
     public void SetCountry(string country)
     {
-        if (string.IsNullOrWhiteSpace(country))
-        {
-            throw new ArgumentException("Country cannot be empty.");
-        }
-
+        ValidateInput(country, "Country", 2);
         Country = country;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
     public void SetPostalCode(string postalCode)
     {
-        if (string.IsNullOrWhiteSpace(postalCode))
-        {
-            throw new ArgumentException("Postal code cannot be empty.");
-        }
-
+        ValidateInput(postalCode, "PostalCode", 5);
         PostalCode = postalCode;
-        UpdatedAt = DateTime.UtcNow;
+        UpdateTimestamp();
     }
 
     public void SetActive(bool isActive)
     {
         IsActive = isActive;
+        UpdateTimestamp();
+    }
+    
+    private void UpdateTimestamp()
+    {
         UpdatedAt = DateTime.UtcNow;
+    }
+    
+    private static void ValidateInput(string input, string fieldName, int minLength = 1)
+    {
+        if (string.IsNullOrWhiteSpace(input) || input.Length < minLength)
+        {
+            throw new ArgumentException($"{fieldName} cannot be empty and must have at least {minLength} characters.");
+        }
     }
 }

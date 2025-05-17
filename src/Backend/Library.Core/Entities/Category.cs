@@ -2,7 +2,7 @@
 
 namespace Library.Core.Entities;
 
-public class Category : BaseClass
+public sealed class Category : BaseClass
 {
     
     private readonly List<Book> _books = [];
