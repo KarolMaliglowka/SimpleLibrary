@@ -2,7 +2,7 @@
 
 namespace Library.Core.Entities;
 
-public class Book : BaseClass
+public sealed class Book : BaseClass
 {
     protected Book()
     {

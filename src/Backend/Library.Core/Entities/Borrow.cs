@@ -1,6 +1,6 @@
 ﻿namespace Library.Core.Entities;
 
-public class Borrow : BaseClass
+public sealed  class Borrow : BaseClass
 {
     public Borrow()
     {

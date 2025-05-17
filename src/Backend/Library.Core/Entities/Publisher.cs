@@ -1,7 +1,7 @@
 ﻿using Library.Core.ValueObjects;
 
 namespace Library.Core.Entities;
-public class Publisher : BaseClass
+public sealed class Publisher : BaseClass
 {
     private readonly List<Book> _books = new();
 
