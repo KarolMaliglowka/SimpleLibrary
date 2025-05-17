@@ -7,9 +7,9 @@ public static class AuthorEndpoints
 {
     public static void MapAuthorEndpoints(this WebApplication app)
     {
-        app.MapGet("/author", async (IAuthorRepository authorRepository) =>
+        app.MapGet("/author", async (IAuthorReadRepository authorReadRepository) =>
         {
-            var authors = await authorRepository.GetAuthorsAsync();
+            var authors = await authorReadRepository.GetAuthorsAsync();
             return Results.Ok(authors);
         });
 
@@ -25,9 +25,9 @@ public static class AuthorEndpoints
             return Results.Created();
         });
 
-        app.MapPatch("/author/update", async (Author author, IAuthorRepository authorRepository) =>
+        app.MapPut("/author/update", async (Author author, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
         {
-            var authorInDb = await authorRepository.GetAuthorByIdAsync(author.Id);
+            var authorInDb = await authorReadRepository.GetAuthorByIdAsync(author.Id);
             if (authorInDb == null)
             {
                 return Results.NotFound("Author not found :/");
@@ -37,9 +37,9 @@ public static class AuthorEndpoints
             return Results.Ok("Author updated");
         });
 
-        app.MapDelete("/author/delete/{id:guid}", async (Guid id, IAuthorRepository authorRepository) =>
+        app.MapDelete("/author/delete/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
         {
-            var author = await authorRepository.GetAuthorByIdAsync(id);
+            var author = await authorReadRepository.GetAuthorByIdAsync(id);
             if (author == null)
             {
                 return Results.NotFound("Author not found");
@@ -49,9 +49,9 @@ public static class AuthorEndpoints
             return Results.Ok("Author deleted");
         });
 
-        app.MapGet("/author/{id:guid}", async (Guid id, IAuthorRepository authorRepository) =>
+        app.MapGet("/author/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {
-            var author = await authorRepository.GetAuthorByIdAsync(id);
+            var author = await authorReadRepository.GetAuthorByIdAsync(id);
             return author != null ? Results.Ok(author) : Results.NotFound("Author not found....");
         });
     }

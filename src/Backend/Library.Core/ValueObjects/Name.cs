@@ -20,7 +20,6 @@ public sealed record Name
     }
 
     public static implicit operator Name(string value) => value is null ? null : new Name(value);
-
     public static implicit operator string(Name value) => value?.Value;
     public override string ToString() => Value;
 }

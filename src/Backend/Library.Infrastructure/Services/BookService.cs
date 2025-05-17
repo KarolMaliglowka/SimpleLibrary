@@ -22,6 +22,7 @@ public class BookService(
     IBookRepository bookRepository,
     IPublisherRepository publisherRepository,
     IAuthorRepository authorRepository,
+    IAuthorReadRepository authorReadRepository,
     ICategoryService categoryService,
     ICategoryRepository categoryRepository
 ) : IBookService
@@ -45,7 +46,7 @@ public class BookService(
         var authors = new List<Author>();
         foreach (var authorName in book.Authors)
         {
-            var author = await authorRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
+            var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
             if (author is null)
             {
                 author = new Author(authorName.Name, authorName.Surname);
@@ -193,7 +194,7 @@ public class BookService(
         var authorsList = books.SelectMany(x => x.Authors)
             .Distinct()
             .ToList();
-        var authorsExistInSystem = await authorRepository.GetAuthorsAsync();
+        var authorsExistInSystem = await authorReadRepository.GetAuthorsAsync();
         var authorsToImport = authorsList
             .Where(x => !authorsExistInSystem.Any(y =>
                 y.Name.Value.ToLower() == x.Name.ToLower() &&
@@ -211,7 +212,7 @@ public class BookService(
             var getAuthors = new List<Author>();
             foreach (var authorName in book.Authors)
             {
-                var author = await authorRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
+                var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
                 if (author is null)
                 {
                     throw new Exception($"Author {authorName} not found.");
@@ -240,7 +241,7 @@ public class BookService(
 
     public async Task UpdateBook(BookDto bookDto)
     {
-        var publisher = await publisherRepository.GetPublisherByNameAsync(bookDto.Publisher.Name);
+        var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
         if (publisher == null)
         {
             publisher = new Publisher(bookDto.Publisher.Name);
@@ -257,7 +258,7 @@ public class BookService(
         var authors = new List<Author>();
         foreach (var authorName in bookDto.Authors)
         {
-            var author = await authorRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
+            var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
             if (author is null)
             {
                 author = new Author(authorName.Name, authorName.Surname);
@@ -288,7 +289,7 @@ public class BookService(
 
     public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null)
     {
-        var listOfAuthor = await authorRepository.GetAuthorBySurnameAsync(authorSurname);
+        var listOfAuthor = await authorReadRepository.GetAuthorBySurnameAsync(authorSurname);
         if (listOfAuthor is null)
         {
             throw new Exception("Author not found.");

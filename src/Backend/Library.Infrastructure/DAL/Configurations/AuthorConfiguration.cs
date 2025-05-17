@@ -11,7 +11,7 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name)
-            .HasConversion(x => x.ToString(), x => new Name(x));
+            .HasConversion(x => x.Value.ToString(), x => new Name(x));
         builder.Property(x => x.Surname);
         builder.HasMany(b => b.Books)
             .WithMany(a => a.Authors)
