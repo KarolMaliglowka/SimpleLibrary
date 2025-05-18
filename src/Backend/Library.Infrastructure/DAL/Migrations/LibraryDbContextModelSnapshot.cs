@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Library.Infrastructure.Migrations
+namespace Library.Infrastructure.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
     partial class LibraryDbContextModelSnapshot : ModelSnapshot
@@ -257,10 +257,6 @@ namespace Library.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserIdentity")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
