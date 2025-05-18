@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Library.Infrastructure.Migrations
+namespace Library.Infrastructure.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20250411132444_InitMigration_postgres")]
-    partial class InitMigration_postgres
+    [Migration("20250518182831_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -260,10 +260,6 @@ namespace Library.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserIdentity")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

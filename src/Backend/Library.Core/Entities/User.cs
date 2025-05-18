@@ -5,7 +5,6 @@ namespace Library.Core.Entities;
 
 public sealed class User : BaseClass
 {
-    public string UserIdentity { get; private set; }
     public Name Name { get; private set; }
     public string Surname { get; private set; }
     public string Email { get; private set; }
