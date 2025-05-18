@@ -1,5 +1,6 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
+using Library.Core.ValueObjects;
 using Library.Infrastructure.DTO;
 
 namespace Library.Infrastructure.Services;
@@ -41,22 +42,17 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task CreateUserAsync(UserDto userDto)
     {
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            Name = userDto.Name,
-            Surname = userDto.Surname,
-            Email = userDto.Email,
-            Address = userDto.Address,
-            PhoneNumber = userDto.PhoneNumber,
-            City = userDto.City,
-            Country = userDto.Country,
-            PostalCode = userDto.PostalCode,
-        };
-        user.UserIdentity = GenerateCode(10);
-        user.CreatedAt = DateTime.UtcNow;
-        user.UpdatedAt = DateTime.UtcNow;
-        user.SetActive(true);
+        var user = new User.Builder()
+            .SetName(new Name(userDto.Name))
+            .SetSurname(userDto.Surname)
+            .SetEmail(userDto.Email)
+            .SetAddress(userDto.Address)
+            .SetPhoneNumber(userDto.PhoneNumber)
+            .SetCity(userDto.City)
+            .SetCountry(userDto.Country)
+            .SetPostalCode(userDto.PostalCode)
+            .SetActive(true)
+            .Build();
 
         await userRepository.AddUserAsync(user);
     }
@@ -69,16 +65,18 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        user.SetName(userDto.Name);
-        user.SetSurname(userDto.Surname);
-        user.SetEmail(userDto.Email);
-        user.SetAddress(userDto.Address);
-        user.SetPhoneNumber(userDto.PhoneNumber);
-        user.SetCity(userDto.City);
-        user.SetCountry(userDto.Country);
-        user.SetPostalCode(userDto.PostalCode);
+        var updatedUser = new User.Builder(user)
+            .SetName(userDto.Name)
+            .SetSurname(userDto.Surname)
+            .SetEmail(userDto.Email)
+            .SetAddress(userDto.Address)
+            .SetPhoneNumber(userDto.PhoneNumber)
+            .SetCity(userDto.City)
+            .SetCountry(userDto.Country)
+            .SetPostalCode(userDto.PostalCode)
+            .Build();
 
-        await userRepository.UpdateUser(user);
+        await userRepository.UpdateUser(updatedUser);
     }
 
     public async Task<UserDto> GetUserById(Guid id)
@@ -171,25 +169,21 @@ public class UserService(IUserRepository userRepository) : IUserService
         var usersList = usersDto.Distinct().ToList();
         var usersExistInSystem = await userRepository.GetUsersAsync();
         var usersToImport = usersList
-            .Where(x => usersExistInSystem.All(y => 
+            .Where(x => usersExistInSystem.All(y =>
                 y.Name.Value.ToLower() != x.Name.ToLower()));
 
-        var users = usersToImport.Select(user => new User()
-            {
-                Id = Guid.NewGuid(),
-                Name = user.Name,
-                Surname = user.Surname,
-                Email = user.Email,
-                Address = user.Address,
-                PhoneNumber = user.PhoneNumber,
-                City = user.City,
-                Country = user.Country,
-                PostalCode = user.PostalCode,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                UserIdentity = GenerateCode(10)
-            })
+        var users = usersToImport.Select(user => new User.Builder()
+                .SetName(new Name(user.Name))
+                .SetSurname(user.Surname)
+                .SetEmail(user.Email)
+                .SetAddress(user.Address)
+                .SetPhoneNumber(user.PhoneNumber)
+                .SetCity(user.City)
+                .SetCountry(user.Country)
+                .SetPostalCode(user.PostalCode)
+                .SetActive(true)
+                .Build()
+            )
             .ToList();
 
         await userRepository.AddUsersAsync(users);
@@ -225,7 +219,7 @@ public class UserService(IUserRepository userRepository) : IUserService
                 Publisher = new PublisherDto { Name = y.Publisher?.Name, Id = y.Publisher.Id },
                 Isbn = y.ISBN,
                 YearOfRelease = y.YearOfRelease,
-                Category = new CategoryDto { Name = y.Category?.Name, Id = y.Category.Id},
+                Category = new CategoryDto { Name = y.Category?.Name, Id = y.Category.Id },
                 Authors = y.Authors?.Select(s => new AuthorDto
                     {
                         Name = s.Name ?? "",
@@ -263,7 +257,7 @@ public class UserService(IUserRepository userRepository) : IUserService
                 Publisher = new PublisherDto { Name = y.Publisher?.Name, Id = y.Publisher.Id },
                 Isbn = y.ISBN,
                 YearOfRelease = y.YearOfRelease,
-                Category = new CategoryDto { Name = y.Category?.Name, Id = y.Category.Id},
+                Category = new CategoryDto { Name = y.Category?.Name, Id = y.Category.Id },
                 Authors = y.Authors?.Select(s => new AuthorDto
                     {
                         Name = s.Name ?? "",
