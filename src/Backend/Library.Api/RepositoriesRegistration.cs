@@ -8,6 +8,7 @@ public static class RepositoriesRegistration
     public static void RegisterRepositories(this IServiceCollection services)
     {
         services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IAuthorReadRepository, AuthorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();

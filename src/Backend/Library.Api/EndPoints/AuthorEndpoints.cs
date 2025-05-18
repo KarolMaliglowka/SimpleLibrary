@@ -25,7 +25,11 @@ public static class AuthorEndpoints
             return Results.Created();
         });
 
-        app.MapPut("/author/update", async (Author author, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
+        app.MapPut("/author/update", async (
+            Author author,
+            IAuthorReadRepository authorReadRepository,
+            IAuthorRepository authorRepository
+        ) =>
         {
             var authorInDb = await authorReadRepository.GetAuthorByIdAsync(author.Id);
             if (authorInDb == null)
@@ -37,17 +41,18 @@ public static class AuthorEndpoints
             return Results.Ok("Author updated");
         });
 
-        app.MapDelete("/author/delete/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
-        {
-            var author = await authorReadRepository.GetAuthorByIdAsync(id);
-            if (author == null)
+        app.MapDelete("/author/delete/{id:guid}",
+            async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
             {
-                return Results.NotFound("Author not found");
-            }
+                var author = await authorReadRepository.GetAuthorByIdAsync(id);
+                if (author == null)
+                {
+                    return Results.NotFound("Author not found");
+                }
 
-            await authorRepository.DeleteAuthorAsync(author);
-            return Results.Ok("Author deleted");
-        });
+                await authorRepository.DeleteAuthorAsync(author);
+                return Results.Ok("Author deleted");
+            });
 
         app.MapGet("/author/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {

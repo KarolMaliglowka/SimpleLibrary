@@ -1,6 +1,6 @@
 ﻿namespace Library.Core.Entities;
 
-public class BaseClass
+public abstract class BaseClass
 {
     public Guid Id { get; set; }
 }
