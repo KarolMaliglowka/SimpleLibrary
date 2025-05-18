@@ -1,7 +1,6 @@
-﻿using Library.Core.Entities;
-using Library.Core.Repositories;
-using Library.Core.ValueObjects;
+﻿using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
+using Library.Infrastructure.Factories;
 
 namespace Library.Infrastructure.Services;
 
@@ -42,18 +41,7 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task CreateUserAsync(UserDto userDto)
     {
-        var user = new User.Builder()
-            .SetName(new Name(userDto.Name))
-            .SetSurname(userDto.Surname)
-            .SetEmail(userDto.Email)
-            .SetAddress(userDto.Address)
-            .SetPhoneNumber(userDto.PhoneNumber)
-            .SetCity(userDto.City)
-            .SetCountry(userDto.Country)
-            .SetPostalCode(userDto.PostalCode)
-            .SetActive(true)
-            .Build();
-
+        var user = UserFactory.CreateUser(userDto);
         await userRepository.AddUserAsync(user);
     }
 
@@ -65,17 +53,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        var updatedUser = new User.Builder(user)
-            .SetName(userDto.Name)
-            .SetSurname(userDto.Surname)
-            .SetEmail(userDto.Email)
-            .SetAddress(userDto.Address)
-            .SetPhoneNumber(userDto.PhoneNumber)
-            .SetCity(userDto.City)
-            .SetCountry(userDto.Country)
-            .SetPostalCode(userDto.PostalCode)
-            .Build();
-
+        var updatedUser = UserFactory.EditUser(userDto, user);
         await userRepository.UpdateUser(updatedUser);
     }
 
@@ -172,17 +150,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             .Where(x => usersExistInSystem.All(y =>
                 y.Name.Value.ToLower() != x.Name.ToLower()));
 
-        var users = usersToImport.Select(user => new User.Builder()
-                .SetName(new Name(user.Name))
-                .SetSurname(user.Surname)
-                .SetEmail(user.Email)
-                .SetAddress(user.Address)
-                .SetPhoneNumber(user.PhoneNumber)
-                .SetCity(user.City)
-                .SetCountry(user.Country)
-                .SetPostalCode(user.PostalCode)
-                .SetActive(true)
-                .Build()
+        var users = usersToImport.Select(user => UserFactory.CreateUser(user)
             )
             .ToList();
 
