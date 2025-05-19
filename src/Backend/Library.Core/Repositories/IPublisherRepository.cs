@@ -10,4 +10,5 @@ public interface IPublisherRepository
     Task<Publisher?> GetPublisherByNameAsync(string name);
     Task<bool> ExistAuthorAsync(Publisher publisher);
     Task AddPublishersAsync(List<Publisher> publishers);
+    Task UpdatePublisherAsync(Publisher publisher);
 }

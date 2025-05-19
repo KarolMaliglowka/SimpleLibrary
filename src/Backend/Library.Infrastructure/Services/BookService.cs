@@ -32,7 +32,10 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
         if (publisher == null)
         {
-            publisher = new Publisher(book.Publisher.Name);
+            //publisher = new Publisher(book.Publisher.Name);
+            publisher = new Publisher.Builder()
+                .SetName(book.Publisher.Name)
+                .Build();
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
@@ -185,7 +188,10 @@ public class BookService(
         var publishersToImport = publishersList
             .Where(x => !publishersExistInSystem.Any(y =>
                 y.Name.Value.ToLower() == x.ToLower()))
-            .Select(x => new Publisher(x)).ToList();
+            .Select(x => new Publisher.Builder()
+                .SetName(x)
+                .Build())
+            .ToList();
         if (publishersToImport.Count != 0)
         {
             await publisherRepository.AddPublishersAsync(publishersToImport);
@@ -244,7 +250,9 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
         if (publisher == null)
         {
-            publisher = new Publisher(bookDto.Publisher.Name);
+            publisher = new Publisher.Builder()
+                .SetName(bookDto.Publisher.Name)
+                .Build();
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
@@ -344,7 +352,7 @@ public class BookService(
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x => 
+            .Where(x =>
                 x.Category?.Name.Value.ToLower() == categoryInSystem.Name.Value.ToLower())
             .Select(x => new BookDto()
             {

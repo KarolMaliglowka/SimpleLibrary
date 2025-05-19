@@ -36,11 +36,11 @@ public sealed class User : BaseClass
 
     public class Builder
     {
-        private readonly User user;
+        private readonly User _user;
 
         public Builder()
         {
-            user = new User
+            _user = new User
             {
                 Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
@@ -49,20 +49,20 @@ public sealed class User : BaseClass
 
         public Builder(User existingUser)
         {
-            user = existingUser;
+            _user = existingUser;
         }
 
         public Builder SetName(Name name)
         {
             ValidateInput(name.Value, "Name", 2);
-            user.Name = name;
+            _user.Name = name;
             return this;
         }
 
         public Builder SetSurname(string surname)
         {
             ValidateInput(surname, "Surname", 2);
-            user.Surname = surname;
+            _user.Surname = surname;
             return this;
         }
 
@@ -74,55 +74,55 @@ public sealed class User : BaseClass
                 throw new ArgumentException("Invalid email format.");
             }
 
-            user.Email = email;
+            _user.Email = email;
             return this;
         }
 
         public Builder SetAddress(string address)
         {
             ValidateInput(address, "Address", 2);
-            user.Address = address;
+            _user.Address = address;
             return this;
         }
 
         public Builder SetPhoneNumber(string phoneNumber)
         {
             ValidateInput(phoneNumber, "PhoneNumber", 9);
-            user.PhoneNumber = phoneNumber;
+            _user.PhoneNumber = phoneNumber;
             return this;
         }
 
         public Builder SetCity(string city)
         {
             ValidateInput(city, "City", 2);
-            user.City = city;
+            _user.City = city;
             return this;
         }
 
         public Builder SetCountry(string country)
         {
             ValidateInput(country, "Country", 2);
-            user.Country = country;
+            _user.Country = country;
             return this;
         }
 
         public Builder SetPostalCode(string postalCode)
         {
             ValidateInput(postalCode, "PostalCode", 5);
-            user.PostalCode = postalCode;
+            _user.PostalCode = postalCode;
             return this;
         }
 
         public Builder SetActive(bool isActive)
         {
-            user.IsActive = isActive;
+            _user.IsActive = isActive;
             return this;
         }
 
         public User Build()
         {
-            user.UpdateTimestamp();
-            return user;
+            _user.UpdateTimestamp();
+            return _user;
         }
 
         private static void ValidateInput(string input, string fieldName, int minLength = 1)
