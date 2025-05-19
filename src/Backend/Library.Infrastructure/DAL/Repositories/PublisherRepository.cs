@@ -42,4 +42,10 @@ public class PublisherRepository : IPublisherRepository
         await _context.Publishers.AddRangeAsync(publishers);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdatePublisherAsync(Publisher publisher)
+    {
+        _context.Publishers.Update(publisher);
+        await _context.SaveChangesAsync();
+    }
 }

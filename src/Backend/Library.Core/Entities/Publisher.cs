@@ -5,25 +5,52 @@ public sealed class Publisher : BaseClass
 {
     private readonly List<Book> _books = new();
 
-    public Publisher(Name name)
-    {
-        Id = Guid.NewGuid();
-        SetPublisher(name);
-        CreatedAt = DateTime.UtcNow;
-    }
     public Name Name { get; set; }
     public IEnumerable<Book> Books => _books.AsReadOnly();
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
     
-    public void SetPublisher(string publisher)
+    private void UpdateTimestamp()
     {
-        if (string.IsNullOrWhiteSpace(publisher) || publisher.Length < 2)
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public class Builder
+    {
+        private readonly Publisher _publisher;
+
+        public Builder()
         {
-            throw new ArgumentException("Publisher cannot be empty. It requires minimum 3 characters.");
+            _publisher = new Publisher
+            {
+                Id = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow
+            };
+        }
+        
+        public Builder(Publisher publisher)
+        {
+            _publisher = publisher;
         }
 
-        Name = publisher;
-        UpdatedAt = DateTime.UtcNow;
+        public Builder SetName(string name)
+        {
+            ValidateInput(name, "Publisher", 2);
+            _publisher.Name = name;
+            return this;
+        }
+        
+        public Publisher Build()
+        {
+            _publisher.UpdateTimestamp();
+            return _publisher;
+        }
+        
+        private static void ValidateInput(string input, string fieldName, int minLength = 1)
+        {
+            if (string.IsNullOrWhiteSpace(input) || input.Length < minLength)
+            {
+                throw new ArgumentException(
+                    $"{fieldName} cannot be empty and must have at least {minLength} characters.");
+            }
+        }
     }
 }
