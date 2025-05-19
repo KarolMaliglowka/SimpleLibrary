@@ -1,6 +1,6 @@
-﻿using Library.Core.Entities;
-using Library.Core.Repositories;
+﻿using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
+using Library.Infrastructure.Factories;
 
 namespace Library.Infrastructure.Services;
 
@@ -28,10 +28,7 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
     public async Task CreatePublisherAsync(PublisherDto publisher)
     {
         ArgumentNullException.ThrowIfNull(publisher);
-
-        var newPublisher = new Publisher.Builder()
-            .SetName(publisher.Name)
-            .Build();
+        var newPublisher = PublisherFactory.CreatePublisher(publisher); 
         await publisherRepository.AddPublisherAsync(newPublisher);
     }
 
@@ -43,10 +40,7 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
         {
             throw new NullReferenceException("Publisher not found");
         }
-
-        var publisherToUpdate = new Publisher.Builder(oldPublisher)
-            .SetName(publisher.Name)
-            .Build();
+        var publisherToUpdate = PublisherFactory.EditPublisher(publisher,oldPublisher); 
         await publisherRepository.UpdatePublisherAsync(publisherToUpdate);
     }
 
