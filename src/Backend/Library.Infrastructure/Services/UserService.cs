@@ -23,20 +23,9 @@ public class UserService(IUserRepository userRepository) : IUserService
     public async Task<List<UserDto>> GetUsers()
     {
         var users = await userRepository.GetUsersAsync();
-        return users.Select(user => new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Surname = user.Surname,
-            Email = user.Email,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            City = user.City,
-            Country = user.Country,
-            PostalCode = user.PostalCode,
-            IsActive = user.IsActive,
-            FullName = user.FullName
-        }).ToList();
+        return users.Select(user =>
+            user.BuildUserDto()
+        ).ToList();
     }
 
     public async Task CreateUserAsync(UserDto userDto)
@@ -65,20 +54,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        return new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Surname = user.Surname,
-            Email = user.Email,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            City = user.City,
-            Country = user.Country,
-            PostalCode = user.PostalCode,
-            IsActive = user.IsActive,
-            FullName = user.FullName
-        };
+        return user.BuildUserDto();
     }
 
     public async Task<UserDto> GetUserByName(string name)
@@ -89,20 +65,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        return new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Surname = user.Surname,
-            Email = user.Email,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            City = user.City,
-            Country = user.Country,
-            PostalCode = user.PostalCode,
-            IsActive = user.IsActive,
-            FullName = user.FullName
-        };
+        return user.BuildUserDto();
     }
 
     public async Task<UserDto> GetUserBySurname(string surname)
@@ -113,20 +76,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        return new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Surname = user.Surname,
-            Email = user.Email,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            City = user.City,
-            Country = user.Country,
-            PostalCode = user.PostalCode,
-            IsActive = user.IsActive,
-            FullName = user.FullName
-        };
+        return user.BuildUserDto();
     }
 
     public async Task SetUserActive(Guid userId, bool isActive)
