@@ -49,7 +49,7 @@ public static class BookEndpoints
                 var validateResult = await bookValidator.ValidateCommandAsync(book, context);
                 if (validateResult != Results.Empty) return validateResult;
                 await bookService.UpdateBook(book);
-                return Results.NoContent();
+                return Results.Ok();
             });
 
         app.MapGet("/book/author",
