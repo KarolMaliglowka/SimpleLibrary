@@ -186,7 +186,8 @@ public class BookService(
             .ToList();
         var publishersExistInSystem = await publisherRepository.GetPublishersAsync();
         var publishersToImport = publishersList
-            .Where(x => !publishersExistInSystem.Any(y =>
+            .Where(x => !publishersExistInSystem
+                .Any(y =>
                 y.Name.Value.ToLower() == x.ToLower()))
             .Select(x => new Publisher.Builder()
                 .SetName(x)

@@ -78,11 +78,10 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
         await _context.SaveChangesAsync();
     }
 
-    //TODO: fix problem with valueobject and linq 
     public Task<Author?> GetAuthorAsync(string surname, string? name = null) =>
         _context.Authors.SingleOrDefaultAsync(a =>
-            a.Surname.ToLower() == surname.ToLower() &&
-            a.Name.Value.ToLower() == name.ToLower()
+            a.Surname == surname &&
+            (name == null || (a.Name != null && a.Name == name))
         );
 
     public Task<bool> ExistAuthorAsync(string name, string? surname = null) =>
