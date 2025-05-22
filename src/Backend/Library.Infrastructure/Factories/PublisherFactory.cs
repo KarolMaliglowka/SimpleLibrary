@@ -5,18 +5,16 @@ namespace Library.Infrastructure.Factories;
 
 public static class PublisherFactory
 {
+    public static Publisher Publisher(PublisherDto publisherDto, Publisher? publisher = null)
+    {
+        ArgumentNullException.ThrowIfNull(publisherDto);
+        if (publisher == null)
+        {
+            return new Publisher.Builder()
+                .SetName(publisherDto.Name)
+                .Build();
+        }
 
-    public static Publisher CreatePublisher(PublisherDto publisherDto)
-    {
-        ArgumentNullException.ThrowIfNull(publisherDto);
-        return new Publisher.Builder()
-            .SetName(publisherDto.Name)
-            .Build();
-    }
-    
-    public static Publisher EditPublisher(PublisherDto publisherDto, Publisher publisher)
-    {
-        ArgumentNullException.ThrowIfNull(publisherDto);
         return new Publisher.Builder(publisher)
             .SetName(publisherDto.Name)
             .Build();
