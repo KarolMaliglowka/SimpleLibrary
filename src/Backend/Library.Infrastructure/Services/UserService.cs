@@ -185,14 +185,16 @@ public class UserService(IUserRepository userRepository) : IUserService
                     .ToList(),
                 IsBorrowed = y.IsBorrowed
             }).ToList()
-        }).Where(x => x.Books.Any()).ToList();
+        }).Where(x => 
+            x.Books.Count != 0)
+            .ToList();
     }
 
     private static string GenerateCode(int longString)
     {
-        const string znaki = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         var random = new Random();
-        return new string(Enumerable.Repeat(znaki, longString)
+        return new string(Enumerable.Repeat(chars, longString)
             .Select(s => s[random.Next(s.Length)])
             .ToArray());
     }
