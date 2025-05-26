@@ -23,12 +23,6 @@ public sealed class User : BaseClass
     {
     }
 
-    public void SetActive(bool isActive)
-    {
-        IsActive = isActive;
-        UpdateTimestamp();
-    }
-
     private void UpdateTimestamp()
     {
         UpdatedAt = DateTime.UtcNow;
