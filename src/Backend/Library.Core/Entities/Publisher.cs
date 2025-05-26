@@ -5,7 +5,7 @@ public sealed class Publisher : BaseClass
 {
     private readonly List<Book> _books = [];
 
-    public Name Name { get; set; }
+    public Name Name { get; private set; }
     public IEnumerable<Book> Books => _books.AsReadOnly();
     
     private void UpdateTimestamp()

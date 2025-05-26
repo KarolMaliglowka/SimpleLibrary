@@ -16,11 +16,19 @@ public class ArchiveService(IBookService bookService, IUserService userService, 
         var user = await userService.GetUserById(borrow.UserId);
         var book = await bookService.GetBookByIdAsync(borrow.BookId);
 
-        var result = string.Join(", ", book.Authors.Select(author =>
+        var bookAuthors = string.Join(", ", book.Authors.Select(author =>
             $"{author.Name} {author.Surname}").ToArray());
-        var archive = new Archive(
-            book.Id, book.Name, result, user.Id, user.FullName, borrow.BorrowDate, DateTime.UtcNow
-        );
+
+        var archive = new ArchiveBuilder()
+            .SetBookId(book.Id)
+            .SetBookName(book.Name)
+            .SetAuthors(bookAuthors)
+            .SetUserId(user.Id)
+            .SetUserFullName(user.FullName)
+            .SetBorrowDate(borrow.BorrowDate)
+            .SetReturnDate(DateTime.UtcNow)
+            .Build();
+
         await archiveRepository.AddArchive(archive);
     }
 }
