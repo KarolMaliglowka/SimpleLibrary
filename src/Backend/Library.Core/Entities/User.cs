@@ -23,11 +23,6 @@ public sealed class User : BaseClass
     {
     }
 
-    private void UpdateTimestamp()
-    {
-        UpdatedAt = DateTime.UtcNow;
-    }
-
     public class Builder
     {
         private readonly User _user;
@@ -127,5 +122,10 @@ public sealed class User : BaseClass
                     $"{fieldName} cannot be empty and must have at least {minLength} characters.");
             }
         }
+    }
+
+    private void UpdateTimestamp()
+    {
+        UpdatedAt = DateTime.UtcNow;
     }
 }
