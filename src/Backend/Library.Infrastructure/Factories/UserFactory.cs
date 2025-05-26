@@ -36,7 +36,14 @@ public static class UserFactory
             .SetCity(userDto.City)
             .SetCountry(userDto.Country)
             .SetPostalCode(userDto.PostalCode)
-            .SetActive(true)
+            .SetActive(userDto.IsActive)
+            .Build();
+    }
+    
+    public static User ActiveUser(bool isActive, User currentUser)
+    {
+        return new User.Builder(currentUser)
+            .SetActive(isActive)
             .Build();
     }
 }

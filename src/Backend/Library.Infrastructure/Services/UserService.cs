@@ -87,7 +87,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        user.SetActive(isActive);
+        UserFactory.ActiveUser(isActive, user);
 
         await userRepository.UpdateUser(user);
     }
