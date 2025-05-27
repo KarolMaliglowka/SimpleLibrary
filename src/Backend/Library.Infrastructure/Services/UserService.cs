@@ -30,7 +30,7 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task CreateUserAsync(UserDto userDto)
     {
-        var user = UserFactory.CreateUser(userDto);
+        var user = UserFactory.BuildUser(userDto);
         await userRepository.AddUserAsync(user);
     }
 
@@ -42,7 +42,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new Exception("User not found");
         }
 
-        var updatedUser = UserFactory.EditUser(userDto, user);
+        var updatedUser = UserFactory.BuildUser(userDto, user);
         await userRepository.UpdateUser(updatedUser);
     }
 
@@ -100,7 +100,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             .Where(x => usersExistInSystem.All(y =>
                 y.Name.Value.ToLower() != x.Name.ToLower()));
 
-        var users = usersToImport.Select(user => UserFactory.CreateUser(user)
+        var users = usersToImport.Select(user => UserFactory.BuildUser(user)
             )
             .ToList();
 
