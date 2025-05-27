@@ -1,6 +1,7 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
+using Library.Infrastructure.Factories;
 
 namespace Library.Infrastructure.Services;
 
@@ -32,10 +33,7 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
         if (publisher == null)
         {
-            //publisher = new Publisher(book.Publisher.Name);
-            publisher = new Publisher.Builder()
-                .SetName(book.Publisher.Name)
-                .Build();
+            publisher = PublisherFactory.CreatePublisher(book.Publisher);
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
@@ -49,28 +47,22 @@ public class BookService(
         var authors = new List<Author>();
         foreach (var authorName in book.Authors)
         {
-            var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
+            var author = await authorReadRepository
+                .GetAuthorAsync(authorName.Surname, authorName.Name);
             if (author is null)
             {
                 author = new Author(authorName.Name, authorName.Surname);
-                await authorRepository.AddAuthorAsync(author);
+                await authorRepository
+                    .AddAuthorAsync(author);
             }
 
             authors.Add(author);
         }
 
-        var newBook = new Book
-        (
-            book.Name,
-            authors,
-            book.PagesCount,
-            book.Description,
-            book.Isbn,
-            book.YearOfRelease,
-            publisher,
-            category
-        );
-        await bookRepository.AddBookAsync(newBook);
+        var newBook = BookFactory
+            .CreateBook(book,authors,publisher,category);
+        await bookRepository
+            .AddBookAsync(newBook);
     }
 
     public async Task<List<BookDto>> GetAllBooksAsync()
@@ -215,8 +207,8 @@ public class BookService(
         var booksListToImport = new List<Book>();
         foreach (var book in books)
         {
-            var getPublisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
-            var getAuthors = new List<Author>();
+            var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
+            var authors = new List<Author>();
             foreach (var authorName in book.Authors)
             {
                 var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
@@ -225,21 +217,14 @@ public class BookService(
                     throw new Exception($"Author {authorName} not found.");
                 }
 
-                getAuthors.Add(author);
+                authors.Add(author);
             }
 
-            var getCategory = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
-            var newBook = new Book
-            (
-                book.Name,
-                getAuthors,
-                book.PagesCount,
-                book.Description,
-                book.Isbn,
-                book.YearOfRelease,
-                getPublisher,
-                getCategory
-            );
+            var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
+            
+            var newBook = BookFactory
+                .CreateBook(book,authors,publisher,category);
+            
             booksListToImport.Add(newBook);
         }
 
