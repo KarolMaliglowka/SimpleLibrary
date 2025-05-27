@@ -28,7 +28,7 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
     public async Task CreatePublisherAsync(PublisherDto publisher)
     {
         ArgumentNullException.ThrowIfNull(publisher);
-        var newPublisher = PublisherFactory.Publisher(publisher); 
+        var newPublisher = PublisherFactory.CreatePublisher(publisher);
         await publisherRepository.AddPublisherAsync(newPublisher);
     }
 
@@ -40,7 +40,8 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
         {
             throw new NullReferenceException("Publisher not found");
         }
-        var publisherToUpdate = PublisherFactory.Publisher(publisher,oldPublisher); 
+
+        var publisherToUpdate = PublisherFactory.CreatePublisher(publisher, oldPublisher);
         await publisherRepository.UpdatePublisherAsync(publisherToUpdate);
     }
 

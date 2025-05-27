@@ -4,25 +4,6 @@ namespace Library.Core.Entities;
 
 public sealed class Book : BaseClass
 {
-    protected Book()
-    {
-    }
-
-    public Book(Name name, List<Author> authors, int pagesCount, string description, string isbn,
-        string yearOfRelease, Publisher publisher, Category category)
-    {
-        Id = Guid.NewGuid();
-        SetName(name);
-        PagesCount = pagesCount;
-        Description = description;
-        ISBN = isbn;
-        YearOfRelease = yearOfRelease;
-        Authors = authors;
-        CreatedAt = DateTime.UtcNow;
-        Publisher = publisher;
-        Category = category;
-    }
-
     public Name Name { get; set; }
     public int PagesCount { get; set; }
     public string Description { get; set; }
@@ -80,17 +61,59 @@ public sealed class Book : BaseClass
             {
                 throw new Exception("Pages count can't be less than 0.");
             }
+
             _book.PagesCount = pagesCount;
             return this;
         }
 
+        public Builder SetDescription(string description)
+        {
+            ValidateInput(description, "Description", 2);
+            _book.Description = description;
+            return this;
+        }
+
+        public Builder SetIsbn(string isbn)
+        {
+            ValidateInput(isbn, "ISBN", 2);
+            _book.ISBN = isbn;
+            return this;
+        }
+
+        public Builder SetYearOfRelease(string yearOfRelease)
+        {
+            ValidateInput(yearOfRelease, "YearOfRelease", 1);
+            _book.YearOfRelease = yearOfRelease;
+            return this;
+        }
+
+        public Builder SetAuthors(List<Author> authors)
+        {
+            ArgumentNullException.ThrowIfNull(authors);
+            _book.Authors = authors;
+            return this;
+        }
+
+        public Builder SetPublisher(Publisher publisher)
+        {
+            ArgumentNullException.ThrowIfNull(publisher);
+            _book.Publisher = publisher;
+            return this;
+        }
+
+        public Builder SetCategory(Category category)
+        {
+            ArgumentNullException.ThrowIfNull(category);
+            _book.Category = category;
+            return this;
+        }
 
         public Book Build()
         {
             _book.UpdateTimestamp();
             return _book;
         }
-        
+
         private static void ValidateInput(string input, string fieldName, int minLength = 1)
         {
             if (string.IsNullOrWhiteSpace(input) || input.Length < minLength)
@@ -100,6 +123,7 @@ public sealed class Book : BaseClass
             }
         }
     }
+
     private void UpdateTimestamp()
     {
         UpdatedAt = DateTime.UtcNow;

@@ -5,7 +5,7 @@ namespace Library.Infrastructure.Factories;
 
 public static class PublisherFactory
 {
-    public static Publisher Publisher(PublisherDto publisherDto, Publisher? publisher = null)
+    public static Publisher CreatePublisher(PublisherDto publisherDto, Publisher? publisher = null)
     {
         ArgumentNullException.ThrowIfNull(publisherDto);
         if (publisher == null)
