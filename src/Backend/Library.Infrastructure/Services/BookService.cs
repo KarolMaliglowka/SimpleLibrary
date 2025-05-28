@@ -60,7 +60,7 @@ public class BookService(
         }
 
         var newBook = BookFactory
-            .CreateBook(book,authors,publisher,category);
+            .BuildBook(book, authors, publisher, category);
         await bookRepository
             .AddBookAsync(newBook);
     }
@@ -180,7 +180,7 @@ public class BookService(
         var publishersToImport = publishersList
             .Where(x => !publishersExistInSystem
                 .Any(y =>
-                y.Name.Value.ToLower() == x.ToLower()))
+                    y.Name.Value.ToLower() == x.ToLower()))
             .Select(x => new Publisher.Builder()
                 .SetName(x)
                 .Build())
@@ -221,10 +221,10 @@ public class BookService(
             }
 
             var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
-            
+
             var newBook = BookFactory
-                .CreateBook(book,authors,publisher,category);
-            
+                .BuildBook(book, authors, publisher, category);
+
             booksListToImport.Add(newBook);
         }
 
@@ -268,17 +268,9 @@ public class BookService(
             throw new Exception("Book not found.");
         }
 
-        book.SetName(bookDto.Name);
-        book.PagesCount = bookDto.PagesCount;
-        book.Authors = authors;
-        book.Description = bookDto.Description;
-        book.ISBN = bookDto.Isbn;
-        book.YearOfRelease = bookDto.YearOfRelease;
-        book.Publisher = publisher;
-        book.Category = category;
-        book.UpdatedAt = DateTime.UtcNow;
-        book.IsBorrowed = bookDto.IsBorrowed;
-        await bookRepository.UpdateBook(book);
+        var updatedBook = BookFactory.BuildBook(bookDto, authors, publisher, category, book);
+
+        await bookRepository.UpdateBook(updatedBook);
     }
 
     public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null)
