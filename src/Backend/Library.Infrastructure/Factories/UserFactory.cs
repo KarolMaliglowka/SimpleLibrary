@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Core.Builders;
+using Library.Core.Entities;
 using Library.Core.ValueObjects;
 using Library.Infrastructure.DTO;
 
@@ -8,7 +9,7 @@ public static class UserFactory
 {
     public static User ActiveUser(bool isActive, User currentUser)
     {
-        return new User.Builder(currentUser)
+        return new UserBuilder(currentUser)
             .SetActive(isActive)
             .Build();
     }
@@ -18,7 +19,7 @@ public static class UserFactory
         ArgumentNullException.ThrowIfNull(userDto);
         return currentUser switch
         {
-            null => new User.Builder()
+            null => new UserBuilder()
                 .SetName(new Name(userDto.Name))
                 .SetSurname(userDto.Surname)
                 .SetEmail(userDto.Email)
@@ -29,7 +30,7 @@ public static class UserFactory
                 .SetPostalCode(userDto.PostalCode)
                 .SetActive(true)
                 .Build(),
-            _ => new User.Builder(currentUser)
+            _ => new UserBuilder(currentUser)
                 .SetName(new Name(userDto.Name))
                 .SetSurname(userDto.Surname)
                 .SetEmail(userDto.Email)

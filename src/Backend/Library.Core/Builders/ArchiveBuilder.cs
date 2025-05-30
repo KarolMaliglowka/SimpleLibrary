@@ -1,4 +1,6 @@
-﻿namespace Library.Core.Entities;
+﻿using Library.Core.Entities;
+
+namespace Library.Core.Builders;
 
 public sealed class ArchiveBuilder
 {
