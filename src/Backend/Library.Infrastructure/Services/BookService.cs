@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Core.Builders;
+using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Factories;
@@ -181,9 +182,10 @@ public class BookService(
             .Where(x => !publishersExistInSystem
                 .Any(y =>
                     y.Name.Value.ToLower() == x.ToLower()))
-            .Select(x => new Publisher.Builder()
-                .SetName(x)
-                .Build())
+            .Select(x => PublisherFactory.CreatePublisher(new PublisherDto
+                {
+                    Name = x
+                }))
             .ToList();
         if (publishersToImport.Count != 0)
         {
@@ -236,9 +238,10 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
         if (publisher == null)
         {
-            publisher = new Publisher.Builder()
-                .SetName(bookDto.Publisher.Name)
-                .Build();
+            publisher = PublisherFactory.CreatePublisher(new PublisherDto
+            {
+                Name = bookDto.Publisher.Name
+            });
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
