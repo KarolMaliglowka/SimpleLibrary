@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Core.Builders;
+using Library.Core.Entities;
 using Library.Infrastructure.DTO;
 
 namespace Library.Infrastructure.Factories;
@@ -16,7 +17,7 @@ public static class BookFactory
         ArgumentNullException.ThrowIfNull(category);
         return currentBook switch
         {
-            null => new Book.Builder()
+            null => new BookBuilder()
                 .SetName(bookDto.Name)
                 .SetPagesCount(bookDto.PagesCount)
                 .SetDescription(bookDto.Description)
@@ -26,7 +27,7 @@ public static class BookFactory
                 .SetPublisher(publisher)
                 .SetCategory(category)
                 .Build(),
-            _ => new Book.Builder(currentBook)
+            _ => new BookBuilder(currentBook)
                 .SetName(bookDto.Name)
                 .SetPagesCount(bookDto.PagesCount)
                 .SetDescription(bookDto.Description)
