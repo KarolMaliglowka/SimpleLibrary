@@ -19,7 +19,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -33,10 +33,11 @@ jobs:
   merge:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
-      - name: Auto merge to develop
-        run: |
-          git checkout develop
-          git merge --no-ff ${{ github.head_ref }}
-          git push origin develop
+      - uses: actions/checkout@v3
+      - name: Merge feature/* -> develop
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: develop
+          github_token: ${{ secrets.LIBRARYTOKEN }}
