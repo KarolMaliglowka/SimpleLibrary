@@ -35,8 +35,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - name: Auto merge to develop
-        run: |
-          git checkout develop
-          git merge --no-ff ${{ github.head_ref }}
-          git push origin develop
+      - uses: actions/checkout@v3
+      - name: Merge feature/* -> develop
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: develop
+          github_token: ${{ secrets.LIBRARYTOKEN }}
