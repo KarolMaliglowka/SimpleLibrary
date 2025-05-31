@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Core.Builders;
+using Library.Core.Entities;
 using Library.Infrastructure.DTO;
 
 namespace Library.Infrastructure.Factories;
@@ -10,12 +11,12 @@ public static class PublisherFactory
         ArgumentNullException.ThrowIfNull(publisherDto);
         if (publisher == null)
         {
-            return new Publisher.Builder()
+            return new PublisherBuilder()
                 .SetName(publisherDto.Name)
                 .Build();
         }
 
-        return new Publisher.Builder(publisher)
+        return new PublisherBuilder(publisher)
             .SetName(publisherDto.Name)
             .Build();
     }
