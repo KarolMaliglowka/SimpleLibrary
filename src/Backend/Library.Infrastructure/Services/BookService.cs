@@ -183,9 +183,9 @@ public class BookService(
                 .Any(y =>
                     y.Name.Value.ToLower() == x.ToLower()))
             .Select(x => PublisherFactory.CreatePublisher(new PublisherDto
-                {
-                    Name = x
-                }))
+            {
+                Name = x
+            }))
             .ToList();
         if (publishersToImport.Count != 0)
         {
@@ -272,7 +272,6 @@ public class BookService(
         }
 
         var updatedBook = BookFactory.BuildBook(bookDto, authors, publisher, category, book);
-
         await bookRepository.UpdateBook(updatedBook);
     }
 
@@ -309,10 +308,10 @@ public class BookService(
                 Name = x.Name,
                 PagesCount = x.PagesCount,
                 Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher?.Name },
+                Publisher = new PublisherDto { Name = x.Publisher.Name },
                 Isbn = x.ISBN,
                 YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category?.Name },
+                Category = new CategoryDto { Name = x.Category.Name },
                 Authors = x.Authors?.Select(a => new AuthorDto
                     {
                         Name = a.Name ?? "",
@@ -341,10 +340,10 @@ public class BookService(
                 Name = x.Name,
                 PagesCount = x.PagesCount,
                 Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher?.Name },
+                Publisher = new PublisherDto { Name = x.Publisher.Name },
                 Isbn = x.ISBN,
                 YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category?.Name },
+                Category = new CategoryDto { Name = x.Category.Name },
                 Authors = x.Authors?.Select(a => new AuthorDto
                     {
                         Name = a.Name ?? "",
