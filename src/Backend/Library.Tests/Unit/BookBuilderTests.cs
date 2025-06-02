@@ -1,5 +1,6 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Builders;
+using Library.Core.Exceptions;
 using Library.Core.ValueObjects;
 
 public class BookBuilderTests
@@ -16,19 +17,25 @@ public class BookBuilderTests
         Assert.NotNull(book.CreatedAt);
     }
 
-    [Fact]
-    public void SetName_ShouldSetBookName()
+    [Theory]
+    [InlineData("Effective C#")]
+    [InlineData(null)]
+    [InlineData(" ")]
+    [InlineData("E")]
+    public void SetName_ShouldSetBookName(string? name)
     {
-        // Arrange
         var bookBuilder = new BookBuilder();
-        var name = new Name("Effective C#");
 
-        // Act
-        bookBuilder.SetName(name);
-        var book = bookBuilder.Build();
-
-        // Assert
-        Assert.Equal(name, book.Name);
+        if (name == null || name.Length < 2)
+        {
+            Assert.Throws<InvalidNameException>(() => bookBuilder.SetName(new Name(name)));
+        }
+        else
+        {
+            bookBuilder.SetName(name);
+            var book = bookBuilder.Build();
+            Assert.Equal(name, book.Name);
+        }
     }
 
     [Fact]
@@ -44,6 +51,18 @@ public class BookBuilderTests
     
         // Assert
         Assert.Equal(pageCount, book.PagesCount);
+    }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-100)]
+    public void SetPagesCount_ShouldThrowException(int pageCounts)
+    {
+        // Arrange
+        var bookBuilder = new BookBuilder();
+
+        // Act & Assert
+        Assert.Throws<Exception>(() => bookBuilder.SetPagesCount(pageCounts));
     }
 
     [Fact]
