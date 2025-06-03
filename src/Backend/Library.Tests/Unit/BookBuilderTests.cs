@@ -94,7 +94,7 @@ public class BookBuilderTests
     [InlineData(null)]
     [InlineData(" ")]
     [InlineData("E")]
-    public void SetDescription_ShouldThrowException(string description)
+    public void SetDescription_ShouldThrowException(string? description)
     {
         var bookBuilder = new BookBuilder();
 
@@ -165,7 +165,7 @@ public class BookBuilderTests
     [InlineData(null)]
     [InlineData(" ")]
     [InlineData("E")]
-    public void SetIsbn_ShouldThrowException(string isbn)
+    public void SetIsbn_ShouldThrowException(string? isbn)
     {
         // Arrange
         var bookBuilder = new BookBuilder();
