@@ -4,7 +4,8 @@ namespace Library.Tests.Unit;
 
 public class UserTests
 {
-    private const string Name = "John Doe";
+    private const string Name = "John";
+    private const string Surname = "Doe";
     
     [Fact]
     public void Build_ShouldCreateUserWithDefaultValues()
@@ -30,5 +31,19 @@ public class UserTests
 
         // Assert
         Assert.Equal(Name, user.Name);
+    }
+    
+    [Fact]
+    public void SetSurname_ShouldSetUserSurname()
+    {
+        // Arrange
+        var userBuilder = new UserBuilder();
+
+        // Act
+        userBuilder.SetSurname(Surname);
+        var user = userBuilder.Build();
+
+        // Assert
+        Assert.Equal(Surname, user.Surname);
     }
 }
