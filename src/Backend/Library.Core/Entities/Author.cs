@@ -8,8 +8,6 @@ public class Author : BaseClass
     public string? Surname { get; set; }
     public ICollection<Book> Books { get; set; }
     public string FullName => $"{Name} {Surname}";
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
 
     public Author(Name? name, string? surname = null)
     {
