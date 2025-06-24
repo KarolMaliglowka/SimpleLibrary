@@ -14,8 +14,6 @@ public sealed class User : BaseClass
     public string Country { get; set; }
     public string PostalCode { get; set; }
     public List<Borrow> Borrows { get; set; } = [];
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
     public bool IsActive { get; set; }
     public string FullName => $"{Name.Value} {Surname}";
 }

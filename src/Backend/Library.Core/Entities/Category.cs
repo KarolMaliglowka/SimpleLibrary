@@ -19,8 +19,6 @@ public sealed class Category : BaseClass
     
     public Name Name { get; set; }
     public ICollection<Book> Books => _books.AsReadOnly();
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
 
     public void SetCategory(string category)
     {

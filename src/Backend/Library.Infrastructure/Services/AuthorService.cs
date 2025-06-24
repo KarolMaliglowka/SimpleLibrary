@@ -9,7 +9,6 @@ public interface IAuthorService
     Task CreateAuthorsAsync(List<AuthorDto> author);
 }
 
-
 public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 {
     public async Task CreateAuthorsAsync(List<AuthorDto> authors)
