@@ -100,7 +100,7 @@ public sealed class UserBuilder
         if (string.IsNullOrWhiteSpace(input) || input.Length < minLength)
         {
             throw new ArgumentException(
-                $"{fieldName} cannot be empty and must have at least {minLength} characters.");
+                $"{fieldName} cannot be empty and must have at least {minLength} characters");
         }
     }
 }
