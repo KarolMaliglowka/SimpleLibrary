@@ -57,7 +57,7 @@ public static class AuthorEndpoints
         app.MapGet("/author/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {
             var author = await authorReadRepository.GetAuthorByIdAsync(id);
-            return author != null ? Results.Ok(author) : Results.NotFound("Author not found....");
+            return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
         });
     }
 }
