@@ -32,7 +32,7 @@ public sealed class BookBuilder
     {
         if (pagesCount <= 0)
         {
-            throw new Exception("Pages count can't be less or equal 0.");
+            throw new Exception("Pages count can't be less or equal 0");
         }
 
         _book.PagesCount = pagesCount;
