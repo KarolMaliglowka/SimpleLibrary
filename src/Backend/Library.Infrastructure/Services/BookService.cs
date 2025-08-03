@@ -1,5 +1,4 @@
-﻿using Library.Core.Builders;
-using Library.Core.Entities;
+﻿using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Factories;
@@ -14,7 +13,7 @@ public interface IBookService
     Task<BookDto> GetBookByNameAsync(string name);
     Task CreateBooksAsync(List<BookDto> book);
     Task UpdateBook(BookDto book);
-    Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null);
+    Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null!);
     Task<List<BookDto>> GetBooksByCategoryAsync(string category);
     Task<List<BookDto>> GetBooksByPublisherAsync(string publisher);
     Task SetBookAsBorrowed(Guid bookId, bool isBorrowed);
@@ -31,14 +30,14 @@ public class BookService(
 {
     public async Task CreateBookAsync(BookDto book)
     {
-        var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
+        var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher!.Name);
         if (publisher == null)
         {
             publisher = PublisherFactory.CreatePublisher(book.Publisher);
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
-        var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
+        var category = await categoryRepository.GetCategoryByNameAsync(book.Category!.Name);
         if (category is null)
         {
             category = new Category(book.Category.Name);
@@ -46,7 +45,7 @@ public class BookService(
         }
 
         var authors = new List<Author>();
-        foreach (var authorName in book.Authors)
+        foreach (var authorName in book.Authors!)
         {
             var author = await authorReadRepository
                 .GetAuthorAsync(authorName.Surname, authorName.Name);
@@ -77,14 +76,14 @@ public class BookService(
             Description = x.Description,
             Publisher = new PublisherDto
             {
-                Name = x.Publisher?.Name,
-                Id = x.Publisher.Id
+                Name = x.Publisher!.Name,
+                Id = x.Publisher!.Id
             },
             Isbn = x.ISBN,
             YearOfRelease = x.YearOfRelease,
             Category = new CategoryDto
             {
-                Name = x.Category?.Name,
+                Name = x.Category!.Name,
                 Id = x.Category.Id
             },
             Authors = x.Authors?.Select(a => new AuthorDto
@@ -119,10 +118,10 @@ public class BookService(
             Name = book.Name,
             PagesCount = book.PagesCount,
             Description = book.Description,
-            Publisher = new PublisherDto { Name = book.Publisher?.Name },
+            Publisher = new PublisherDto { Name = book.Publisher!.Name },
             Isbn = book.ISBN,
             YearOfRelease = book.YearOfRelease,
-            Category = new CategoryDto { Name = book.Category?.Name },
+            Category = new CategoryDto { Name = book.Category!.Name },
             Authors = authorsNames,
             IsBorrowed = book.IsBorrowed
         };
@@ -149,10 +148,10 @@ public class BookService(
             Name = book.Name,
             PagesCount = book.PagesCount,
             Description = book.Description,
-            Publisher = new PublisherDto { Name = book.Publisher.Name },
+            Publisher = new PublisherDto { Name = book.Publisher!.Name },
             Isbn = book.ISBN,
             YearOfRelease = book.YearOfRelease,
-            Category = new CategoryDto { Name = book.Category?.Name },
+            Category = new CategoryDto { Name = book.Category!.Name },
             Authors = authorsNames,
             IsBorrowed = book.IsBorrowed
         };
@@ -160,28 +159,29 @@ public class BookService(
 
     public async Task CreateBooksAsync(List<BookDto> books)
     {
-        var categoryList = books.Select(x => x.Category.Name)
+        var categoryList = books.Select(x => x.Category!.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var categoryExistInSystem = await categoryService.GetCategoriesAsync();
         var categoriesToImport = categoryList
             .Where(x => !categoryExistInSystem.Any(y =>
-                y.Name.ToLower() == x.ToLower()))
-            .Select(x => new Category(x)).ToList();
+                y.Name!.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
+            .Select(x => new Category(x!))
+            .ToList();
         if (categoriesToImport.Count != 0)
         {
             await categoryRepository.AddCategoriesAsync(categoriesToImport);
         }
 
         var publishersList = books
-            .Select(x => x.Publisher.Name)
+            .Select(x => x.Publisher!.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var publishersExistInSystem = await publisherRepository.GetPublishersAsync();
         var publishersToImport = publishersList
             .Where(x => !publishersExistInSystem
                 .Any(y =>
-                    y.Name.Value.ToLower() == x.ToLower()))
+                    y.Name.Value.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
             .Select(x => PublisherFactory.CreatePublisher(new PublisherDto
             {
                 Name = x
@@ -192,14 +192,14 @@ public class BookService(
             await publisherRepository.AddPublishersAsync(publishersToImport);
         }
 
-        var authorsList = books.SelectMany(x => x.Authors)
+        var authorsList = books.SelectMany(x => x.Authors!)
             .Distinct()
             .ToList();
         var authorsExistInSystem = await authorReadRepository.GetAuthorsAsync();
         var authorsToImport = authorsList
             .Where(x => !authorsExistInSystem.Any(y =>
-                y.Name.Value.ToLower() == x.Name.ToLower() &&
-                y.Surname.ToLower() == x.Surname.ToLower()))
+                y.Name!.Value.Equals(x.Name, StringComparison.CurrentCultureIgnoreCase) &&
+                y.Surname!.ToLower() == x.Surname.ToLower()))
             .Select(x => new Author(x.Name, x.Surname)).Distinct().ToList();
         if (authorsToImport.Count != 0)
         {
@@ -209,9 +209,9 @@ public class BookService(
         var booksListToImport = new List<Book>();
         foreach (var book in books)
         {
-            var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
+            var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher!.Name);
             var authors = new List<Author>();
-            foreach (var authorName in book.Authors)
+            foreach (var authorName in book.Authors!)
             {
                 var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
                 if (author is null)
@@ -222,7 +222,7 @@ public class BookService(
                 authors.Add(author);
             }
 
-            var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
+            var category = await categoryRepository.GetCategoryByNameAsync(book.Category!.Name);
 
             var newBook = BookFactory
                 .BuildBook(book, authors, publisher, category);
@@ -235,7 +235,7 @@ public class BookService(
 
     public async Task UpdateBook(BookDto bookDto)
     {
-        var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
+        var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher!.Id);
         if (publisher == null)
         {
             publisher = PublisherFactory.CreatePublisher(new PublisherDto
@@ -245,7 +245,7 @@ public class BookService(
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
-        var category = await categoryRepository.GetCategoryByNameAsync(bookDto.Category.Name);
+        var category = await categoryRepository.GetCategoryByNameAsync(bookDto.Category!.Name);
         if (category is null)
         {
             category = new Category(bookDto.Category.Name);
@@ -253,7 +253,7 @@ public class BookService(
         }
 
         var authors = new List<Author>();
-        foreach (var authorName in bookDto.Authors)
+        foreach (var authorName in bookDto.Authors!)
         {
             var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
             if (author is null)
@@ -275,7 +275,7 @@ public class BookService(
         await bookRepository.UpdateBook(updatedBook);
     }
 
-    public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null)
+    public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null!)
     {
         var listOfAuthor = await authorReadRepository.GetAuthorBySurnameAsync(authorSurname);
         if (listOfAuthor is null)
@@ -291,7 +291,7 @@ public class BookService(
         else if (!string.IsNullOrWhiteSpace(authorName))
         {
             author = listOfAuthor.FirstOrDefault(x =>
-                string.Equals(x.Name, authorName, StringComparison.CurrentCultureIgnoreCase));
+                string.Equals(x.Name!, authorName, StringComparison.CurrentCultureIgnoreCase));
             if (author is null)
             {
                 throw new Exception("Author not found.");
@@ -300,7 +300,7 @@ public class BookService(
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x => x.Authors.Any(a =>
+            .Where(x => x.Authors!.Any(a =>
                 a.Name == author?.Name && a.Surname == author?.Surname))
             .Select(x => new BookDto()
             {
@@ -308,10 +308,10 @@ public class BookService(
                 Name = x.Name,
                 PagesCount = x.PagesCount,
                 Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher.Name },
+                Publisher = new PublisherDto { Name = x.Publisher!.Name },
                 Isbn = x.ISBN,
                 YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category.Name },
+                Category = new CategoryDto { Name = x.Category!.Name },
                 Authors = x.Authors?.Select(a => new AuthorDto
                     {
                         Name = a.Name ?? "",
@@ -333,17 +333,17 @@ public class BookService(
         var booksList = await bookRepository.GetAllAsync();
         return booksList
             .Where(x =>
-                x.Category?.Name.Value.ToLower() == categoryInSystem.Name.Value.ToLower())
+                (x.Category?.Name.Value.ToLower()!).Equals(categoryInSystem.Name.Value, StringComparison.CurrentCultureIgnoreCase))
             .Select(x => new BookDto()
             {
                 Id = x.Id,
                 Name = x.Name,
                 PagesCount = x.PagesCount,
                 Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher.Name },
+                Publisher = new PublisherDto { Name = x.Publisher!.Name },
                 Isbn = x.ISBN,
                 YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category.Name },
+                Category = new CategoryDto { Name = x.Category!.Name },
                 Authors = x.Authors?.Select(a => new AuthorDto
                     {
                         Name = a.Name ?? "",
@@ -364,7 +364,7 @@ public class BookService(
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x => string.Equals(x.Publisher?.Name, publisherInSystem.Name,
+            .Where(x => string.Equals(x.Publisher!.Name, publisherInSystem.Name,
                 StringComparison.CurrentCultureIgnoreCase))
             .Select(x => new BookDto()
             {
@@ -372,10 +372,10 @@ public class BookService(
                 Name = x.Name,
                 PagesCount = x.PagesCount,
                 Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher?.Name },
+                Publisher = new PublisherDto { Name = x.Publisher!.Name },
                 Isbn = x.ISBN,
                 YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category?.Name },
+                Category = new CategoryDto { Name = x.Category!.Name },
                 Authors = x.Authors?.Select(a => new AuthorDto
                     {
                         Name = a.Name ?? "",
