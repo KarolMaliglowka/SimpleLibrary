@@ -17,12 +17,12 @@ public class ArchiveService(IBookService bookService, IUserService userService, 
         var user = await userService.GetUserById(borrow.UserId);
         var book = await bookService.GetBookByIdAsync(borrow.BookId);
 
-        var bookAuthors = string.Join(", ", book.Authors.Select(author =>
+        var bookAuthors = string.Join(", ", book.Authors!.Select(author =>
             $"{author.Name} {author.Surname}").ToArray());
 
         var archive = new ArchiveBuilder()
             .SetBookId(book.Id)
-            .SetBookName(book.Name)
+            .SetBookName(book.Name!)
             .SetAuthors(bookAuthors)
             .SetUserId(user.Id)
             .SetUserFullName(user.FullName)

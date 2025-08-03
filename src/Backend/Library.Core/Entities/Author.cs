@@ -12,8 +12,8 @@ public class Author : BaseClass
     public Author(Name? name, string? surname = null)
     {
         Id = Guid.NewGuid();
-        SetName(name);
-        SetSurname(surname);
+        SetName(name!);
+        SetSurname(surname!);
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
