@@ -43,7 +43,7 @@ public class PublisherBuilderTests
         var publisherBuilder = new PublisherBuilder();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => publisherBuilder.SetName(name));
+        Assert.Throws<ArgumentException>(() => publisherBuilder.SetName(name!));
     }
 
     [Fact]

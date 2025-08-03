@@ -38,7 +38,7 @@ public class BookBuilderTests
 
         if (name == null || name.Length < 2)
         {
-            Assert.Throws<InvalidNameException>(() => bookBuilder.SetName(new Name(name)));
+            Assert.Throws<InvalidNameException>(() => bookBuilder.SetName(new Name(name!)));
         }
         else
         {
@@ -100,7 +100,7 @@ public class BookBuilderTests
 
         if (string.IsNullOrEmpty(description) || description.Length < 2)
         {
-            Assert.Throws<ArgumentException>(() => bookBuilder.SetDescription(description));
+            Assert.Throws<ArgumentException>(() => bookBuilder.SetDescription(description!));
         }
         else
         {
@@ -171,7 +171,7 @@ public class BookBuilderTests
         var bookBuilder = new BookBuilder();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => bookBuilder.SetDescription(isbn));
+        Assert.Throws<ArgumentException>(() => bookBuilder.SetDescription(isbn!));
     }
 
     [Fact]
