@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20250518182831_InitMigration")]
-    partial class InitMigration
+    [Migration("20250829134703_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,8 +158,14 @@ namespace Library.Infrastructure.DAL.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "BookId");
 
