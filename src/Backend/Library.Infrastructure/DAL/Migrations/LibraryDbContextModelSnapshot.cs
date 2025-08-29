@@ -155,8 +155,14 @@ namespace Library.Infrastructure.DAL.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "BookId");
 
