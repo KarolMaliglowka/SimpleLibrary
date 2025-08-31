@@ -30,9 +30,9 @@ public sealed class BookBuilder
 
     public BookBuilder SetPagesCount(int pagesCount)
     {
-        if (pagesCount <= 0)
+        if (pagesCount < 0)
         {
-            throw new Exception("Pages count can't be less or equal 0");
+            throw new Exception("Pages count can't be less 0");
         }
 
         _book.PagesCount = pagesCount;
@@ -41,7 +41,6 @@ public sealed class BookBuilder
 
     public BookBuilder SetDescription(string description)
     {
-        ValidateInput(description, "Description", 2);
         _book.Description = description;
         return this;
     }
@@ -69,7 +68,7 @@ public sealed class BookBuilder
 
     public BookBuilder SetPublisher(Publisher publisher)
     {
-        ArgumentNullException.ThrowIfNull(publisher);
+        //ArgumentNullException.ThrowIfNull(publisher);
         _book.Publisher = publisher;
         return this;
     }
