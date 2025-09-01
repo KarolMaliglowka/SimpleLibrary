@@ -16,7 +16,7 @@ import { InputNumber } from 'primeng/inputnumber';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { Table } from 'primeng/table';
-import { NamesListPipe } from '../../../shared/extensions/NamesListPipe';
+import { NamesListPipe, } from '../../../shared/extensions/NamesListPipe';
 import { ButtonModule } from 'primeng/button';
 
 interface Column {

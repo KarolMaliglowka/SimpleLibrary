@@ -45,6 +45,21 @@ export class AppMenu {
                         routerLink: ['/pages/borrow']
                     },
                     {
+                        label: 'Categories',
+                        icon: 'pi pi-fw pi-arrow-right-arrow-left',
+                        routerLink: ['/pages/category']
+                    },
+                    {
+                        label: 'Authors',
+                        icon: 'pi pi-fw pi-arrow-right-arrow-left',
+                        routerLink: ['/pages/author']
+                    },
+                    {
+                        label: 'Publishers',
+                        icon: 'pi pi-fw pi-arrow-right-arrow-left',
+                        routerLink: ['/pages/publisher']
+                    },
+                    {
                         label: 'Settings',
                         icon: 'pi pi-fw pi-cog',
                         routerLink: ['/pages/setting']
