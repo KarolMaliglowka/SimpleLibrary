@@ -3,15 +3,12 @@
     [value]="books"
     [rows]="10"
     [columns]="cols"
-
     [globalFilterFields]="['name', 'description']"
     [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedBooks"
-
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-
->
+    >
     <ng-template #caption>
         <div class="flex items-center justify-between">
             <h5 class="m-0">Manage books</h5>
@@ -47,7 +44,11 @@
                     Borrowed
                 </div>
             </th>
-            <th style="min-width: 12rem"></th>
+            <th style="min-width: 12rem">
+                <div class="flex items-center gap-2">
+                    Action
+                </div>
+            </th>
         </tr>
     </ng-template>
     <ng-template #body let-book>
@@ -63,8 +64,8 @@
             <td style="min-width: 5rem">{{ book.isBorrowed }}</td>
 
             <td>
-<!--                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editBook(book)" />-->
-<!--                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteBook(book)" />-->
+                <p-button icon="pi pi-pencil" class="mr-2" (click)="editBook(book)" />
+                <p-button icon="pi pi-trash" severity="danger" (click)="deleteBook(book)" />
             </td>
         </tr>
     </ng-template>

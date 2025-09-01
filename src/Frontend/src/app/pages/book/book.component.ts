@@ -4,24 +4,20 @@ import { Book } from './book';
 import { BooksService } from '../service/book.service';
 import { TableModule } from 'primeng/table';
 import { Dialog } from 'primeng/dialog';
-import { Ripple } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { CommonModule } from '@angular/common';
-import { FileUpload } from 'primeng/fileupload';
 import { SelectModule } from 'primeng/select';
-import { Tag } from 'primeng/tag';
-import { RadioButton } from 'primeng/radiobutton';
-import { Rating } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { InputNumber } from 'primeng/inputnumber';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { Table } from 'primeng/table';
 import { NamesListPipe } from '../../../shared/extensions/NamesListPipe';
+import { ButtonModule } from 'primeng/button';
 
 interface Column {
     field: string;
@@ -38,8 +34,11 @@ interface ExportColumn {
     selector: 'book-component',
     templateUrl: 'book.component.html',
     standalone: true,
-    imports: [NamesListPipe, TableModule, Dialog, Ripple, SelectModule, ToastModule, ToolbarModule, ConfirmDialog, InputTextModule, TextareaModule, CommonModule, FileUpload, Tag, RadioButton, Rating, InputTextModule, FormsModule, InputNumber, IconFieldModule, InputIconModule],
-    providers: [MessageService, ConfirmationService, BooksService],
+    imports: [NamesListPipe, TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
+        ConfirmDialog,
+        InputTextModule, TextareaModule, CommonModule,
+         FormsModule, InputNumber, IconFieldModule, InputIconModule, ButtonModule],
+    providers: [MessageService, ConfirmationService, BooksService ],
     styles: [
         `:host ::ng-deep .p-dialog .product-image {
             width: 150px;
@@ -50,21 +49,13 @@ interface ExportColumn {
 })
 export class TableBook implements OnInit{
     bookDialog: boolean = false;
-
     books!: Book[];
-
     book!: Book;
-
     selectedBooks!: Book[] | null;
-
     submitted: boolean = false;
-
     statuses!: any[];
-
     @ViewChild('dt') dt!: Table;
-
     cols!: Column[];
-
     exportColumns!: ExportColumn[];
 
     constructor(
@@ -79,10 +70,10 @@ export class TableBook implements OnInit{
     }
 
     ngOnInit() {
-        this.loadDemoData();
+        this.loadData();
     }
 
-    loadDemoData() {
+    loadData() {
         this.bookService.GetAllBooks().then((data) => {
             console.log(data);
             this.books = data;
