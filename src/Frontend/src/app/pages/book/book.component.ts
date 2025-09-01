@@ -21,6 +21,7 @@ import { InputNumber } from 'primeng/inputnumber';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { Table } from 'primeng/table';
+import { NamesListPipe } from '../../../shared/extensions/NamesListPipe';
 
 interface Column {
     field: string;
@@ -37,7 +38,7 @@ interface ExportColumn {
     selector: 'book-component',
     templateUrl: 'book.component.html',
     standalone: true,
-    imports: [TableModule, Dialog, Ripple, SelectModule, ToastModule, ToolbarModule, ConfirmDialog, InputTextModule, TextareaModule, CommonModule, FileUpload, Tag, RadioButton, Rating, InputTextModule, FormsModule, InputNumber, IconFieldModule, InputIconModule],
+    imports: [NamesListPipe, TableModule, Dialog, Ripple, SelectModule, ToastModule, ToolbarModule, ConfirmDialog, InputTextModule, TextareaModule, CommonModule, FileUpload, Tag, RadioButton, Rating, InputTextModule, FormsModule, InputNumber, IconFieldModule, InputIconModule],
     providers: [MessageService, ConfirmationService, BooksService],
     styles: [
         `:host ::ng-deep .p-dialog .product-image {
@@ -83,6 +84,7 @@ export class TableBook implements OnInit{
 
     loadDemoData() {
         this.bookService.GetAllBooks().then((data) => {
+            console.log(data);
             this.books = data;
             this.cd.markForCheck();
         });
@@ -208,4 +210,6 @@ export class TableBook implements OnInit{
             this.book;
         }
     }
+
+    protected readonly HTMLInputElement = HTMLInputElement;
 }

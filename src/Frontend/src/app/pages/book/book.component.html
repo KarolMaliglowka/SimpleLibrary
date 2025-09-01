@@ -17,7 +17,7 @@
             <h5 class="m-0">Manage books</h5>
             <p-iconfield>
                 <p-inputicon class="pi pi-search" />
-                <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')" placeholder="Search..." />
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search..." />
             </p-iconfield>
         </div>
     </ng-template>
@@ -36,16 +36,15 @@
                     <p-sortIcon field="pagesCount" />
                 </div>
             </th>
-            <th pSortableColumn="rating" style="min-width: 12rem">
+            <th pSortableColumn="authors.surname" style="min-width: 12rem">
                 <div class="flex items-center gap-2">
-                    Reviews
-                    <p-sortIcon field="rating" />
+                    Authors
+                    <p-sortIcon field="authors" />
                 </div>
             </th>
-            <th pSortableColumn="inventoryStatus" style="min-width: 12rem">
+            <th style="min-width: 12rem">
                 <div class="flex items-center gap-2">
-                    Status
-                    <p-sortIcon field="inventoryStatus" />
+                    Borrowed
                 </div>
             </th>
             <th style="min-width: 12rem"></th>
@@ -59,7 +58,8 @@
 <!--            <td style="min-width: 12rem">{{ book.description }}</td>-->
             <td style="min-width: 14rem" [title]="book.description">{{ book.name }}</td>
             <td style="min-width: 5rem">{{ book.pagesCount }}</td>
-            <td style="min-width: 5rem">{{ book.publisher }}</td>
+            <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
+<!--            <td style="min-width: 5rem">{{ book.publisher }}</td>-->
             <td style="min-width: 5rem">{{ book.isBorrowed }}</td>
 
             <td>
