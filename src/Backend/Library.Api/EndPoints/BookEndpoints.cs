@@ -14,6 +14,7 @@ public static class BookEndpoints
         {
             var books = await bookService.GetAllBooksAsync();
             return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
+            //do zmiany dto
         });
 
         app.MapPost("/book/create",

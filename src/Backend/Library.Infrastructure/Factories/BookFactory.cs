@@ -13,7 +13,7 @@ public static class BookFactory
     {
         ArgumentNullException.ThrowIfNull(bookDto);
         ArgumentNullException.ThrowIfNull(authors);
-        ArgumentNullException.ThrowIfNull(publisher);
+        //ArgumentNullException.ThrowIfNull(publisher);
         ArgumentNullException.ThrowIfNull(category);
         return currentBook switch
         {
