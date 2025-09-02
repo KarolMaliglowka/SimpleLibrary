@@ -1,23 +1,24 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Book } from './book';
-import { BooksService } from '../service/book.service';
-import { TableModule } from 'primeng/table';
-import { Dialog } from 'primeng/dialog';
-import { ToastModule } from 'primeng/toast';
-import { ToolbarModule } from 'primeng/toolbar';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { CommonModule } from '@angular/common';
-import { SelectModule } from 'primeng/select';
-import { FormsModule } from '@angular/forms';
-import { InputNumber } from 'primeng/inputnumber';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { Table } from 'primeng/table';
-import { NamesListPipe, } from '../../../shared/extensions/NamesListPipe';
-import { ButtonModule } from 'primeng/button';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {Book} from './book';
+import {BooksService} from '../service/book.service';
+import {Dialog} from 'primeng/dialog';
+import {ToastModule} from 'primeng/toast';
+import {ToolbarModule} from 'primeng/toolbar';
+import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputTextModule} from 'primeng/inputtext';
+import {TextareaModule} from 'primeng/textarea';
+import {CommonModule} from '@angular/common';
+import {SelectModule} from 'primeng/select';
+import {FormsModule} from '@angular/forms';
+import {InputNumber} from 'primeng/inputnumber';
+import {IconFieldModule} from 'primeng/iconfield';
+import {InputIconModule} from 'primeng/inputicon';
+import {TableModule} from 'primeng/table';
+import {Table} from 'primeng/table';
+import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
+import {ButtonModule} from 'primeng/button';
+import {PaginatorModule} from "primeng/paginator";
 
 interface Column {
     field: string;
@@ -34,11 +35,13 @@ interface ExportColumn {
     selector: 'book-component',
     templateUrl: 'book.component.html',
     standalone: true,
-    imports: [NamesListPipe, TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
+    imports: [NamesListPipe,
+        TableModule,
+        Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog,
         InputTextModule, TextareaModule, CommonModule,
-         FormsModule, InputNumber, IconFieldModule, InputIconModule, ButtonModule],
-    providers: [MessageService, ConfirmationService, BooksService ],
+        FormsModule, InputNumber, IconFieldModule, InputIconModule, ButtonModule, PaginatorModule],
+    providers: [MessageService, ConfirmationService, BooksService],
     styles: [
         `:host ::ng-deep .p-dialog .product-image {
             width: 150px;
@@ -47,7 +50,7 @@ interface ExportColumn {
         }`
     ]
 })
-export class TableBook implements OnInit{
+export class TableBook implements OnInit {
     bookDialog: boolean = false;
     books!: Book[];
     book!: Book;
@@ -55,6 +58,7 @@ export class TableBook implements OnInit{
     submitted: boolean = false;
     statuses!: any[];
     @ViewChild('dt') dt!: Table;
+    loading: boolean = false;
     cols!: Column[];
     exportColumns!: ExportColumn[];
 
@@ -63,7 +67,8 @@ export class TableBook implements OnInit{
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef
-    ) {}
+    ) {
+    }
 
     exportCSV() {
         this.dt.exportCSV();
@@ -74,49 +79,27 @@ export class TableBook implements OnInit{
     }
 
     loadData() {
-        this.bookService.GetAllBooks().then((data) => {
-            console.log(data);
-            this.books = data;
-            this.cd.markForCheck();
+        this.loading = true;
+        this.bookService.GetAllBooks()
+            .then((data) => {
+                console.log(data);
+                this.books = data;
+                this.loading = false;
+                this.cd.markForCheck();
+            }).catch(() => {
+            this.loading = false;
         });
     }
 
     openNew() {
-        this.book;
+        this.book = {};
         this.submitted = false;
         this.bookDialog = true;
     }
 
     editBook(book: Book) {
-        this.book = { ...book };
+        this.book = {...book};
         this.bookDialog = true;
-    }
-
-    deleteSelectedBooks() {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected books?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            rejectButtonProps: {
-                label: 'No',
-                severity: 'secondary',
-                variant: 'text'
-            },
-            acceptButtonProps: {
-                severity: 'danger',
-                label: 'Yes'
-            },
-            accept: () => {
-                this.books = this.books.filter((val) => !this.selectedBooks?.includes(val));
-                this.selectedBooks = null;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Books Deleted',
-                    life: 3000
-                });
-            }
-        });
     }
 
     hideDialog() {
@@ -140,6 +123,8 @@ export class TableBook implements OnInit{
             },
             accept: () => {
                 this.books = this.books.filter((val) => val.id !== book.id);
+                //przesłac do servisu http i wykasować
+
                 this.book;
                 this.messageService.add({
                     severity: 'success',
@@ -178,6 +163,7 @@ export class TableBook implements OnInit{
         if (this.book.name?.trim()) {
             if (this.book.id) {
                 this.books[this.findIndexById(this.book.id)] = this.book;
+                //wysłac do endpointa tworzącego książkę
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
@@ -188,6 +174,7 @@ export class TableBook implements OnInit{
                 this.book.id = this.createId();
 
                 this.books.push(this.book);
+                //wysłac do endpointa edytującego ksiązke
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
