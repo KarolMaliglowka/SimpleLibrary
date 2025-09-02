@@ -19,6 +19,8 @@
     [responsiveLayout]="'scroll'"
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    showGridlines
+    stripedRows
     >
     <ng-template #caption>
         <div class="flex items-center justify-between">
@@ -67,7 +69,7 @@
                     Borrowed
                 </div>
             </th>
-            <th style="min-width: 12rem">
+            <th style="width: 11rem">
                 <div class="flex items-center gap-2">
                     Action
                 </div>
@@ -76,15 +78,16 @@
     </ng-template>
     <ng-template #body let-book>
         <tr>
-            <td style="min-width: 14rem" [title]="book.description">{{ book.name }}</td>
+            <td style="min-width: 14rem" pTooltip="{{book.description}}" tooltipPosition="bottom">{{ book.name }}</td>
             <td style="min-width: 5rem">{{ book.pagesCount }}</td>
             <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
             <td style="min-width: 5rem">{{ book.category.name }}</td>
             <td style="min-width: 5rem">{{ book.publisher.name }}</td>
             <td style="min-width: 5rem">{{ book.isBorrowed }}</td>
             <td>
-                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editBook(book)" />
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteBook(book)" />
+                <p-button icon="pi pi-book" pTooltip="Borrow" tooltipPosition="top" class="mr-2" severity="info" [rounded]="true" [outlined]="true" (click)="deleteBook(book)" />
+                <p-button icon="pi pi-pencil" pTooltip="Edit" tooltipPosition="top" class="mr-2" [rounded]="true" [outlined]="true" (click)="editBook(book)" />
+                <p-button icon="pi pi-trash" pTooltip="Delete" tooltipPosition="top" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteBook(book)" />
             </td>
         </tr>
     </ng-template>

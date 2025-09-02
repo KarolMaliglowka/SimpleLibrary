@@ -28,13 +28,13 @@ export class BooksService {
         return firstValueFrom(this.httpService.get<Book>(apiRequest));
     }
 
-    // DeleteBook(id: string) {
-    //     let apiRequest = <ApiRequestData>{
-    //         Url: `${this.url}/book/${id}`,
-    //         RequestBody: id
-    //     };
-    //     return firstValueFrom(this.httpService.put(apiRequest));
-    // }
+    DeleteBook(id: string) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/book/${id}`,
+            RequestBody: id
+        };
+        return firstValueFrom(this.httpService.delete(apiRequest));
+    }
 
     UpdateBook(book: any) {
         let apiRequest = <ApiRequestData>{
@@ -51,5 +51,4 @@ export class BooksService {
         };
         return firstValueFrom(this.httpService.post(apiRequest));
     }
-
 }

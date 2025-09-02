@@ -16,6 +16,7 @@ import {TableModule} from 'primeng/table';
 import {Table} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
+import { TooltipModule } from 'primeng/tooltip';
 import {Book} from './book';
 import {BooksService} from '../service/book.service';
 import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
@@ -40,7 +41,7 @@ import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
         Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog,
         InputTextModule, TextareaModule, CommonModule,
-        FormsModule, InputNumber, IconFieldModule, InputIconModule, ButtonModule, PaginatorModule],
+        FormsModule, InputNumber, IconFieldModule, InputIconModule, ButtonModule, PaginatorModule, TooltipModule],
     providers: [MessageService, ConfirmationService, BooksService],
     styles: [
         `:host ::ng-deep .p-dialog .product-image {
