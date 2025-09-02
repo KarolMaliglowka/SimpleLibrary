@@ -36,17 +36,17 @@ export class BooksService {
     //     return firstValueFrom(this.httpService.put(apiRequest));
     // }
 
-    UpdateBook(id: string) {
+    UpdateBook(book: any) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/update/${id}`,
-            RequestBody: id
+            Url: `${this.url}/update`,
+            RequestBody: book
         };
-        return firstValueFrom(this.httpService.put(apiRequest));
+        return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
     CreateBook(book: any) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create}`,
+            Url: `${this.url}/create`,
             RequestBody: book
         };
         return firstValueFrom(this.httpService.post(apiRequest));

@@ -43,9 +43,10 @@ export class ApiService {
         }).pipe(catchError(this.handleError));
     }
 
-    public put(data: ApiRequestData): Observable<Response> {
-        return this.httpClient.put<Response>(`${this.baseUrl}/${data.Url}`, data.RequestBody, {
-            headers: this.headers
+    public patch(data: ApiRequestData): Observable<Response> {
+        return this.httpClient.patch<Response>(`${this.baseUrl}/${data.Url}`, data.RequestBody, {
+            headers: this.headers,
+            params: data.Params
         }).pipe(catchError(this.handleError));
     }
 }

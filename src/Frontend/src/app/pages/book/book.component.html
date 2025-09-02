@@ -1,6 +1,4 @@
 <div class="card">
-    <p-toast />
-
 
 <p-toolbar class="mb-6">
     <ng-template #start>
@@ -15,7 +13,6 @@
     [loading]="loading"
     [paginator]="true"
     [rows]="10"
-    [columns]="cols"
     [globalFilterFields]="['name', 'description']"
     [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedBooks"
@@ -130,12 +127,12 @@
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     <label for="book.pagesCount" class="block font-bold mb-3">Pages count</label>
-                    <p-inputnumber id="book.pagesCount" [(ngModel)]="book.pagesCount" mode="currency" fluid />
+                    <p-inputnumber id="pagesCount" [(ngModel)]="book.pagesCount" fluid />
                 </div>
-                <div class="col-span-6">
-                    <label for="book.yearOfRelease" class="block font-bold mb-3">Year od release</label>
-                    <p-datePicker id="yearOfRelease" [(ngModel)]="book.yearOfRelease" dateFormat="dd.mm.yy" fluid />
-                </div>
+<!--                <div class="col-span-6">-->
+<!--                    <label for="book.yearOfRelease" class="block font-bold mb-3">Year od release</label>-->
+<!--                    <p-datePicker id="yearOfRelease" [(ngModel)]="book.yearOfRelease" dateFormat="dd.mm.yy" fluid />-->
+<!--                </div>-->
             </div>
         </div>
     </ng-template>

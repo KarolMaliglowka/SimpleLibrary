@@ -1,7 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {Book} from './book';
-import {BooksService} from '../service/book.service';
 import {Dialog} from 'primeng/dialog';
 import {ToastModule} from 'primeng/toast';
 import {ToolbarModule} from 'primeng/toolbar';
@@ -16,20 +14,22 @@ import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {TableModule} from 'primeng/table';
 import {Table} from 'primeng/table';
-import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
 import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
+import {Book} from './book';
+import {BooksService} from '../service/book.service';
+import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
 
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
+// interface Column {
+//     field: string;
+//     header: string;
+//     customExportHeader?: string;
+// }
 
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
+// interface ExportColumn {
+//     title: string;
+//     dataKey: string;
+// }
 
 @Component({
     selector: 'book-component',
@@ -59,8 +59,8 @@ export class TableBook implements OnInit {
     statuses!: any[];
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
-    cols!: Column[];
-    exportColumns!: ExportColumn[];
+    // cols!: Column[];
+    // exportColumns!: ExportColumn[];
 
     constructor(
         private bookService: BooksService,
@@ -82,7 +82,6 @@ export class TableBook implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data) => {
-                console.log(data);
                 this.books = data;
                 this.loading = false;
                 this.cd.markForCheck();
@@ -148,22 +147,13 @@ export class TableBook implements OnInit {
         return index;
     }
 
-    createId(): string {
-        let id = '';
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (var i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
-
     saveBook() {
         this.submitted = true;
 
         if (this.book.name?.trim()) {
             if (this.book.id) {
                 this.books[this.findIndexById(this.book.id)] = this.book;
-                //wysłac do endpointa tworzącego książkę
+                this.bookService.UpdateBook(this.book);
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
@@ -171,10 +161,8 @@ export class TableBook implements OnInit {
                     life: 3000
                 });
             } else {
-                this.book.id = this.createId();
-
                 this.books.push(this.book);
-                //wysłac do endpointa edytującego ksiązke
+                this.bookService.CreateBook(this.book);
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
