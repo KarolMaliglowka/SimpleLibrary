@@ -6,6 +6,11 @@
 <p-table
     #dt
     [value]="categories"
+    [paginator]="true"
+    [rows]="10"
+    [globalFilterFields]="['name']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    showGridlines=true
 >
 
     <ng-template #caption>
@@ -26,14 +31,14 @@
                     <p-sortIcon field="name" />
                 </div>
             </th>
-            <th style="width: 12rem">
+            <th style="width: 8rem">
                 <div class="flex items-center gap-2">
                     Action
                 </div>
             </th>
         </tr>
     </ng-template>
-    <ng-template #body>
+    <ng-template #body let-category>
         <tr>
             <td style="min-width: 14rem">{{ category.name }}</td>
             <td>
