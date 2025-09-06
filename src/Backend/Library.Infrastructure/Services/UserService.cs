@@ -145,7 +145,7 @@ public class UserService(IUserRepository userRepository) : IUserService
                         Id = s.Id
                     })
                     .ToList(),
-                IsBorrowed = y.IsBorrowed
+                IsAvailable = y.IsAvailable
             }).ToList()
         };
     }
@@ -183,7 +183,7 @@ public class UserService(IUserRepository userRepository) : IUserService
                         Id = s.Id
                     })
                     .ToList(),
-                IsBorrowed = y.IsBorrowed
+                IsAvailable = y.IsAvailable
             }).ToList()
         }).Where(x => 
             x.Books.Count != 0)

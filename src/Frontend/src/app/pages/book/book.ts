@@ -8,5 +8,5 @@
     isbn?: string;
     yearOfRelease?: string;
     category?: number;
-    isBorrowed?: boolean;
+    isAvailable?: boolean;
 }
