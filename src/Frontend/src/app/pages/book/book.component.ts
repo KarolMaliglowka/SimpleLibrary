@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {Dialog} from 'primeng/dialog';
 import {ToastModule} from 'primeng/toast';
@@ -16,37 +16,31 @@ import {TableModule} from 'primeng/table';
 import {Table} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
+import {TooltipModule} from 'primeng/tooltip'
 import {Book} from './book';
 import {BooksService} from '../service/book.service';
 import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
 
-// interface Column {
-//     field: string;
-//     header: string;
-//     customExportHeader?: string;
-// }
-
-// interface ExportColumn {
-//     title: string;
-//     dataKey: string;
-// }
-
 @Component({
     selector: 'book-component',
     templateUrl: 'book.component.html',
+    styleUrls: ['book.component.scss'],
     standalone: true,
-    imports: [NamesListPipe,
-        TableModule,
-        Dialog, SelectModule, ToastModule, ToolbarModule,
-        ConfirmDialog,
-        InputTextModule, TextareaModule, CommonModule,
-        FormsModule, InputNumber, IconFieldModule, InputIconModule, ButtonModule, PaginatorModule],
-    providers: [MessageService, ConfirmationService, BooksService],
+    imports: [
+        TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
+        ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
+        FormsModule, InputNumber, IconFieldModule, InputIconModule,
+        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
+    ],
+    providers: [
+        MessageService, ConfirmationService, BooksService
+    ],
     styles: [
         `:host ::ng-deep .p-dialog .product-image {
-            width: 150px;
+            width: 300px;
             margin: 0 auto 2rem auto;
             display: block;
+            color: red;
         }`
     ]
 })
@@ -59,14 +53,12 @@ export class TableBook implements OnInit {
     statuses!: any[];
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
-    // cols!: Column[];
-    // exportColumns!: ExportColumn[];
 
     constructor(
         private bookService: BooksService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
     ) {
     }
 
@@ -82,6 +74,7 @@ export class TableBook implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data) => {
+                console.log(data);
                 this.books = data;
                 this.loading = false;
                 this.cd.markForCheck();
@@ -94,6 +87,10 @@ export class TableBook implements OnInit {
         this.book = {};
         this.submitted = false;
         this.bookDialog = true;
+    }
+
+    toolt(book: Book){
+        return book.description;
     }
 
     editBook(book: Book) {

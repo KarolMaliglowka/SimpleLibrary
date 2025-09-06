@@ -15,5 +15,5 @@ public sealed class Book : BaseClass
     public Guid? CategoryId { get; set; }
     public ICollection<Author>? Authors { get; set; }
     public List<Borrow> Borrows { get; set; }
-    public bool IsBorrowed { get; set; }
+    public bool IsAvailable { get; set; } = true;
 }

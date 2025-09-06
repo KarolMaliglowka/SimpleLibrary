@@ -16,7 +16,7 @@ public interface IBookService
     Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null!);
     Task<List<BookDto>> GetBooksByCategoryAsync(string category);
     Task<List<BookDto>> GetBooksByPublisherAsync(string publisher);
-    Task SetBookAsBorrowed(Guid bookId, bool isBorrowed);
+    Task SetBookAsBorrowed(Guid bookId, bool isAvailable);
 }
 
 public class BookService(
@@ -93,7 +93,7 @@ public class BookService(
                     Id = x.Id
                 }
             ).ToList(),
-            IsBorrowed = x.IsBorrowed
+            IsAvailable = x.IsAvailable
         }).ToList();
     }
 
@@ -123,7 +123,7 @@ public class BookService(
             YearOfRelease = book.YearOfRelease,
             Category = new CategoryDto { Name = book.Category!.Name },
             Authors = authorsNames,
-            IsBorrowed = book.IsBorrowed
+            IsAvailable = book.IsAvailable
         };
     }
 
@@ -153,7 +153,7 @@ public class BookService(
             YearOfRelease = book.YearOfRelease,
             Category = new CategoryDto { Name = book.Category!.Name },
             Authors = authorsNames,
-            IsBorrowed = book.IsBorrowed
+            IsAvailable = book.IsAvailable
         };
     }
 
@@ -318,7 +318,7 @@ public class BookService(
                         Surname = a.Surname ?? "",
                     }
                 ).ToList(),
-                IsBorrowed = x.IsBorrowed
+                IsAvailable = x.IsAvailable
             }).ToList();
     }
 
@@ -350,7 +350,7 @@ public class BookService(
                         Surname = a.Surname ?? "",
                     }
                 ).ToList(),
-                IsBorrowed = x.IsBorrowed
+                IsAvailable = x.IsAvailable
             }).ToList();
     }
 
@@ -382,11 +382,11 @@ public class BookService(
                         Surname = a.Surname ?? "",
                     }
                 ).ToList(),
-                IsBorrowed = x.IsBorrowed
+                IsAvailable = x.IsAvailable
             }).ToList();
     }
 
-    public async Task SetBookAsBorrowed(Guid bookId, bool isBorrowed)
+    public async Task SetBookAsBorrowed(Guid bookId, bool isAvailable)
     {
         var book = await bookRepository.GetBookByIdAsync(bookId);
         if (book == null)
@@ -394,7 +394,7 @@ public class BookService(
             throw new NullReferenceException("Book not found");
         }
 
-        book.IsBorrowed = isBorrowed;
+        book.IsAvailable = isAvailable;
         await bookRepository.UpdateBook(book);
     }
 }

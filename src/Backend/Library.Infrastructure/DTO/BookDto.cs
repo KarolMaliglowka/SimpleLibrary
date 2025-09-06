@@ -11,5 +11,5 @@ public record BookDto
     public string? Isbn { get; set; }
     public string? YearOfRelease { get; set; }
     public CategoryDto? Category { get; set; }
-    public bool IsBorrowed { get; set; }
+    public bool IsAvailable { get; set; }
 }
