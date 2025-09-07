@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {Dialog} from 'primeng/dialog';
 import {ToastModule} from 'primeng/toast';
@@ -17,8 +17,8 @@ import {Table} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
-import {Book} from './book';
-import {BooksService} from '../service/book.service';
+import {Book} from '../../models/book';
+import {BooksService} from '../../service/book.service';
 import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
 
 @Component({
@@ -62,9 +62,9 @@ export class TableBook implements OnInit {
     ) {
     }
 
-    exportCSV() {
-        this.dt.exportCSV();
-    }
+    // exportCSV() {
+    //     this.dt.exportCSV();
+    // }
 
     ngOnInit() {
         this.loadData();
@@ -73,8 +73,7 @@ export class TableBook implements OnInit {
     loadData() {
         this.loading = true;
         this.bookService.GetAllBooks()
-            .then((data) => {
-                console.log(data);
+            .then((data: any) => {
                 this.books = data;
                 this.loading = false;
                 this.cd.markForCheck();

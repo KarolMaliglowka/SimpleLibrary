@@ -5,17 +5,17 @@ import {Table, TableModule} from 'primeng/table';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {InputTextModule} from 'primeng/inputtext';
-import {CategoriesService} from '../service/category.service';
-import {Category} from './category';
+import {CategoriesService} from '../../service/category.service';
+import {Category} from '../../models/category';
 import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
-  selector: 'app-category',
-  imports: [ButtonModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule],
+    selector: 'app-category',
+    imports: [ButtonModule, ToolbarModule, TableModule, IconFieldModule, InputIconModule, InputTextModule],
     providers: [MessageService, ConfirmationService, CategoriesService],
-  templateUrl: './category.component.html',
+    templateUrl: './category.component.html',
     standalone: true,
-  styleUrl: './category.component.scss'
+    styleUrl: './category.component.scss'
 })
 export class CategoryComponent implements OnInit {
 
@@ -26,9 +26,7 @@ export class CategoryComponent implements OnInit {
     constructor(
         private categoriesService: CategoriesService,
         private cd: ChangeDetectorRef
-    ) {
-    }
-
+    ) {}
 
     ngOnInit() {
         this.loadData();
@@ -45,13 +43,13 @@ export class CategoryComponent implements OnInit {
     }
 
     openNew() {
-
     }
 
-    editCategory(category: Category) {}
+    editCategory(category: Category) {
+    }
 
-    deleteCategory(category: Category) {}
+    deleteCategory(category: Category) {
+    }
 
-    protected readonly name = name;
+    //protected readonly name = name;
 }
-

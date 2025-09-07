@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {ApiService} from '../../../shared/services/http.service';
+import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
-import {ApiRequestData} from "../../../shared/domain/api.request.data";
-import { Category } from '../category/category';
+import {ApiRequestData} from "../../shared/domain/api.request.data";
+import {Category} from '../models/category';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -17,7 +18,6 @@ export class CategoriesService {
             Url: `${this.url}`
         };
         return firstValueFrom(this.httpService.get<Category[]>(apiRequest));
-
     }
 
     GetCategoryById(id: string) {
