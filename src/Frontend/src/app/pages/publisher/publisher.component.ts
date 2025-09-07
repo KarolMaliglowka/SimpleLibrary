@@ -59,7 +59,6 @@ export class PublisherComponent implements OnInit {
         this.loading = true;
         this.publisherService.GetAllPublishers()
             .then((data: any) => {
-                console.log(data);
                 this.publishers = data;
                 this.loading = false;
                 this.cd.markForCheck();

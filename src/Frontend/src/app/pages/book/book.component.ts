@@ -62,9 +62,9 @@ export class TableBook implements OnInit {
     ) {
     }
 
-    exportCSV() {
-        this.dt.exportCSV();
-    }
+    // exportCSV() {
+    //     this.dt.exportCSV();
+    // }
 
     ngOnInit() {
         this.loadData();

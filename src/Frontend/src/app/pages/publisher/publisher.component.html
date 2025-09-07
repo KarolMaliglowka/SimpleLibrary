@@ -1,4 +1,5 @@
-<p-toolbar class="mb-6">
+<div class="card">
+<p-toolbar class="m-1">
     <ng-template #start>
         <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()" />
     </ng-template>
@@ -48,3 +49,21 @@
         </tr>
     </ng-template>
 </p-table>
+
+<p-dialog [(visible)]="publisherDialog" header="Publisher details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-3">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="publisher.name" required autofocus fluid/>
+                <small class="text-red-500" *ngIf="submitted && !publisher.name">Name is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
+        <p-button label="Save" icon="pi pi-check" (click)="savePublisher()"/>
+    </ng-template>
+</p-dialog>
+</div>
