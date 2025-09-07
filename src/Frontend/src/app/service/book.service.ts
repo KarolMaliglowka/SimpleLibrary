@@ -1,8 +1,8 @@
 ﻿import {Injectable} from '@angular/core';
-import {ApiService} from '../../../shared/services/http.service';
+import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
-import {ApiRequestData} from "../../../shared/domain/api.request.data";
-import { Book } from '../book/book';
+import {ApiRequestData} from "../../shared/domain/api.request.data";
+import { Book } from '../models/book';
 @Injectable({
     providedIn: 'root'
 })
