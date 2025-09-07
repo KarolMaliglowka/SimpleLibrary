@@ -47,4 +47,11 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
 
     public IQueryable<Book> QueryAsNoTracking() =>
         context.Books.AsNoTracking();
+    
+    public async Task<List<Borrow>> GetBorrowBooksWithUsersAsync() => await context.Borrows
+        .Include(u => u.User)
+        .Include(b => b.Book)
+        .ThenInclude(a => a.Authors)
+        .AsNoTracking()
+        .ToListAsync();
 }

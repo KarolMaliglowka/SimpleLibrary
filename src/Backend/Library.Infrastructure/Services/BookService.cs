@@ -17,6 +17,7 @@ public interface IBookService
     Task<List<BookDto>> GetBooksByCategoryAsync(string category);
     Task<List<BookDto>> GetBooksByPublisherAsync(string publisher);
     Task SetBookAsBorrowed(Guid bookId, bool isAvailable);
+    Task<List<BorrowDto>> GetBorrowingBooksWithUsers();
 }
 
 public class BookService(
@@ -396,5 +397,28 @@ public class BookService(
 
         book.IsAvailable = isAvailable;
         await bookRepository.UpdateBook(book);
+    }
+    
+    public async Task<List<BorrowDto>> GetBorrowingBooksWithUsers()
+    {
+        var booksList = await bookRepository.GetBorrowBooksWithUsersAsync();
+        
+        return booksList.Select(x => new BorrowDto()
+        {
+            Id = x.Id,
+            BookId = x.Id,
+            BookName = x.Book.Name,
+            BookAuthors = x.Book.Authors?.Select(a => new AuthorDto
+                {
+                    Name = a.Name ?? "",
+                    Surname = a.Surname ?? "",
+                    Id = x.Id
+                }
+            ).ToList(),
+            UserId = x.User.Id,
+            UserFullName = $"{x.User.Surname } {x.User.Name}",
+            BorrowDate = x.BorrowDate
+            
+        }).ToList();
     }
 }

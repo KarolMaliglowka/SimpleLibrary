@@ -24,7 +24,7 @@ import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
 @Component({
     selector: 'book-component',
     templateUrl: 'book.component.html',
-    styleUrls: ['book.component.scss'],
+    styleUrl: 'book.component.scss',
     standalone: true,
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
@@ -44,7 +44,7 @@ import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
         }`
     ]
 })
-export class TableBook implements OnInit {
+export class BookComponent implements OnInit {
     bookDialog: boolean = false;
     books!: Book[];
     book!: Book;
@@ -74,6 +74,7 @@ export class TableBook implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: any) => {
+                console.log(data);
                 this.books = data;
                 this.loading = false;
                 this.cd.markForCheck();

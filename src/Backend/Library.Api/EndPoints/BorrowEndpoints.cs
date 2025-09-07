@@ -19,5 +19,11 @@ public static class BorrowEndpoints
             await borrowService.DeleteBorrow(borrowDto);
             return Results.Ok();
         });
+
+        app.MapGet("/borrow", async (IBookService bookService) =>
+        {
+            var borrowingBooks = await bookService.GetBorrowingBooksWithUsers();
+            return borrowingBooks.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(borrowingBooks);
+        });
     }
 }

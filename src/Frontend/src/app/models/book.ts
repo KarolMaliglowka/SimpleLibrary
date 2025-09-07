@@ -1,9 +1,11 @@
-﻿export interface Book {
+﻿import {Author} from './author';
+
+export interface Book {
     id?: string;
     name?: string;
     description?: string;
     pagesCount?: number;
-    authors?: string;
+    authors?: Author[];
     publisher?: string;
     isbn?: string;
     yearOfRelease?: string;

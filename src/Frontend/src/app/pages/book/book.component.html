@@ -1,178 +1,175 @@
-<div class="card">
+<p-toolbar class="m-1">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()"/>
+    </ng-template>
+</p-toolbar>
 
-    <p-toolbar class="m-1">
-        <ng-template #start>
-            <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()"/>
-        </ng-template>
-    </p-toolbar>
+<p-table
+    #dt
+    [value]="books"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="10"
+    [globalFilterFields]="['name', 'description']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedBooks"
+    [responsiveLayout]="'scroll'"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    showGridlines="true"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage books</h5>
+            <p-iconfield>
+                <p-inputicon class="pi pi-search"/>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                       placeholder="Search..."/>
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th pSortableColumn="name" style="width:30rem">
+                <div class="flex items-center gap-2">
+                    Name
+                    <p-sortIcon field="name"/>
+                </div>
+            </th>
+            <th pSortableColumn="pagesCount" style="width:5rem">
+                <div class="flex items-center gap-2">
+                    Pages count
+                    <p-sortIcon field="pagesCount"/>
+                </div>
+            </th>
+            <th pSortableColumn="authors.surname" style="min-width: 12rem">
+                <div class="flex items-center gap-2">
+                    Authors
+                    <p-sortIcon field="authors"/>
+                </div>
+            </th>
+            <th pSortableColumn="category.name" style="min-width: 12rem">
+                <div class="flex items-center gap-2">
+                    Category
+                    <p-sortIcon field="category.name"/>
+                </div>
+            </th>
+            <th pSortableColumn="publisher.name" style="min-width: 12rem">
+                <div class="flex items-center gap-2">
+                    Publisher
+                    <p-sortIcon field="publisher"/>
+                </div>
+            </th>
+            <th style="width: 5rem">
+                <div class="flex items-center gap-2">
+                    Available
+                </div>
+            </th>
+            <th style="width: 11rem">
+                <div class="flex items-center gap-2">
+                    Action
+                </div>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-book>
+        <tr>
+            <td style="min-width: 14rem" pTooltip="{{book.description}}">{{ book.name }}</td>
+            <td style="min-width: 5rem">{{ book.pagesCount }}</td>
+            <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
+            <td style="min-width: 5rem">{{ book.category.name }}</td>
+            <td style="min-width: 5rem">{{ book.publisher.name }}</td>
+            <td style="width: 5rem; text-align: center;">
+                <i *ngIf="book.isAvailable" class="pi pi-check text-green-500"></i>
+                <i *ngIf="!book.isAvailable" class="pi pi-times text-red-500"></i>
+            </td>
+            <td>
+                <p-button
+                    icon="pi pi-book"
+                    pTooltip="Borrow"
+                    severity="info"
+                    tooltipPosition="top"
+                    class="mr-2"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="editBook(book)"
+                />
+                <p-button
+                    icon="pi pi-pencil"
+                    pTooltip="Edit"
+                    class="mr-2"
+                    tooltipPosition="top"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="editBook(book)"
+                />
+                <p-button
+                    icon="pi pi-trash"
+                    pTooltip="Remove"
+                    severity="danger"
+                    tooltipPosition="top"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="deleteBook(book)"
+                />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
 
-    <p-table
-        #dt
-        [value]="books"
-        [loading]="loading"
-        [paginator]="true"
-        [rows]="10"
-        [globalFilterFields]="['name', 'description']"
-        [tableStyle]="{ 'min-width': '75rem' }"
-        [(selection)]="selectedBooks"
-        [responsiveLayout]="'scroll'"
-        dataKey="id"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        showGridlines="true"
-    >
-        <ng-template #caption>
-            <div class="flex items-center justify-between">
-                <h5 class="m-0">Manage books</h5>
-                <p-iconfield>
-                    <p-inputicon class="pi pi-search"/>
-                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                           placeholder="Search..."/>
-                </p-iconfield>
+<p-dialog [(visible)]="bookDialog" header="Book Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-3">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="book.name" required autofocus fluid/>
+                <small class="text-red-500" *ngIf="submitted && !book.name">Name is required.</small>
             </div>
-        </ng-template>
-        <ng-template #header>
-            <tr>
-                <th pSortableColumn="name" style="width:30rem">
-                    <div class="flex items-center gap-2">
-                        Name
-                        <p-sortIcon field="name"/>
-                    </div>
-                </th>
-                <th pSortableColumn="pagesCount" style="width:5rem">
-                    <div class="flex items-center gap-2">
-                        Pages count
-                        <p-sortIcon field="pagesCount"/>
-                    </div>
-                </th>
-                <th pSortableColumn="authors.surname" style="min-width: 12rem">
-                    <div class="flex items-center gap-2">
-                        Authors
-                        <p-sortIcon field="authors"/>
-                    </div>
-                </th>
-                <th pSortableColumn="category.name" style="min-width: 12rem">
-                    <div class="flex items-center gap-2">
-                        Category
-                        <p-sortIcon field="category.name"/>
-                    </div>
-                </th>
-                <th pSortableColumn="publisher.name" style="min-width: 12rem">
-                    <div class="flex items-center gap-2">
-                        Publisher
-                        <p-sortIcon field="publisher"/>
-                    </div>
-                </th>
-                <th style="width: 5rem">
-                    <div class="flex items-center gap-2">
-                        Available
-                    </div>
-                </th>
-                <th style="width: 11rem">
-                    <div class="flex items-center gap-2">
-                        Action
-                    </div>
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-book>
-            <tr>
-                <td style="min-width: 14rem" pTooltip="{{book.description}}">{{ book.name }}</td>
-                <td style="min-width: 5rem">{{ book.pagesCount }}</td>
-                <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
-                <td style="min-width: 5rem">{{ book.category.name }}</td>
-                <td style="min-width: 5rem">{{ book.publisher.name }}</td>
-                <td style="width: 5rem; text-align: center;">
-                    <i *ngIf="book.isAvailable" class="pi pi-check text-green-500"></i>
-                    <i *ngIf="!book.isAvailable" class="pi pi-times text-red-500"></i>
-                </td>
-                <td>
-                    <p-button
-                        icon="pi pi-book"
-                        pTooltip="Borrow"
-                        severity="info"
-                        tooltipPosition="top"
-                        class="mr-2"
-                        [rounded]="true"
-                        [outlined]="true"
-                        (click)="editBook(book)"
-                    />
-                    <p-button
-                        icon="pi pi-pencil"
-                        pTooltip="Edit"
-                        class="mr-2"
-                        tooltipPosition="top"
-                        [rounded]="true"
-                        [outlined]="true"
-                        (click)="editBook(book)"
-                    />
-                    <p-button
-                        icon="pi pi-trash"
-                        pTooltip="Remove"
-                        severity="danger"
-                        tooltipPosition="top"
-                        [rounded]="true"
-                        [outlined]="true"
-                        (click)="deleteBook(book)"
-                    />
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+            <div>
+                <label for="description" class="block font-bold mb-3">Description</label>
+                <textarea id="description" pTextarea [(ngModel)]="book.description" required rows="3" cols="20"
+                          fluid></textarea>
+            </div>
 
-    <p-dialog [(visible)]="bookDialog" header="Book Details" [modal]="true">
-        <ng-template #content>
-            <div class="flex flex-col gap-6">
-                <div>
-                    <label for="name" class="block font-bold mb-3">Name</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="book.name" required autofocus fluid/>
-                    <small class="text-red-500" *ngIf="submitted && !book.name">Name is required.</small>
-                </div>
-                <div>
-                    <label for="description" class="block font-bold mb-3">Description</label>
-                    <textarea id="description" pTextarea [(ngModel)]="book.description" required rows="3" cols="20"
-                              fluid></textarea>
-                </div>
+            <!--            <div>-->
+            <!--                <span class="block font-bold mb-4">Category</span>-->
+            <!--                <div class="grid grid-cols-12 gap-4">-->
+            <!--                    <div class="flex items-center gap-2 col-span-6">-->
+            <!--                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />-->
+            <!--                        <label for="category1">Accessories</label>-->
+            <!--                    </div>-->
+            <!--                    <div class="flex items-center gap-2 col-span-6">-->
+            <!--                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />-->
+            <!--                        <label for="category2">Clothing</label>-->
+            <!--                    </div>-->
+            <!--                    <div class="flex items-center gap-2 col-span-6">-->
+            <!--                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />-->
+            <!--                        <label for="category3">Electronics</label>-->
+            <!--                    </div>-->
+            <!--                    <div class="flex items-center gap-2 col-span-6">-->
+            <!--                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />-->
+            <!--                        <label for="category4">Fitness</label>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
 
-                <!--            <div>-->
-                <!--                <span class="block font-bold mb-4">Category</span>-->
-                <!--                <div class="grid grid-cols-12 gap-4">-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category1">Accessories</label>-->
-                <!--                    </div>-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category2">Clothing</label>-->
-                <!--                    </div>-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category3">Electronics</label>-->
-                <!--                    </div>-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category4">Fitness</label>-->
-                <!--                    </div>-->
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-6">
+                    <label for="book.pagesCount" class="block font-bold mb-3">Pages count</label>
+                    <p-inputnumber id="pagesCount" [(ngModel)]="book.pagesCount" fluid/>
+                </div>
+                <!--                <div class="col-span-6">-->
+                <!--                    <label for="book.yearOfRelease" class="block font-bold mb-3">Year od release</label>-->
+                <!--                    <p-datePicker id="yearOfRelease" [(ngModel)]="book.yearOfRelease" dateFormat="dd.mm.yy" fluid />-->
                 <!--                </div>-->
-                <!--            </div>-->
-
-                <div class="grid grid-cols-12 gap-4">
-                    <div class="col-span-6">
-                        <label for="book.pagesCount" class="block font-bold mb-3">Pages count</label>
-                        <p-inputnumber id="pagesCount" [(ngModel)]="book.pagesCount" fluid/>
-                    </div>
-                    <!--                <div class="col-span-6">-->
-                    <!--                    <label for="book.yearOfRelease" class="block font-bold mb-3">Year od release</label>-->
-                    <!--                    <p-datePicker id="yearOfRelease" [(ngModel)]="book.yearOfRelease" dateFormat="dd.mm.yy" fluid />-->
-                    <!--                </div>-->
-                </div>
             </div>
-        </ng-template>
+        </div>
+    </ng-template>
 
-        <ng-template #footer>
-            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
-            <p-button label="Save" icon="pi pi-check" (click)="saveBook()"/>
-        </ng-template>
-    </p-dialog>
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
+        <p-button label="Save" icon="pi pi-check" (click)="saveBook()"/>
+    </ng-template>
+</p-dialog>
 
-    <p-confirmDialog [style]="{ width: '450px' }"/>
-</div>
+<p-confirmDialog [style]="{ width: '450px' }"/>
