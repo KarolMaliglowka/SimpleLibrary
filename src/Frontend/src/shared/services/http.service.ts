@@ -38,7 +38,7 @@ export class ApiService {
     }
 
     public delete(data: ApiRequestData): Observable<Response> {
-        return this.httpClient.delete<Response>(`${this.baseUrl}/${data.Url}`, {
+        return this.httpClient.delete<Response>(`${this.baseUrl}/${data.Url}/${data.RequestBody.id}`, {
             headers: this.headers
         }).pipe(catchError(this.handleError));
     }

@@ -14,9 +14,9 @@ public static class BorrowEndpoints
             return Results.Created();
         });
         
-        app.MapDelete("/borrow/delete", async ([FromBody]BorrowDto borrowDto, IBorrowService borrowService ) =>
+        app.MapDelete("/borrow/delete/{id:guid}", async (Guid id, IBorrowService borrowService ) =>
         {
-            await borrowService.DeleteBorrow(borrowDto);
+            await borrowService.DeleteBorrow(id);
             return Results.Ok();
         });
 

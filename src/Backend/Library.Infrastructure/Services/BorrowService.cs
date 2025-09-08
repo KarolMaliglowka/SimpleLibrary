@@ -7,7 +7,7 @@ namespace Library.Infrastructure.Services;
 public interface IBorrowService
 {
     Task CreateBorrow(BorrowDto borrowDto);
-    Task DeleteBorrow(BorrowDto borrowDto);
+    Task DeleteBorrow(Guid id);
 }
 
 public class BorrowService(
@@ -35,16 +35,16 @@ public class BorrowService(
         await bookService.SetBookAsBorrowed(book.Id, true);
     }
 
-    public async Task DeleteBorrow(BorrowDto borrowDto)
+    public async Task DeleteBorrow(Guid id)
     {
-        var borrowToRemove = await borrowRepository
-            .GetBorrowByUserIdAndBookIdAsync(borrowDto.UserId, borrowDto.BookId);
+        var borrowToRemove = await borrowRepository.GetBorrowByIdAsync(id);
+            //.GetBorrowByUserIdAndBookIdAsync(borrowDto.UserId, borrowDto.BookId);
         if (borrowToRemove == null)
         {
             throw new NullReferenceException("Borrow not found");
         }
         await borrowRepository.RemoveBorrowAsync(borrowToRemove);
-        await bookService.SetBookAsBorrowed(borrowDto.BookId, false);
+        await bookService.SetBookAsBorrowed(borrowToRemove.BookId, false);
         await archiveService.AddArchive(borrowToRemove);
     }
 }
