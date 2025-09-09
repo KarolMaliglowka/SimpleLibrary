@@ -10,8 +10,7 @@ import {Borrow} from '../models/borrow';
 export class BorrowsService {
     private url = 'borrow';
 
-    constructor(private httpService: ApiService) {
-    }
+    constructor(private httpService: ApiService) { }
 
     GetAllBorrows() {
         let apiRequest = <ApiRequestData>{
@@ -24,9 +23,6 @@ export class BorrowsService {
             Url: `${this.url}/delete`,
             RequestBody: borrow
         };
-        console.log(apiRequest);
-        console.log('id ? ',apiRequest.RequestBody.id);
         return firstValueFrom(this.httpService.delete(apiRequest));
     }
-
 }

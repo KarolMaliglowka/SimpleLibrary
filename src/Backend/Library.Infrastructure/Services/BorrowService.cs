@@ -32,19 +32,18 @@ public class BorrowService(
         }
         var newBorrow = new Borrow(user, book, DateTime.UtcNow);
         await borrowRepository.AddBorrowAsync(newBorrow);
-        await bookService.SetBookAsBorrowed(book.Id, true);
+        await bookService.SetBookAsBorrowed(book.Id, false);
     }
 
     public async Task DeleteBorrow(Guid id)
     {
         var borrowToRemove = await borrowRepository.GetBorrowByIdAsync(id);
-            //.GetBorrowByUserIdAndBookIdAsync(borrowDto.UserId, borrowDto.BookId);
         if (borrowToRemove == null)
         {
             throw new NullReferenceException("Borrow not found");
         }
         await borrowRepository.RemoveBorrowAsync(borrowToRemove);
-        await bookService.SetBookAsBorrowed(borrowToRemove.BookId, false);
+        await bookService.SetBookAsBorrowed(borrowToRemove.BookId, true);
         await archiveService.AddArchive(borrowToRemove);
     }
 }

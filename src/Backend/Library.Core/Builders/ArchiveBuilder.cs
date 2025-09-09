@@ -11,7 +11,7 @@ public sealed class ArchiveBuilder
 
     public ArchiveBuilder SetBookId(Guid bookId)
     {
-        _archive.Id = bookId;
+        _archive.BookId = bookId;
         return this;
     }
 

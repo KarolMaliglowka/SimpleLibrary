@@ -60,7 +60,6 @@ export class BorrowComponent implements OnInit {
         this.loading = true;
         this.borrowService.GetAllBorrows()
             .then((data: any) => {
-                console.log(data);
                 this.borrows = data;
                 this.loading = false;
                 this.cd.markForCheck();
@@ -83,10 +82,9 @@ export class BorrowComponent implements OnInit {
             bookAuthors: borrow.bookAuthors,
             userId: borrow.userId,
             userFullName: borrow.userFullName,
-            borrowDate: new Date().toISOString() // ISO string
+            borrowDate: new Date().toISOString()
         };
         this.borrowService.DeleteBorrow(borrow1);
-        console.log('zwacanie ksiązki: ' , borrow.bookName);
     }
 
     hideDialog() {
@@ -106,7 +104,6 @@ export class BorrowComponent implements OnInit {
         return index;
     }
 
-
     confirm(borrow: Borrow) {
         this.confirmationService.confirm({
             header: 'Are you confirm return: ' + borrow.bookName + '?',
@@ -114,6 +111,7 @@ export class BorrowComponent implements OnInit {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+                this.borrows = this.borrows.filter((val) => val.id !== borrow.id);
                 this.returnBook(borrow);
             },
             reject: () => {
@@ -121,7 +119,6 @@ export class BorrowComponent implements OnInit {
             },
         });
     }
-
 
     protected readonly HTMLInputElement = HTMLInputElement;
 }
