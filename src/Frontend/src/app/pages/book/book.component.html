@@ -84,7 +84,8 @@
                 <i *ngIf="!book.isAvailable" class="pi pi-times text-red-500"></i>
             </td>
             <td>
-                <p-button
+                <p-button #buttonBorrow
+                    *ngIf="book.isAvailable"
                     icon="pi pi-book"
                     pTooltip="Borrow"
                     severity="info"
@@ -93,6 +94,17 @@
                     [rounded]="true"
                     [outlined]="true"
                     (click)="editBook(book)"
+                />
+                <p-button #buttonBorrow
+                    *ngIf="!book.isAvailable"
+                    icon="pi pi-book"
+                    pTooltip="Book is borrowing"
+                    severity="secondary"
+                    tooltipPosition="top"
+                    class="mr-2"
+                    [rounded]="true"
+                    [outlined]="true"
+                    [disabled]="true"
                 />
                 <p-button
                     icon="pi pi-pencil"

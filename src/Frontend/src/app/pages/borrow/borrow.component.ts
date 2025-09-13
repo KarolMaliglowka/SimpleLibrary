@@ -107,7 +107,7 @@ export class BorrowComponent implements OnInit {
     confirm(borrow: Borrow) {
         this.confirmationService.confirm({
             header: 'Are you confirm return: ' + borrow.bookName + '?',
-            message: 'Please confirm to \n proceed.',
+            message: 'Please confirm to \n\b proceed.',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
