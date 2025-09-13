@@ -1,0 +1,54 @@
+﻿import {Injectable} from '@angular/core';
+import {ApiService} from '../../shared/services/http.service';
+import {firstValueFrom} from 'rxjs';
+import {ApiRequestData} from "../../shared/domain/api.request.data";
+import { Author } from '../models/author';
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthorsService {
+    private url = 'author';
+
+    constructor(private httpService: ApiService) {
+    }
+
+    GetAllAuthors() {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}`
+        };
+        return firstValueFrom(this.httpService.get<Author[]>(apiRequest));
+
+    }
+
+    GetAuthorById(id: string) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/${id}`,
+            RequestBody: id
+        };
+        return firstValueFrom(this.httpService.get<Author>(apiRequest));
+    }
+
+    // DeleteBook(id: string) {
+    //     let apiRequest = <ApiRequestData>{
+    //         Url: `${this.url}/book/${id}`,
+    //         RequestBody: id
+    //     };
+    //     return firstValueFrom(this.httpService.put(apiRequest));
+    // }
+
+    UpdateAuthor(author: any) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/update`,
+            RequestBody: author
+        };
+        return firstValueFrom(this.httpService.patch(apiRequest));
+    }
+
+    CreateAuthor(author: any) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/create`,
+            RequestBody: author
+        };
+        return firstValueFrom(this.httpService.post(apiRequest));
+    }
+}

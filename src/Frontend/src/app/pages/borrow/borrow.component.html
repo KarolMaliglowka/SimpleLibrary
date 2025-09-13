@@ -5,6 +5,7 @@
         [loading]="loading"
         [paginator]="true"
         [rows]="10"
+        [globalFilterFields]="['bookName', 'bookAuthors', 'userFullName']"
         [tableStyle]="{ 'min-width': '75rem' }"
         [responsiveLayout]="'scroll'"
         dataKey="id"
@@ -59,11 +60,11 @@
                 <td style="min-width: 14rem">{{ borrow.bookName }}</td>
                 <td style="min-width: 14rem">{{ borrow.bookAuthors | namesList }}</td>
                 <td style="min-width: 5rem">{{ borrow.userFullName }}</td>
-                <td style="width: 3rem">{{ borrow.borrowDate }}</td>
+                <td style="width: 3rem">{{ borrow.borrowDate | date:'yyyy.MM.dd'  }}</td>
                 <td>
                     <p-button
                         icon="pi pi-book"
-                        pTooltip="Edit"
+                        pTooltip="Return book"
                         class="mr-2"
                         tooltipPosition="top"
                         [rounded]="true"
@@ -85,7 +86,7 @@
             <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
             <p class="mb-0">{{ message.message }}</p>
             <div class="flex items-center gap-2 mt-6">
-                <p-button label="Save" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                <p-button label="Return" (onClick)="onAccept()" styleClass="w-32"></p-button>
                 <p-button label="Cancel" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
             </div>
         </div>
