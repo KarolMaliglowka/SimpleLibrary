@@ -44,11 +44,27 @@ export class UsersService {
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateUser(user: any) {
+    CreateUser(user: User) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: user
         };
         return firstValueFrom(this.httpService.post(apiRequest));
+    }
+
+    SetNotActive(user: User) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/deactivate`,
+            RequestBody: user
+        };
+        return firstValueFrom(this.httpService.patch(apiRequest));
+    }
+
+    SetActive(user: User) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/activate`,
+            RequestBody: user
+        };
+        return firstValueFrom(this.httpService.patch(apiRequest));
     }
 }

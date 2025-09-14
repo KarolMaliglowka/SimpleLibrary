@@ -55,20 +55,20 @@ export class UserComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.loadData();
+        await this.loadData();
     }
 
-    loadData() {
-        this.loading = true;
-        this.userService.GetAllUsers()
-            .then((data: any) => {
-                this.users = data;
-                this.loading = false;
-                this.cd.markForCheck();
-            }).catch(() => {
-            this.loading = false;
-        });
-    }
+    // loadData() {
+    //     this.loading = true;
+    //     this.userService.GetAllUsers()
+    //         .then((data: any) => {
+    //             this.users = data;
+    //             this.loading = false;
+    //             this.cd.markForCheck();
+    //         }).catch(() => {
+    //         this.loading = false;
+    //     });
+    // }
 
     openNew() {
         this.user = {};
@@ -153,6 +153,34 @@ export class UserComponent implements OnInit {
             this.userDialog = false;
             this.user;
         }
+    }
+
+    async loadData() {
+        this.loading = true;
+        try {
+            const data = await this.userService.GetAllUsers();
+            this.users = [...data]; // odświeżenie referencji
+        } catch (err) {
+            console.error(err);
+        } finally {
+            this.loading = false;
+            this.cd.detectChanges(); // natychmiastowe odświeżenie widoku
+        }
+    }
+
+    async setNotActive(user: User){
+        this.confirmationService.confirm({
+            message: `Are you sure you want to set user ${user.fullName} not active?`,
+            header: 'Confirm',
+            icon: 'pi pi-exclamation-triangle',
+            acceptButtonProps: { severity: 'danger', label: 'Yes' },
+            rejectButtonProps: { label: 'No', severity: 'secondary', variant: 'text' },
+            accept: async () => {
+                await this.userService.SetNotActive(user);
+                this.messageService.add({severity: 'success', summary: 'Successful', detail: 'User is not active', life: 3000});
+                await this.loadData();
+            }
+        });
     }
 
     protected readonly HTMLInputElement = HTMLInputElement;

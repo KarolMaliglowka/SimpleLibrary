@@ -1,5 +1,6 @@
 ﻿using Library.Infrastructure.DTO;
 using Library.Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.EndPoints;
 
@@ -43,15 +44,15 @@ public static class UserEndpoints
             return Results.Ok();
         });
 
-        app.MapPatch("/user/activate", async (Guid userId, IUserService userService) =>
+        app.MapPatch("/user/activate", async (UserDto userDto, IUserService userService) =>
         {
-            await userService.SetUserActive(userId, true);
+            await userService.SetUserActive(userDto.Id, true);
             return Results.Ok();
         });
 
-        app.MapPatch("/user/deactivate", async (Guid userId, IUserService userService) =>
+        app.MapPatch("/user/deactivate", async (UserDto userDto, IUserService userService) =>
         {
-            await userService.SetUserActive(userId, false);
+            await userService.SetUserActive(userDto.Id, false);
             return Results.Ok();
         });
 
