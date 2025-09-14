@@ -32,7 +32,7 @@ export class AppMenu {
                     {
                         label: 'Available books',
                         icon: 'pi pi-fw pi-book',
-                        routerLink: ['/pages/book']
+                        routerLink: ['/pages/books-to-borrow']
                     },
                     {
                         label: 'Borrowed books',

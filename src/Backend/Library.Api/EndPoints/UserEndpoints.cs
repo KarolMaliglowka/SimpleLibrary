@@ -12,49 +12,55 @@ public static class UserEndpoints
             var authors = await userService.GetUserById(id);
             return Results.Ok(authors);
         });
-        
+
         app.MapGet("/user/{surname}", async (string surname, IUserService userService) =>
         {
             var author = await userService.GetUserBySurname(surname);
             return Results.Ok(author);
         });
-        
+
         app.MapGet("/user", async (IUserService userService) =>
         {
             var authors = await userService.GetUsers();
             return Results.Ok(authors);
         });
-        
+
         app.MapPost("/user/create", async (UserDto userDto, IUserService userService) =>
         {
             await userService.CreateUserAsync(userDto);
             return Results.Created();
         });
-        
+
         app.MapPost("/user/createMany", async (List<UserDto> usersDto, IUserService userService) =>
         {
             await userService.CreateUsersAsync(usersDto);
             return Results.Created();
         });
-        
+
         app.MapPatch("/user/update", async (UserDto userDto, IUserService userService) =>
         {
             await userService.UpdateUser(userDto);
             return Results.Ok();
         });
-        
-        app.MapPatch("/user/activate", async (UserDto userDto, IUserService userService) =>
+
+        app.MapPatch("/user/activate", async (Guid userId, IUserService userService) =>
         {
-            await userService.SetUserActive(userDto.Id, userDto.IsActive);
+            await userService.SetUserActive(userId, true);
             return Results.Ok();
         });
-        
+
+        app.MapPatch("/user/deactivate", async (Guid userId, IUserService userService) =>
+        {
+            await userService.SetUserActive(userId, false);
+            return Results.Ok();
+        });
+
         app.MapGet("/user/withbooks/{id:guid}", async (Guid id, IUserService userService) =>
         {
             var authors = await userService.GetUserWithBorrowedBooksById(id);
             return Results.Ok(authors);
         });
-        
+
         app.MapGet("/user/withbooks", async (IUserService userService) =>
         {
             var authors = await userService.GetUsersWithBorrowedBooks();
