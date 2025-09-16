@@ -54,21 +54,9 @@ export class UserComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         await this.loadData();
     }
-
-    // loadData() {
-    //     this.loading = true;
-    //     this.userService.GetAllUsers()
-    //         .then((data: any) => {
-    //             this.users = data;
-    //             this.loading = false;
-    //             this.cd.markForCheck();
-    //         }).catch(() => {
-    //         this.loading = false;
-    //     });
-    // }
 
     openNew() {
         this.user = {};
@@ -159,12 +147,12 @@ export class UserComponent implements OnInit {
         this.loading = true;
         try {
             const data = await this.userService.GetAllUsers();
-            this.users = [...data]; // odświeżenie referencji
+            this.users = [...data];
         } catch (err) {
             console.error(err);
         } finally {
             this.loading = false;
-            this.cd.detectChanges(); // natychmiastowe odświeżenie widoku
+            this.cd.detectChanges();
         }
     }
 
@@ -183,5 +171,18 @@ export class UserComponent implements OnInit {
         });
     }
 
-    protected readonly HTMLInputElement = HTMLInputElement;
+    async setActive(user: User){
+        this.confirmationService.confirm({
+            message: `Are you sure you want to set user ${user.fullName} active?`,
+            header: 'Confirm',
+            icon: 'pi pi-exclamation-triangle',
+            acceptButtonProps: { severity: 'danger', label: 'Yes' },
+            rejectButtonProps: { label: 'No', severity: 'secondary', variant: 'text' },
+            accept: async () => {
+                await this.userService.SetActive(user);
+                this.messageService.add({severity: 'success', summary: 'Successful', detail: 'User is active', life: 3000});
+                await this.loadData();
+            }
+        });
+    }
 }

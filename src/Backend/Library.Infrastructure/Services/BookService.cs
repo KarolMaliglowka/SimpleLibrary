@@ -95,7 +95,9 @@ public class BookService(
                 }
             ).ToList(),
             IsAvailable = x.IsAvailable
-        }).ToList();
+        })
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 
     public async Task<BookDto> GetBookByIdAsync(Guid bookId)
@@ -419,6 +421,8 @@ public class BookService(
             UserFullName = $"{x.User.Surname } {x.User.Name}",
             BorrowDate = x.BorrowDate
             
-        }).ToList();
+        })
+            .OrderBy(x => x.BookName)
+            .ToList();
     }
 }

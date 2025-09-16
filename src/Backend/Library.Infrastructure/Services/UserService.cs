@@ -25,7 +25,9 @@ public class UserService(IUserRepository userRepository) : IUserService
         var users = await userRepository.GetUsersAsync();
         return users.Select(user =>
             user.BuildUserDto()
-        ).ToList();
+        )
+            .OrderBy(x => x.Surname)
+            .ToList();
     }
 
     public async Task CreateUserAsync(UserDto userDto)
@@ -49,34 +51,19 @@ public class UserService(IUserRepository userRepository) : IUserService
     public async Task<UserDto> GetUserById(Guid id)
     {
         var user = await userRepository.GetUserByIdAsync(id);
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-
-        return user.BuildUserDto();
+        return user == null ? throw new Exception("User not found") : user.BuildUserDto();
     }
 
     public async Task<UserDto> GetUserByName(string name)
     {
         var user = await userRepository.GetUserByNameAsync(name);
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-
-        return user.BuildUserDto();
+        return user == null ? throw new Exception("User not found") : user.BuildUserDto();
     }
 
     public async Task<UserDto> GetUserBySurname(string surname)
     {
         var user = await userRepository.GetUserBySurnameAsync(surname);
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-
-        return user.BuildUserDto();
+        return user == null ? throw new Exception("User not found") : user.BuildUserDto();
     }
 
     public async Task SetUserActive(Guid userId, bool isActive)
