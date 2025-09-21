@@ -70,32 +70,32 @@ public class BookService(
     {
         var booksList = await bookRepository.GetAllAsync();
         return booksList.Select(x => new BookDto()
-        {
-            Id = x.Id,
-            Name = x.Name,
-            PagesCount = x.PagesCount,
-            Description = x.Description,
-            Publisher = new PublisherDto
             {
-                Name = x.Publisher!.Name,
-                Id = x.Publisher!.Id
-            },
-            Isbn = x.ISBN,
-            YearOfRelease = x.YearOfRelease,
-            Category = new CategoryDto
-            {
-                Name = x.Category!.Name,
-                Id = x.Category.Id
-            },
-            Authors = x.Authors?.Select(a => new AuthorDto
+                Id = x.Id,
+                Name = x.Name,
+                PagesCount = x.PagesCount,
+                Description = x.Description,
+                Publisher = new PublisherDto
                 {
-                    Name = a.Name ?? "",
-                    Surname = a.Surname ?? "",
-                    Id = x.Id
-                }
-            ).ToList(),
-            IsAvailable = x.IsAvailable
-        })
+                    Name = x.Publisher!.Name,
+                    Id = x.Publisher!.Id
+                },
+                Isbn = x.ISBN,
+                YearOfRelease = x.YearOfRelease,
+                Category = new CategoryDto
+                {
+                    Name = x.Category!.Name,
+                    Id = x.Category.Id
+                },
+                Authors = x.Authors?.Select(a => new AuthorDto
+                    {
+                        Name = a.Name ?? "",
+                        Surname = a.Surname ?? "",
+                        Id = x.Id
+                    }
+                ).ToList(),
+                IsAvailable = x.IsAvailable
+            })
             .OrderBy(x => x.Name)
             .ToList();
     }
@@ -336,7 +336,8 @@ public class BookService(
         var booksList = await bookRepository.GetAllAsync();
         return booksList
             .Where(x =>
-                (x.Category?.Name.Value.ToLower()!).Equals(categoryInSystem.Name.Value, StringComparison.CurrentCultureIgnoreCase))
+                (x.Category?.Name.Value.ToLower()!).Equals(categoryInSystem.Name.Value,
+                    StringComparison.CurrentCultureIgnoreCase))
             .Select(x => new BookDto()
             {
                 Id = x.Id,
@@ -400,28 +401,27 @@ public class BookService(
         book.IsAvailable = isAvailable;
         await bookRepository.UpdateBook(book);
     }
-    
+
     public async Task<List<BorrowDto>> GetBorrowingBooksWithUsers()
     {
         var booksList = await bookRepository.GetBorrowBooksWithUsersAsync();
-        
+
         return booksList.Select(x => new BorrowDto()
-        {
-            Id = x.Id,
-            BookId = x.Id,
-            BookName = x.Book.Name,
-            BookAuthors = x.Book.Authors?.Select(a => new AuthorDto
-                {
-                    Name = a.Name ?? "",
-                    Surname = a.Surname ?? "",
-                    Id = x.Id
-                }
-            ).ToList(),
-            UserId = x.User.Id,
-            UserFullName = $"{x.User.Surname } {x.User.Name}",
-            BorrowDate = x.BorrowDate
-            
-        })
+            {
+                Id = x.Id,
+                BookId = x.Id,
+                BookName = x.Book.Name,
+                BookAuthors = x.Book.Authors?.Select(a => new AuthorDto
+                    {
+                        Name = a.Name ?? "",
+                        Surname = a.Surname ?? "",
+                        Id = x.Id
+                    }
+                ).ToList(),
+                UserId = x.User.Id,
+                UserFullName = $"{x.User.Surname} {x.User.Name}",
+                BorrowDate = x.BorrowDate
+            })
             .OrderBy(x => x.BookName)
             .ToList();
     }

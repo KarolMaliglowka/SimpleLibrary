@@ -165,7 +165,7 @@ export class UserComponent implements OnInit {
             rejectButtonProps: { label: 'No', severity: 'secondary', variant: 'text' },
             accept: async () => {
                 await this.userService.SetNotActive(user);
-                this.messageService.add({severity: 'success', summary: 'Successful', detail: 'User is not active', life: 3000});
+                this.messageInfo(`User ${user.fullName} is deactivate`, 'warn');
                 await this.loadData();
             }
         });
@@ -180,9 +180,13 @@ export class UserComponent implements OnInit {
             rejectButtonProps: { label: 'No', severity: 'secondary', variant: 'text' },
             accept: async () => {
                 await this.userService.SetActive(user);
-                this.messageService.add({severity: 'success', summary: 'Successful', detail: 'User is active', life: 3000});
+                this.messageInfo(`User ${user.fullName} is activate`, 'success');
                 await this.loadData();
             }
         });
+    }
+
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
 }

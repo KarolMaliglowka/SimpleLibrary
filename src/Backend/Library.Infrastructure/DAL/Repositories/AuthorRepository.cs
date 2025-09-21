@@ -22,6 +22,7 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
 
     public async Task<List<Author>> GetAuthorsAsync() => await _context.Authors
         .AsNoTracking()
+        .OrderBy(x => x.Name)
         .ToListAsync();
 
     public Task<List<Author>> GetAuthorBySurnameAsync(string surname) =>

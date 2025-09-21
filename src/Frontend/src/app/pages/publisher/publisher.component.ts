@@ -115,17 +115,6 @@ export class PublisherComponent implements OnInit {
         });
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.publishers.length; i++) {
-            if (this.publishers[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
     async savePublisher() {
         if (this.publisherForm.invalid) return;
         const newPublisher:Publisher = this.publisherForm.value;
