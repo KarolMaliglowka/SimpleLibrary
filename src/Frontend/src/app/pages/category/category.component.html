@@ -5,8 +5,19 @@
     </ng-template>
 </p-toolbar>
 
+
+
 <!-- Table -->
-<p-table #dt [value]="categories" [paginator]="true" [rows]="10" showGridlines="true">
+<p-table #dt [value]="categories" [paginator]="true" [rows]="10" showGridlines="true" [globalFilterFields]="['name']">
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage categories</h5>
+            <p-iconfield>
+                <p-inputicon class="pi pi-search" />
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
     <ng-template #header>
         <tr>
             <th pSortableColumn="name" style="min-width:14rem">
