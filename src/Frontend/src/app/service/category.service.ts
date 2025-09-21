@@ -37,7 +37,6 @@ export class CategoriesService {
     // }
 
     UpdateCategory(category: Category) {
-        console.log('przed wysłaniem', category);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: category

@@ -1,16 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { CommonModule } from '@angular/common';
 import { CategoriesService } from '../../service/category.service';
 import { Category } from '../../models/category';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-category',
