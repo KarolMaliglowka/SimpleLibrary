@@ -10,7 +10,7 @@ public interface ICategoryService
     Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
     Task AddCategoryAsync(CategoryDto category);
     Task AddCategoriesAsync(List<CategoryDto> category);
-    Task UpdateCategoryAsync(Category category);
+    Task UpdateCategoryAsync(CategoryDto category);
     Task<Category?> GetCategoryByIdAsync(Guid id);
     Task<Category?> GetCategoryByNameAsync(string name);
 }
@@ -21,10 +21,12 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
     {
         var categoriesList = await categoryRepository.GetCategoriesAsync();
         return categoriesList.Select(c => new CategoryDto
-        {
-            Id = c.Id,
-            Name = c.Name
-        }).ToList();
+            {
+                Id = c.Id,
+                Name = c.Name
+            })
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 
     public async Task AddCategoryAsync(CategoryDto categoryDto)
@@ -39,7 +41,7 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         await categoryRepository.AddCategoryAsync(category);
     }
 
-    public async Task UpdateCategoryAsync(Category category)
+    public async Task UpdateCategoryAsync(CategoryDto category)
     {
         var existingCategory = await categoryRepository.GetCategoryByIdAsync(category.Id);
         if (existingCategory == null)

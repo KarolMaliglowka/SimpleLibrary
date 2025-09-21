@@ -16,7 +16,7 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
         return category;
     }
 
-    public async Task<Category?> GetCategoryByIdAsync(Guid id) =>
+    public async Task<Category?> GetCategoryByIdAsync(Guid? id) =>
         await context.Categories
             .AsNoTracking()
             .SingleOrDefaultAsync(c => c.Id == id);

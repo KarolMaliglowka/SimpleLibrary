@@ -36,7 +36,8 @@ export class CategoriesService {
     //     return firstValueFrom(this.httpService.put(apiRequest));
     // }
 
-    UpdateCategory(category: any) {
+    UpdateCategory(category: Category) {
+        console.log('przed wysłaniem', category);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: category
@@ -44,7 +45,7 @@ export class CategoriesService {
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateCategory(category: any) {
+    CreateCategory(category: Category) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: category

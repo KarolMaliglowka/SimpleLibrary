@@ -29,7 +29,7 @@ public static class CategoryEndpoints
             });
 
         app.MapPatch("/category/update",
-            async (Category category, ICategoryService categoryService) =>
+            async (CategoryDto category, ICategoryService categoryService) =>
             {
                 await categoryService.UpdateCategoryAsync(category);
                 return Results.NoContent();
