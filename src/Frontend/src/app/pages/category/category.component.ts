@@ -38,6 +38,7 @@ export class CategoryComponent implements OnInit {
     editMode = false;
     categoryDialog = false;
     categoryForm!: FormGroup;
+    loading: boolean = false;
 
     constructor(
         private categoriesService: CategoriesService,
@@ -54,6 +55,7 @@ export class CategoryComponent implements OnInit {
     }
 
     async loadData() {
+        this.loading = true;
         this.categoriesService
             .GetAllCategories()
             .then((data) => {
@@ -61,6 +63,7 @@ export class CategoryComponent implements OnInit {
                 this.cd.markForCheck();
             })
             .catch(() => {});
+        this.loading = false;
     }
 
     openNew() {

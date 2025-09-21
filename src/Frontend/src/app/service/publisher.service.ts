@@ -36,7 +36,7 @@ export class PublishersService {
     //     return firstValueFrom(this.httpService.put(apiRequest));
     // }
 
-    UpdatePublisher(publisher: any) {
+    UpdatePublisher(publisher: Publisher) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: publisher
@@ -44,7 +44,7 @@ export class PublishersService {
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreatePublisher(publisher: any) {
+    CreatePublisher(publisher: Publisher) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: publisher

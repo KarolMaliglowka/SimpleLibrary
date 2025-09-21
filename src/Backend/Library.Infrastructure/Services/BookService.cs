@@ -238,7 +238,7 @@ public class BookService(
 
     public async Task UpdateBook(BookDto bookDto)
     {
-        var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher!.Id);
+        var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
         if (publisher == null)
         {
             publisher = PublisherFactory.CreatePublisher(new PublisherDto
