@@ -1,20 +1,23 @@
-<!-- Toolbar -->
 <p-toolbar class="m-1">
     <ng-template #start>
         <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()"></p-button>
     </ng-template>
 </p-toolbar>
 
-
-
-<!-- Table -->
-<p-table #dt [value]="categories" [paginator]="true" [rows]="10" showGridlines="true" [globalFilterFields]="['name']">
+<p-table #dt
+         [value]="categories"
+         [paginator]="true"
+         [rows]="10"
+         showGridlines="true"
+         [globalFilterFields]="['name']">
     <ng-template #caption>
         <div class="flex items-center justify-between">
             <h5 class="m-0">Manage categories</h5>
             <p-iconfield>
-                <p-inputicon class="pi pi-search" />
-                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search..." />
+                <p-inputicon class="pi pi-search"/>
+                <input pInputText type="text"
+                       (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                       placeholder="Search..."/>
             </p-iconfield>
         </div>
     </ng-template>
@@ -23,7 +26,7 @@
             <th pSortableColumn="name" style="min-width:14rem">
                 <div class="flex items-center gap-2">
                     Name
-                    <p-sortIcon field="name" />
+                    <p-sortIcon field="name"/>
                 </div>
             </th>
             <th style="width: 8rem">
@@ -47,13 +50,12 @@
     </ng-template>
 </p-table>
 
-<!-- Dialog z formularzem -->
 <p-dialog [(visible)]="categoryDialog" header="Category Details" [modal]="true">
     <form *ngIf="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
         <div class="flex flex-col gap-4">
             <div>
                 <label for="name" class="block font-bold mb-2">Name</label>
-                <input pInputText id="name" formControlName="name" required autofocus class="w-full p-inputtext-sm" />
+                <input pInputText id="name" formControlName="name" required autofocus class="w-full p-inputtext-sm"/>
                 <small class="text-red-500"
                        *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
                     Name is required.

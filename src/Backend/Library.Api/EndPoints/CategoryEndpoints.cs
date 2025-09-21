@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Library.Core.Entities;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Services;
 
