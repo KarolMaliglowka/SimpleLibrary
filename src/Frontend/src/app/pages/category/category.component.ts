@@ -1,16 +1,17 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Toast } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { DialogModule } from 'primeng/dialog';
-import { CommonModule } from '@angular/common';
-import { CategoriesService } from '../../service/category.service';
-import { Category } from '../../models/category';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Category } from '../../models/category';
+import { CategoriesService } from '../../service/category.service';
 
 @Component({
     selector: 'app-category',
@@ -26,9 +27,14 @@ import { ConfirmationService, MessageService } from 'primeng/api';
         InputTextModule,
         ReactiveFormsModule,
         DialogModule,
+        Toast,
         CommonModule
     ],
-    providers: [MessageService, ConfirmationService, CategoriesService]
+    providers: [
+        MessageService,
+        ConfirmationService,
+        CategoriesService
+    ]
 })
 export class CategoryComponent implements OnInit {
     categories!: Category[];
@@ -43,7 +49,8 @@ export class CategoryComponent implements OnInit {
     constructor(
         private categoriesService: CategoriesService,
         private fb: FormBuilder,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private messageService: MessageService
     ) {}
 
     async ngOnInit() {
@@ -86,17 +93,24 @@ export class CategoryComponent implements OnInit {
         try {
             if (this.editMode) {
                 await this.categoriesService.UpdateCategory(newCategory);
+                this.messageInfo('Update category', 'success');
             } else {
                 await this.categoriesService.CreateCategory(newCategory);
+                this.messageInfo('Created new category', 'success');
             }
             this.categoryDialog = false;
         } catch (err) {
-            console.error('Błąd zapisu kategorii:', err);
+            console.error(err);
+            this.messageInfo('Some error: ' + err, 'error');
         }
         await this.loadData();
     }
     deleteCategory(category: Category) {
         console.log('Delete', category);
         //await this.categoriesService.DeleteCategory(newCategory);
+    }
+
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
 }

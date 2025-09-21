@@ -132,14 +132,20 @@ export class PublisherComponent implements OnInit {
         try {
             if (this.editMode) {
                 await this.publisherService.UpdatePublisher(newPublisher);
+                this.messageInfo('Updated publisher', 'success');
             } else {
                 await this.publisherService.CreatePublisher(newPublisher);
+                this.messageInfo('Created new publisher', 'success');
             }
             this.publisherDialog = false;
         } catch (err) {
-            console.error('Błąd zapisu kategorii:', err);
+            console.error(err);
+            this.messageInfo('Some error: ' + err, 'error');
         }
         await this.loadData();
     }
 
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
+    }
 }
