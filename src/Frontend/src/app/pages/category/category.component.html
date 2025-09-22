@@ -1,4 +1,4 @@
-<p-toast />
+<p-toast/>
 <p-toolbar class="m-1">
     <ng-template #start>
         <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()"></p-button>
@@ -42,10 +42,20 @@
         <tr>
             <td>{{ category.name }}</td>
             <td>
-                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
-                          (click)="editCategory(category)"></p-button>
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                          (click)="deleteCategory(category)"></p-button>
+                <p-button
+                    icon="pi pi-pencil"
+                    class="mr-2"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="editCategory(category)"
+                />
+                <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="deleteCategory(category)"
+                />
             </td>
         </tr>
     </ng-template>

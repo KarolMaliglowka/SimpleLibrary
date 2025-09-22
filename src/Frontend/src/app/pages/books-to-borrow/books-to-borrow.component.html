@@ -1,8 +1,7 @@
-
-        <div class="card flex justify-left">
-            <p-toggleswitch [(ngModel)]="checked" (onChange)="loadData(checked)" />
-            <div style="padding-left: 5px;"> Show with not available</div>
-        </div>
+<div class="card flex justify-left">
+    <p-toggleswitch [(ngModel)]="checked" (onChange)="loadData(checked)"/>
+    <div style="padding-left: 5px;"> Show with not available</div>
+</div>
 
 <p-table
     #dt
@@ -11,9 +10,6 @@
     [paginator]="true"
     [rows]="10"
     [globalFilterFields]="['name', 'description']"
-    [tableStyle]="{ 'min-width': '75rem' }"
-    [(selection)]="selectedBooks"
-    [responsiveLayout]="'scroll'"
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     showGridlines="true"
@@ -53,7 +49,7 @@
                     Available
                 </div>
             </th>
-            <th style="width: 11rem">
+            <th style="width: 4rem">
                 <div class="flex items-center gap-2">
                     Action
                 </div>
@@ -70,27 +66,29 @@
                 <i *ngIf="!book.isAvailable" class="pi pi-times text-red-500"></i>
             </td>
             <td>
-                <p-button #buttonBorrow
-                          *ngIf="book.isAvailable"
-                          icon="pi pi-book"
-                          pTooltip="Borrow"
-                          severity="info"
-                          tooltipPosition="top"
-                          class="mr-2"
-                          [rounded]="true"
-                          [outlined]="true"
-                          (click)="hideDialog()"
+                <p-button
+                    #buttonBorrow
+                    *ngIf="book.isAvailable"
+                    icon="pi pi-book"
+                    pTooltip="Borrow"
+                    severity="info"
+                    tooltipPosition="top"
+                    class="mr-2"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="hideDialog()"
                 />
-                <p-button #buttonBorrow
-                          *ngIf="!book.isAvailable"
-                          icon="pi pi-book"
-                          pTooltip="Book is borrowing"
-                          severity="secondary"
-                          tooltipPosition="top"
-                          class="mr-2"
-                          [rounded]="true"
-                          [outlined]="true"
-                          [disabled]="true"
+                <p-button
+                    #buttonBorrow
+                    *ngIf="!book.isAvailable"
+                    icon="pi pi-book"
+                    pTooltip="Book is borrowed"
+                    severity="secondary"
+                    tooltipPosition="top"
+                    class="mr-2"
+                    [rounded]="true"
+                    [outlined]="true"
+                    [disabled]="true"
                 />
             </td>
         </tr>
@@ -153,4 +151,3 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{ width: '450px' }"/>
-
