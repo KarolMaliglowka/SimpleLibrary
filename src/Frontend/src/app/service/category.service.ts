@@ -8,7 +8,7 @@ import {Category} from '../models/category';
     providedIn: 'root'
 })
 export class CategoriesService {
-    private url = 'category';
+    private url = 'categories';
 
     constructor(private httpService: ApiService) {
     }

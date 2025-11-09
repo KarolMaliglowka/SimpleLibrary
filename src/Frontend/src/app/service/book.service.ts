@@ -7,7 +7,7 @@ import { Book } from '../models/book';
     providedIn: 'root'
 })
 export class BooksService {
-    private url = 'book';
+    private url = 'books';
 
     constructor(private httpService: ApiService) {
     }

@@ -7,7 +7,7 @@ import { User } from '../models/user';
     providedIn: 'root'
 })
 export class UsersService {
-    private url = 'user';
+    private url = 'users';
 
     constructor(private httpService: ApiService) {
     }

@@ -8,7 +8,7 @@ import {Borrow} from '../models/borrow';
     providedIn: 'root'
 })
 export class BorrowsService {
-    private url = 'borrow';
+    private url = 'borrows';
 
     constructor(private httpService: ApiService) { }
 

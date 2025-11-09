@@ -7,7 +7,7 @@ import { Publisher } from '../models/publisher';
     providedIn: 'root'
 })
 export class PublishersService {
-    private url = 'publisher';
+    private url = 'publishers';
 
     constructor(private httpService: ApiService) {
     }

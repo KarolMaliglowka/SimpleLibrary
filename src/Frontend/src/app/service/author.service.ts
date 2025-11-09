@@ -7,7 +7,7 @@ import { Author } from '../models/author';
     providedIn: 'root'
 })
 export class AuthorsService {
-    private url = 'author';
+    private url = 'authors';
 
     constructor(private httpService: ApiService) {
     }

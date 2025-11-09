@@ -8,39 +8,39 @@ public static class CategoryEndpoints
 {
     public static void MapCategoriesEndpoints(this WebApplication app)
     {
-        app.MapGet("/category", async (ICategoryService categoryService) =>
+        app.MapGet("/categories", async (ICategoryService categoryService) =>
             await categoryService.GetCategoriesAsync() is { } category
                 ? Results.Ok(category)
                 : Results.NotFound("No categories found."));
 
-        app.MapPost("/category/create",
+        app.MapPost("/categoryies/create",
             async (CategoryDto category, ICategoryService categoryService) =>
             {
                 await categoryService.AddCategoryAsync(category);
                 return Results.Created();
             });
 
-        app.MapPost("/category/createMany",
+        app.MapPost("/categories/createMany",
             async (List<CategoryDto> categories, ICategoryService categoryService) =>
             {
                 await categoryService.AddCategoriesAsync(categories);
                 return Results.Created();
             });
 
-        app.MapPatch("/category/update",
+        app.MapPatch("/categories/update",
             async (CategoryDto category, ICategoryService categoryService) =>
             {
                 await categoryService.UpdateCategoryAsync(category);
                 return Results.NoContent();
             });
 
-        app.MapGet("/category/{id:guid}", async (Guid id, ICategoryService categoryService) =>
+        app.MapGet("/categories/{id:guid}", async (Guid id, ICategoryService categoryService) =>
             await categoryService.GetCategoryByIdAsync(id)
                 is { } category
                 ? Results.Ok(category)
                 : Results.NotFound());
 
-        app.MapGet("/category/{name}", async ([Required] string name, ICategoryService categoryService) =>
+        app.MapGet("/categories/{name}", async ([Required] string name, ICategoryService categoryService) =>
         await categoryService.GetCategoryByNameAsync(name)
             is { } category
             ? Results.Ok(category)
