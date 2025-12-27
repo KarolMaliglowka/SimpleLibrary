@@ -1,5 +1,7 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
+using Library.Infrastructure.DTO;
+using Library.Infrastructure.Services;
 
 namespace Library.Api.EndPoints;
 
@@ -7,9 +9,9 @@ public static class AuthorEndpoints
 {
     public static void MapAuthorEndpoints(this WebApplication app)
     {
-        app.MapGet("/authors", async (IAuthorReadRepository authorReadRepository) =>
+        app.MapGet("/authors", async (IAuthorService authorService) =>
         {
-            var authors = await authorReadRepository.GetAuthorsAsync();
+            var authors = await authorService.GetAuthorsAsync();
             return Results.Ok(authors);
         });
 

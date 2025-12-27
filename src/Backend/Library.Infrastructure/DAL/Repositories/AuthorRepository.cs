@@ -1,5 +1,6 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
+using Library.Infrastructure.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.DAL.Repositories;
