@@ -13,6 +13,7 @@ public interface ICategoryService
     Task UpdateCategoryAsync(CategoryDto category);
     Task<Category?> GetCategoryByIdAsync(Guid id);
     Task<Category?> GetCategoryByNameAsync(string name);
+    Task DeleteCategoryAsync(Guid guid);
 }
 
 public class CategoryService(ICategoryRepository categoryRepository) : ICategoryService
@@ -87,5 +88,15 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         {
             await categoryRepository.AddCategoriesAsync(categoriesToImport);
         }
+    }
+
+    public async Task DeleteCategoryAsync(Guid id)
+    {
+        var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
+        if (categoryExist == null)
+        {
+            throw new Exception("Category not found");
+        }
+        await categoryRepository.DeleteCategoriesAsync(id);
     }
 }

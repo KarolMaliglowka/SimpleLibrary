@@ -37,6 +37,7 @@ export class CategoriesService {
     // }
 
     UpdateCategory(category: Category) {
+        console.log(`${this.url}/update`);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: category

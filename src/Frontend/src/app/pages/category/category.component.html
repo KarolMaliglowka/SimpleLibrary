@@ -61,7 +61,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="categoryDialog" header="Category Details" [modal]="true">
+<p-dialog [(visible)]="categoryDialog" header="Category details" [modal]="true">
     <form *ngIf="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
         <div class="flex flex-col gap-4">
             <div>

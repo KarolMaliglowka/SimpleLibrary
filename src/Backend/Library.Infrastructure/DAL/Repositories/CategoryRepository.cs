@@ -24,8 +24,9 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
     public async Task<Category?> GetCategoryByNameAsync(string name) =>
         await context.Categories
             .SingleOrDefaultAsync(c => c.Name == name);
-    
-    public async Task<bool> ExistCategoryAsync(Category category) {
+
+    public async Task<bool> ExistCategoryAsync(Category category)
+    {
         return await context.Categories
             .AnyAsync(c => c.Name == category.Name);
     }
@@ -35,9 +36,20 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
         context.Categories.Update(category);
         await context.SaveChangesAsync();
     }
+
     public async Task AddCategoriesAsync(IEnumerable<Category> category)
     {
         await context.Categories.AddRangeAsync(category);
         await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteCategoriesAsync(Guid? id)
+    {
+        var categoryToDelete = await GetCategoryByIdAsync(id);
+        if (categoryToDelete != null)
+        {
+            context.Categories.Remove(categoryToDelete);
+            await context.SaveChangesAsync();
+        }
     }
 }

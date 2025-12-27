@@ -13,7 +13,7 @@ public static class CategoryEndpoints
                 ? Results.Ok(category)
                 : Results.NotFound("No categories found."));
 
-        app.MapPost("/categoryies/create",
+        app.MapPost("/categories/create",
             async (CategoryDto category, ICategoryService categoryService) =>
             {
                 await categoryService.AddCategoryAsync(category);
@@ -41,9 +41,15 @@ public static class CategoryEndpoints
                 : Results.NotFound());
 
         app.MapGet("/categories/{name}", async ([Required] string name, ICategoryService categoryService) =>
-        await categoryService.GetCategoryByNameAsync(name)
+            await categoryService.GetCategoryByNameAsync(name)
             is { } category
             ? Results.Ok(category)
             : Results.NotFound());
+        
+        app.MapDelete("/categories/delete/{id:guid}", async (Guid id, ICategoryService categoryService) =>
+            await categoryService.GetCategoryByIdAsync(id)
+                is { } category
+                ? Results.Ok(category)
+                : Results.NotFound());
     }
 }
