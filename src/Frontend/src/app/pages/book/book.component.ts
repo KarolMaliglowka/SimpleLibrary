@@ -19,12 +19,12 @@ import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
 import {Book} from '../../models/book';
 import {BooksService} from '../../service/book.service';
-import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
+import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
 
 @Component({
     selector: 'book-component',
     templateUrl: 'book.component.html',
-    styleUrls: ['book.component.scss'],
+    styleUrl: 'book.component.scss',
     standalone: true,
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
@@ -34,17 +34,17 @@ import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
     ],
     providers: [
         MessageService, ConfirmationService, BooksService
-    ],
-    styles: [
-        `:host ::ng-deep .p-dialog .product-image {
-            width: 300px;
-            margin: 0 auto 2rem auto;
-            display: block;
-            color: red;
-        }`
     ]
+    // styles: [
+    //     `:host ::ng-deep .p-dialog .product-image {
+    //         width: 300px;
+    //         margin: 0 auto 2rem auto;
+    //         display: block;
+    //         color: red;
+    //     }`
+    // ]
 })
-export class TableBook implements OnInit {
+export class BookComponent implements OnInit {
     bookDialog: boolean = false;
     books!: Book[];
     book!: Book;
@@ -61,10 +61,6 @@ export class TableBook implements OnInit {
         private cd: ChangeDetectorRef,
     ) {
     }
-
-    // exportCSV() {
-    //     this.dt.exportCSV();
-    // }
 
     ngOnInit() {
         this.loadData();

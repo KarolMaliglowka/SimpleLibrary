@@ -8,7 +8,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
 import {SelectModule} from 'primeng/select';
-import {FormsModule} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
@@ -26,7 +26,7 @@ import {PublishersService} from '../../service/publisher.service';
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule
+        ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule
     ],
     providers: [
         MessageService, ConfirmationService, PublishersService
@@ -38,24 +38,29 @@ export class PublisherComponent implements OnInit {
     publisherDialog: boolean = false;
     publishers!: Publisher[];
     publisher!: Publisher;
-    selectedPublishers!: Publisher[] | null;
-    submitted: boolean = false;
-    statuses!: any[];
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
+    editMode = false;
+    publisherForm!: FormGroup;
+    editingPublisher?: Publisher;
 
     constructor(
         private publisherService: PublishersService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
+        private fb: FormBuilder
     ) {}
 
-    ngOnInit() {
-        this.loadData();
+    async ngOnInit() {
+        await this.loadData();
+        this.publisherForm = this.fb.group({
+            id: [null],
+            name: ['', Validators.required]
+        });
     }
 
-    loadData() {
+    async loadData() {
         this.loading = true;
         this.publisherService.GetAllPublishers()
             .then((data: any) => {
@@ -68,19 +73,17 @@ export class PublisherComponent implements OnInit {
     }
 
     openNew() {
-        this.publisher = {};
-        this.submitted = false;
+        this.editingPublisher = undefined;
+        this.publisherForm.reset();
         this.publisherDialog = true;
+        this.editMode = false;
     }
 
     editPublisher(publisher: Publisher) {
-        this.publisher = {...publisher};
+        this.editingPublisher = publisher;
+        this.publisherForm.patchValue(publisher);
         this.publisherDialog = true;
-    }
-
-    hideDialog() {
-        this.publisherDialog = false;
-        this.submitted = false;
+        this.editMode = true;
     }
 
     deletePublisher(publisher: Publisher) {
@@ -112,43 +115,26 @@ export class PublisherComponent implements OnInit {
         });
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.publishers.length; i++) {
-            if (this.publishers[i].id === id) {
-                index = i;
-                break;
+    async savePublisher() {
+        if (this.publisherForm.invalid) return;
+        const newPublisher:Publisher = this.publisherForm.value;
+        try {
+            if (this.editMode) {
+                await this.publisherService.UpdatePublisher(newPublisher);
+                this.messageInfo('Updated publisher', 'success');
+            } else {
+                await this.publisherService.CreatePublisher(newPublisher);
+                this.messageInfo('Created new publisher', 'success');
             }
+            this.publisherDialog = false;
+        } catch (err) {
+            console.error(err);
+            this.messageInfo('Some error: ' + err, 'error');
         }
-        return index;
+        await this.loadData();
     }
 
-    savePublisher() {
-        this.submitted = true;
-        if (this.publisher.name?.trim()) {
-            if (this.publisher.id) {
-                this.publishers[this.findIndexById(this.publisher.id)] = this.publisher;
-                this.publisherService.UpdatePublisher(this.publisher);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Publisher Updated',
-                    life: 3000
-                });
-            } else {
-                this.publishers.push(this.publisher);
-                this.publisherService.CreatePublisher(this.publisher);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Publisher Created',
-                    life: 3000
-                });
-            }
-            this.publishers = [...this.publishers];
-            this.publisherDialog = false;
-            this.publisher;
-        }
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
-    //protected readonly HTMLInputElement = HTMLInputElement;
 }

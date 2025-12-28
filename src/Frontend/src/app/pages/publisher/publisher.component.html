@@ -1,7 +1,7 @@
-<div class="card">
+<p-toast/>
 <p-toolbar class="m-1">
     <ng-template #start>
-        <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()" />
+        <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()"/>
     </ng-template>
 </p-toolbar>
 <p-table
@@ -10,7 +10,6 @@
     [paginator]="true"
     [rows]="10"
     [globalFilterFields]="['name']"
-    [tableStyle]="{ 'min-width': '75rem' }"
     showGridlines=true
 >
 
@@ -18,8 +17,9 @@
         <div class="flex items-center justify-between">
             <h5 class="m-0">Manage publishers</h5>
             <p-iconfield>
-                <p-inputicon class="pi pi-search" />
-                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search..." />
+                <p-inputicon class="pi pi-search"/>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                       placeholder="Search..."/>
             </p-iconfield>
         </div>
     </ng-template>
@@ -29,7 +29,7 @@
             <th pSortableColumn="name" style="min-width:14rem">
                 <div class="flex items-center gap-2">
                     Name
-                    <p-sortIcon field="name" />
+                    <p-sortIcon field="name"/>
                 </div>
             </th>
             <th style="width: 8rem">
@@ -41,29 +41,42 @@
     </ng-template>
     <ng-template #body let-publisher>
         <tr>
-            <td style="min-width: 14rem">{{ publisher.name }}</td>
+            <td>{{ publisher.name }}</td>
             <td>
-                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editPublisher(publisher)" />
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deletePublisher(publisher)" />
+                <p-button
+                    icon="pi pi-pencil"
+                    class="mr-2"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="editPublisher(publisher)"
+                />
+                <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [rounded]="true"
+                    [outlined]="true"
+                    (click)="deletePublisher(publisher)"
+                />
             </td>
         </tr>
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="publisherDialog" header="Publisher details" [modal]="true">
-    <ng-template #content>
-        <div class="flex flex-col gap-6">
+<p-dialog [(visible)]="publisherDialog" header="Publisher Details" [modal]="true">
+    <form *ngIf="publisherForm" [formGroup]="publisherForm" (ngSubmit)="savePublisher()">
+        <div class="flex flex-col gap-4">
             <div>
-                <label for="name" class="block font-bold mb-3">Name</label>
-                <input type="text" pInputText id="name" [(ngModel)]="publisher.name" required autofocus fluid/>
-                <small class="text-red-500" *ngIf="submitted && !publisher.name">Name is required.</small>
+                <label for="name" class="block font-bold mb-2">Name</label>
+                <input pInputText id="name" formControlName="name" required autofocus class="w-full p-inputtext-sm"/>
+                <small class="text-red-500"
+                       *ngIf="publisherForm.get('name')?.invalid && publisherForm.get('name')?.touched">
+                    Name is required.
+                </small>
             </div>
         </div>
-    </ng-template>
-
+    </form>
     <ng-template #footer>
-        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
-        <p-button label="Save" icon="pi pi-check" (click)="savePublisher()"/>
+        <p-button label="Cancel" icon="pi pi-times" text (onClick)="publisherDialog=false"></p-button>
+        <p-button type="submit" label="Save" [disabled]="publisherForm.invalid" (onClick)="savePublisher()"></p-button>
     </ng-template>
 </p-dialog>
-</div>

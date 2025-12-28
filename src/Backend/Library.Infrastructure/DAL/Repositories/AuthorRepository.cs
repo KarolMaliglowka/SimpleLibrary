@@ -1,5 +1,6 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
+using Library.Infrastructure.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.DAL.Repositories;
@@ -22,6 +23,7 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
 
     public async Task<List<Author>> GetAuthorsAsync() => await _context.Authors
         .AsNoTracking()
+        .OrderBy(x => x.Name)
         .ToListAsync();
 
     public Task<List<Author>> GetAuthorBySurnameAsync(string surname) =>

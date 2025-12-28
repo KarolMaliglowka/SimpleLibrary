@@ -10,21 +10,25 @@ public interface ICategoryService
     Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
     Task AddCategoryAsync(CategoryDto category);
     Task AddCategoriesAsync(List<CategoryDto> category);
-    Task UpdateCategoryAsync(Category category);
+    Task UpdateCategoryAsync(CategoryDto category);
     Task<Category?> GetCategoryByIdAsync(Guid id);
     Task<Category?> GetCategoryByNameAsync(string name);
+    Task DeleteCategoryAsync(Guid guid);
 }
 
-public class CategoryService(ICategoryRepository categoryRepository) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository, IBookRepository bookRepository) : ICategoryService
 {
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
         var categoriesList = await categoryRepository.GetCategoriesAsync();
         return categoriesList.Select(c => new CategoryDto
-        {
-            Id = c.Id,
-            Name = c.Name
-        }).ToList();
+            {
+                Id = c.Id,
+                Name = c.Name,
+                isDelete = c.IsDeleted
+            })
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 
     public async Task AddCategoryAsync(CategoryDto categoryDto)
@@ -39,7 +43,7 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         await categoryRepository.AddCategoryAsync(category);
     }
 
-    public async Task UpdateCategoryAsync(Category category)
+    public async Task UpdateCategoryAsync(CategoryDto category)
     {
         var existingCategory = await categoryRepository.GetCategoryByIdAsync(category.Id);
         if (existingCategory == null)
@@ -85,5 +89,25 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         {
             await categoryRepository.AddCategoriesAsync(categoriesToImport);
         }
+    }
+
+    public async Task DeleteCategoryAsync(Guid id)
+    {
+        var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
+        if (categoryExist == null)
+        {
+            throw new Exception("Category not found");
+        }
+
+        var booksList = await bookRepository.GetAllAsync();
+        var isCategoryForSomeBook = booksList.Any(x => x.Category?.Name == categoryExist.Name);
+        if (isCategoryForSomeBook)
+        {
+            
+            throw new Exception("Category is in use");
+        }
+
+        categoryExist.SetSoftDelete();
+        await categoryRepository.Update(categoryExist);
     }
 }

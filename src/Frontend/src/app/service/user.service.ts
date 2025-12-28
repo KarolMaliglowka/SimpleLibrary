@@ -2,30 +2,30 @@
 import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
 import {ApiRequestData} from "../../shared/domain/api.request.data";
-import { Book } from '../models/book';
+import { User } from '../models/user';
 @Injectable({
     providedIn: 'root'
 })
-export class BooksService {
-    private url = 'books';
+export class UsersService {
+    private url = 'users';
 
     constructor(private httpService: ApiService) {
     }
 
-    GetAllBooks() {
+    GetAllUsers() {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}`
         };
-        return firstValueFrom(this.httpService.get<Book[]>(apiRequest));
+        return firstValueFrom(this.httpService.get<User[]>(apiRequest));
 
     }
 
-    GetBookById(id: string) {
+    GetUserById(id: string) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/${id}`,
             RequestBody: id
         };
-        return firstValueFrom(this.httpService.get<Book>(apiRequest));
+        return firstValueFrom(this.httpService.get<User>(apiRequest));
     }
 
     // DeleteBook(id: string) {
@@ -36,20 +36,35 @@ export class BooksService {
     //     return firstValueFrom(this.httpService.put(apiRequest));
     // }
 
-    UpdateBook(book: any) {
+    UpdateUser(user: any) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
-            RequestBody: book
+            RequestBody: user
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateBook(book: any) {
+    CreateUser(user: User) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
-            RequestBody: book
+            RequestBody: user
         };
         return firstValueFrom(this.httpService.post(apiRequest));
     }
 
+    SetNotActive(user: User) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/deactivate`,
+            RequestBody: user
+        };
+        return firstValueFrom(this.httpService.patch(apiRequest));
+    }
+
+    SetActive(user: User) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/activate`,
+            RequestBody: user
+        };
+        return firstValueFrom(this.httpService.patch(apiRequest));
+    }
 }

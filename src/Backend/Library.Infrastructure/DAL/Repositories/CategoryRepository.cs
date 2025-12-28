@@ -16,7 +16,7 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
         return category;
     }
 
-    public async Task<Category?> GetCategoryByIdAsync(Guid id) =>
+    public async Task<Category?> GetCategoryByIdAsync(Guid? id) =>
         await context.Categories
             .AsNoTracking()
             .SingleOrDefaultAsync(c => c.Id == id);
@@ -24,8 +24,9 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
     public async Task<Category?> GetCategoryByNameAsync(string name) =>
         await context.Categories
             .SingleOrDefaultAsync(c => c.Name == name);
-    
-    public async Task<bool> ExistCategoryAsync(Category category) {
+
+    public async Task<bool> ExistCategoryAsync(Category category)
+    {
         return await context.Categories
             .AnyAsync(c => c.Name == category.Name);
     }
@@ -35,6 +36,7 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
         context.Categories.Update(category);
         await context.SaveChangesAsync();
     }
+
     public async Task AddCategoriesAsync(IEnumerable<Category> category)
     {
         await context.Categories.AddRangeAsync(category);

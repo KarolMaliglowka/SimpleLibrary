@@ -8,10 +8,8 @@
 
 :host ::ng-deep {
     .p-tooltip.p-component.p-tooltip-bootom {
-        z-index: 9999999;
         width: 800px !important;
     }
-
 }
 
 :host ::ng-deep .p-button {

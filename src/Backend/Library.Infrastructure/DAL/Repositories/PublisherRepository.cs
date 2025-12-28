@@ -25,7 +25,7 @@ public class PublisherRepository : IPublisherRepository
         return publisher;
     }
 
-    public async Task<Publisher?> GetPublisherByIdAsync(Guid id) => 
+    public async Task<Publisher?> GetPublisherByIdAsync(Guid? id) => 
         await _context.Publishers
             .SingleOrDefaultAsync(p => p.Id == id);
     

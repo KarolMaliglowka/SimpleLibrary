@@ -17,7 +17,7 @@ export class NamesListPipe implements PipeTransform {
         }
 
         return value
-            .map(person => `${person.name} ${person.surname}`)
+            .map(person => `${person.surname} ${person.name}`)
             .join(', ');
     }
 }

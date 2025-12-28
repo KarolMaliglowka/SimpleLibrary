@@ -48,4 +48,11 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
             .AnyAsync(x =>
                 x.BookId == bookId
             );
+    
+    public async Task<Borrow?> GetBorrowByIdAsync(Guid id)
+    {
+        return await context.Borrows
+            .FirstOrDefaultAsync(x => 
+                x.Id == id);
+    }
 }

@@ -8,7 +8,7 @@ import {Category} from '../models/category';
     providedIn: 'root'
 })
 export class CategoriesService {
-    private url = 'category';
+    private url = 'categories';
 
     constructor(private httpService: ApiService) {
     }
@@ -28,15 +28,15 @@ export class CategoriesService {
         return firstValueFrom(this.httpService.get<Category>(apiRequest));
     }
 
-    // DeleteBook(id: string) {
-    //     let apiRequest = <ApiRequestData>{
-    //         Url: `${this.url}/book/${id}`,
-    //         RequestBody: id
-    //     };
-    //     return firstValueFrom(this.httpService.put(apiRequest));
-    // }
+    DeleteCategory(id: string) {
+         let apiRequest = <ApiRequestData>{
+             Url: `${this.url}/delete/${id}`,
+             RequestBody: id
+         };
+         return firstValueFrom(this.httpService.delete(apiRequest));
+     }
 
-    UpdateCategory(category: any) {
+    UpdateCategory(category: Category) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: category
@@ -44,7 +44,7 @@ export class CategoriesService {
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateCategory(category: any) {
+    CreateCategory(category: Category) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: category

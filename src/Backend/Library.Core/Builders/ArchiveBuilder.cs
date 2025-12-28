@@ -11,10 +11,15 @@ public sealed class ArchiveBuilder
 
     public ArchiveBuilder SetBookId(Guid bookId)
     {
-        _archive.Id = bookId;
+        _archive.BookId = bookId;
         return this;
     }
 
+    /// <summary>
+    /// Archive builder
+    /// </summary>
+    /// <param name="bookName"></param>
+    /// <returns>object</returns>
     public ArchiveBuilder SetBookName(string bookName)
     {
         _archive.BookName = bookName;

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MenuItem } from 'primeng/api';
-import { AppMenuitem } from './app.menuitem';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {MenuItem} from 'primeng/api';
+import {AppMenuitem} from './app.menuitem';
 
 @Component({
     selector: 'app-menu',
@@ -24,10 +24,25 @@ export class AppMenu {
         this.model = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/']}]
             },
             {
                 label: 'Library',
+                items: [
+                    {
+                        label: 'Available books',
+                        icon: 'pi pi-fw pi-book',
+                        routerLink: ['/pages/books-to-borrow']
+                    },
+                    {
+                        label: 'Borrowed books',
+                        icon: 'pi pi-fw pi-arrow-right-arrow-left',
+                        routerLink: ['/pages/borrow']
+                    }
+                ]
+            },
+            {
+                label: 'Manage',
                 items: [
                     {
                         label: 'Books',
@@ -38,11 +53,6 @@ export class AppMenu {
                         label: 'Users',
                         icon: 'pi pi-fw pi-user',
                         routerLink: ['/pages/user']
-                    },
-                    {
-                        label: 'Borrow',
-                        icon: 'pi pi-fw pi-arrow-right-arrow-left',
-                        routerLink: ['/pages/borrow']
                     },
                     {
                         label: 'Categories',
@@ -58,7 +68,12 @@ export class AppMenu {
                         label: 'Publishers',
                         icon: 'pi pi-fw pi-arrow-right-arrow-left',
                         routerLink: ['/pages/publisher']
-                    },
+                    }
+                ]
+            },
+            {
+                label: 'Settings',
+                items: [
                     {
                         label: 'Settings',
                         icon: 'pi pi-fw pi-cog',

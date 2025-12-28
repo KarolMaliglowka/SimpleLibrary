@@ -1,1 +1,94 @@
-<p>borrow works!</p>
+<div class="card">
+    <p-table
+        #dt
+        [value]="borrows"
+        [loading]="loading"
+        [paginator]="true"
+        [rows]="10"
+        [globalFilterFields]="['bookName', 'bookAuthors', 'userFullName']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [responsiveLayout]="'scroll'"
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        showGridlines="true"
+    >
+        <ng-template #caption>
+            <div class="flex items-center justify-between">
+                <h5 class="m-0">Manage users</h5>
+                <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                           placeholder="Search..."/>
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="bookName" style="width:17rem">
+                    <div class="flex items-center gap-2">
+                        Book name
+                        <p-sortIcon field="bookName"/>
+                    </div>
+                </th>
+                <th pSortableColumn="bookAuthors" style="width:14rem">
+                    <div class="flex items-center gap-2">
+                        Book authors
+                        <p-sortIcon field="bookAuthors"/>
+                    </div>
+                </th>
+                <th pSortableColumn="userFullName" style="width:14rem">
+                    <div class="flex items-center gap-2">
+                        User fullname
+                        <p-sortIcon field="userFullName"/>
+                    </div>
+                </th>
+                <th pSortableColumn="borrowDate" style="width:14rem">
+                    <div class="flex items-center gap-2">
+                        borrowDate
+                        <p-sortIcon field="borrowDate"/>
+                    </div>
+                </th>
+                <th style="width: 3rem">
+                    <div class="flex items-center gap-2">
+                        Action
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-borrow>
+            <tr>
+                <td style="min-width: 14rem">{{ borrow.bookName }}</td>
+                <td style="min-width: 14rem">{{ borrow.bookAuthors | namesList }}</td>
+                <td style="min-width: 5rem">{{ borrow.userFullName }}</td>
+                <td style="width: 3rem">{{ borrow.borrowDate | date:'yyyy.MM.dd'  }}</td>
+                <td>
+                    <p-button
+                        icon="pi pi-book"
+                        pTooltip="Return book"
+                        class="mr-2"
+                        tooltipPosition="top"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="confirm(borrow)"
+                    />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-confirmdialog #cd>
+    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+        <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+            <div
+                class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                <i class="pi pi-question !text-5xl"></i>
+            </div>
+            <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+            <p class="mb-0">{{ message.message }}</p>
+            <div class="flex items-center gap-2 mt-6">
+                <p-button label="Return" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                <p-button label="Cancel" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmdialog>

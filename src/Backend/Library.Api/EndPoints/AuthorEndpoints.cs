@@ -1,5 +1,7 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
+using Library.Infrastructure.DTO;
+using Library.Infrastructure.Services;
 
 namespace Library.Api.EndPoints;
 
@@ -7,25 +9,25 @@ public static class AuthorEndpoints
 {
     public static void MapAuthorEndpoints(this WebApplication app)
     {
-        app.MapGet("/author", async (IAuthorReadRepository authorReadRepository) =>
+        app.MapGet("/authors", async (IAuthorService authorService) =>
         {
-            var authors = await authorReadRepository.GetAuthorsAsync();
+            var authors = await authorService.GetAuthorsAsync();
             return Results.Ok(authors);
         });
 
-        app.MapPost("/author/create", async (Author author, IAuthorRepository authorRepository) =>
+        app.MapPost("/authors/create", async (Author author, IAuthorRepository authorRepository) =>
         {
             await authorRepository.AddAuthorAsync(author);
             return Results.Created($"/author/{author.Id}", author);
         });
 
-        app.MapPost("/author/createMany", async (List<Author> authors, IAuthorRepository authorRepository) =>
+        app.MapPost("/authors/createMany", async (List<Author> authors, IAuthorRepository authorRepository) =>
         {
             await authorRepository.AddAuthorsAsync(authors);
             return Results.Created();
         });
 
-        app.MapPut("/author/update", async (
+        app.MapPut("/authors/update", async (
             Author author,
             IAuthorReadRepository authorReadRepository,
             IAuthorRepository authorRepository
@@ -41,7 +43,7 @@ public static class AuthorEndpoints
             return Results.Ok("Author updated");
         });
 
-        app.MapDelete("/author/delete/{id:guid}",
+        app.MapDelete("/authors/delete/{id:guid}",
             async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
             {
                 var author = await authorReadRepository.GetAuthorByIdAsync(id);
@@ -54,7 +56,7 @@ public static class AuthorEndpoints
                 return Results.Ok("Author deleted");
             });
 
-        app.MapGet("/author/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
+        app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {
             var author = await authorReadRepository.GetAuthorByIdAsync(id);
             return author != null ? Results.Ok(author) : Results.NotFound("Author not found");

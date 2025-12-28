@@ -2,30 +2,30 @@
 import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
 import {ApiRequestData} from "../../shared/domain/api.request.data";
-import { Book } from '../models/book';
+import { Author } from '../models/author';
 @Injectable({
     providedIn: 'root'
 })
-export class BooksService {
-    private url = 'books';
+export class AuthorsService {
+    private url = 'authors';
 
     constructor(private httpService: ApiService) {
     }
 
-    GetAllBooks() {
+    GetAllAuthors() {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}`
         };
-        return firstValueFrom(this.httpService.get<Book[]>(apiRequest));
+        return firstValueFrom(this.httpService.get<Author[]>(apiRequest));
 
     }
 
-    GetBookById(id: string) {
+    GetAuthorById(id: string) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/${id}`,
             RequestBody: id
         };
-        return firstValueFrom(this.httpService.get<Book>(apiRequest));
+        return firstValueFrom(this.httpService.get<Author>(apiRequest));
     }
 
     // DeleteBook(id: string) {
@@ -36,20 +36,19 @@ export class BooksService {
     //     return firstValueFrom(this.httpService.put(apiRequest));
     // }
 
-    UpdateBook(book: any) {
+    UpdateAuthor(author: any) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
-            RequestBody: book
+            RequestBody: author
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateBook(book: any) {
+    CreateAuthor(author: any) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
-            RequestBody: book
+            RequestBody: author
         };
         return firstValueFrom(this.httpService.post(apiRequest));
     }
-
 }

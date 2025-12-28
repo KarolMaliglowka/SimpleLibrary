@@ -10,14 +10,14 @@ public static class BookEndpoints
 {
     public static void MapBookEndpoint(this WebApplication app)
     {
-        app.MapGet("/book", async (IBookService bookService) =>
+        app.MapGet("/books", async (IBookService bookService) =>
         {
             var books = await bookService.GetAllBooksAsync();
             return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
             //do zmiany dto
         });
 
-        app.MapPost("/book/create",
+        app.MapPost("/books/create",
             async (BookDto book,
                 IBookService bookService,
                 [FromServices] IValidator<BookDto> bookValidator, HttpContext context) =>
@@ -28,20 +28,20 @@ public static class BookEndpoints
                 return Results.Created();
             });
 
-        app.MapPost("/book/createMany",
+        app.MapPost("/books/createMany",
             async (List<BookDto> books, IBookService bookService) =>
             {
                 await bookService.CreateBooksAsync(books);
                 return Results.Created();
             });
 
-        app.MapGet("/book/{id:guid}", async (Guid id, IBookService bookService) =>
+        app.MapGet("/books/{id:guid}", async (Guid id, IBookService bookService) =>
         {
             var book = await bookService.GetBookByIdAsync(id);
             return Results.Ok(book);
         });
 
-        app.MapPatch("/book/update",
+        app.MapPatch("/books/update",
             async (BookDto book,
                 IBookService bookService,
                 [FromServices] IValidator<BookDto> bookValidator,
@@ -53,26 +53,26 @@ public static class BookEndpoints
                 return Results.Ok();
             });
 
-        app.MapGet("/book/author",
+        app.MapGet("/books/author",
             async ([FromQuery] string surname, [FromQuery] string name, IBookService bookService) =>
             {
                 var book = await bookService.GetBooksByAuthorAsync(surname, name);
                 return Results.Ok(book);
             });
 
-        app.MapGet("/book/category", async ([FromQuery] string name, IBookService bookService) =>
+        app.MapGet("/books/category", async ([FromQuery] string name, IBookService bookService) =>
         {
             var book = await bookService.GetBooksByCategoryAsync(name);
             return Results.Ok(book);
         });
 
-        app.MapGet("/book/publisher", async ([FromQuery] string name, IBookService bookService) =>
+        app.MapGet("/books/publisher", async ([FromQuery] string name, IBookService bookService) =>
         {
             var book = await bookService.GetBooksByPublisherAsync(name);
             return Results.Ok(book);
         });
 
-        app.MapGet("/book/{name}", async (string name, IBookService bookService) =>
+        app.MapGet("/books/{name}", async (string name, IBookService bookService) =>
             await bookService.GetBookByNameAsync(name)
                 is { } book
                 ? Results.Ok(book)

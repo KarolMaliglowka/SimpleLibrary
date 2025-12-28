@@ -19,10 +19,12 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
     {
         var publishersList = await publisherRepository.GetPublishersAsync();
         return publishersList.Select(p => new PublisherDto()
-        {
-            Id = p.Id,
-            Name = p.Name
-        }).ToList();
+            {
+                Id = p.Id,
+                Name = p.Name
+            })
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 
     public async Task CreatePublisherAsync(PublisherDto publisher)
