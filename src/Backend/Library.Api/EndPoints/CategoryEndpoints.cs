@@ -34,22 +34,22 @@ public static class CategoryEndpoints
                 return Results.NoContent();
             });
 
-        app.MapGet("/categories/{id:guid}", async (Guid id, ICategoryService categoryService) =>
-            await categoryService.GetCategoryByIdAsync(id)
+        app.MapGet("/categories/{id:guid}",
+            async (Guid id, ICategoryService categoryService) =>
+                await categoryService.GetCategoryByIdAsync(id)
+                    is { } category
+                    ? Results.Ok(category)
+                    : Results.NotFound());
+
+        app.MapGet("/categories/{name}",
+            async ([Required] string name, ICategoryService categoryService) =>
+            await categoryService.GetCategoryByNameAsync(name)
                 is { } category
                 ? Results.Ok(category)
                 : Results.NotFound());
 
-        app.MapGet("/categories/{name}", async ([Required] string name, ICategoryService categoryService) =>
-            await categoryService.GetCategoryByNameAsync(name)
-            is { } category
-            ? Results.Ok(category)
-            : Results.NotFound());
-        
-        app.MapDelete("/categories/delete/{id:guid}", async (Guid id, ICategoryService categoryService) =>
-            await categoryService.GetCategoryByIdAsync(id)
-                is { } category
-                ? Results.Ok(category)
-                : Results.NotFound());
+        app.MapDelete("/categories/delete/{id:guid}",
+            async (Guid id, ICategoryService categoryService) =>
+                await categoryService.DeleteCategoryAsync(id));
     }
 }

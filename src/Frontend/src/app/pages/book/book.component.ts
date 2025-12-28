@@ -70,7 +70,6 @@ export class BookComponent implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: any) => {
-                console.log(data);
                 this.books = data;
                 this.loading = false;
                 this.cd.markForCheck();

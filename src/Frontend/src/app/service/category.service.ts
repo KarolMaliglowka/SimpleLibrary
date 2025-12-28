@@ -28,16 +28,15 @@ export class CategoriesService {
         return firstValueFrom(this.httpService.get<Category>(apiRequest));
     }
 
-    // DeleteBook(id: string) {
-    //     let apiRequest = <ApiRequestData>{
-    //         Url: `${this.url}/book/${id}`,
-    //         RequestBody: id
-    //     };
-    //     return firstValueFrom(this.httpService.put(apiRequest));
-    // }
+    DeleteCategory(id: string) {
+         let apiRequest = <ApiRequestData>{
+             Url: `${this.url}/delete/${id}`,
+             RequestBody: id
+         };
+         return firstValueFrom(this.httpService.delete(apiRequest));
+     }
 
     UpdateCategory(category: Category) {
-        console.log(`${this.url}/update`);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: category

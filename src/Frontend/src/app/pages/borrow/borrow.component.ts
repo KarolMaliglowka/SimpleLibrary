@@ -26,7 +26,7 @@ import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
       TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
       ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
       FormsModule, InputNumber, IconFieldModule, InputIconModule,
-      ButtonModule, PaginatorModule, TooltipModule, NamesListPipe, ConfirmDialog
+      ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
   ],
     providers: [
         MessageService, ConfirmationService, BorrowsService

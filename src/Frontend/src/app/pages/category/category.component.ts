@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {ConfirmDialog} from "primeng/confirmdialog";
+import {Dialog} from "primeng/dialog";
 import { Toast } from 'primeng/toast';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -20,15 +21,16 @@ import { CategoriesService } from '../../service/category.service';
     styleUrls: ['./category.component.scss'],
     imports: [
         ButtonModule,
+        Dialog,
         ToolbarModule,
         TableModule,
         IconFieldModule,
         InputIconModule,
         InputTextModule,
         ReactiveFormsModule,
-        DialogModule,
         Toast,
-        CommonModule
+        CommonModule,
+        ConfirmDialog
     ],
     providers: [
         MessageService,
@@ -50,7 +52,8 @@ export class CategoryComponent implements OnInit {
         private categoriesService: CategoriesService,
         private fb: FormBuilder,
         private cd: ChangeDetectorRef,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService
     ) {}
 
     async ngOnInit() {
@@ -107,10 +110,27 @@ export class CategoryComponent implements OnInit {
     }
     deleteCategory(category: Category) {
         console.log('Delete', category);
-        //await this.categoriesService.DeleteCategory(newCategory);
+        this.categoriesService.DeleteCategory(category.id as string);
     }
 
     messageInfo(message: string, kind: string) {
         this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
+
+    confirm(category: Category) {
+        this.confirmationService.confirm({
+            header: 'Are you confirm delete: ' + category.name + '?',
+            message: 'Please confirm to \n\b proceed.',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+                this.categories = this.categories.filter((val) => val.id !== category.id);
+                this.deleteCategory(category);
+            },
+            reject: () => {
+                this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
+            },
+        });
+    }
+    protected readonly HTMLInputElement = HTMLInputElement;
 }

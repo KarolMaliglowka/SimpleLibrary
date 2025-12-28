@@ -17,13 +17,13 @@ import {Table} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
-import { ToggleSwitch } from 'primeng/toggleswitch';
+import {ToggleSwitch} from 'primeng/toggleswitch';
 import {Book} from '../../models/book';
 import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
 
 @Component({
-  selector: 'app-books-to-borrow',
+    selector: 'app-books-to-borrow',
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
@@ -34,8 +34,8 @@ import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
     providers: [
         MessageService, ConfirmationService, BooksService
     ],
-  templateUrl: './books-to-borrow.component.html',
-  styleUrl: './books-to-borrow.component.scss'
+    templateUrl: './books-to-borrow.component.html',
+    styleUrl: './books-to-borrow.component.scss'
 })
 export class BooksToBorrowComponent implements OnInit {
     bookDialog: boolean = false;
@@ -77,7 +77,7 @@ export class BooksToBorrowComponent implements OnInit {
         });
     }
 
-    toolt(book: Book){
+    toolt(book: Book) {
         return book.description;
     }
 
@@ -98,7 +98,5 @@ export class BooksToBorrowComponent implements OnInit {
         return index;
     }
 
-
-
-        protected readonly HTMLInputElement = HTMLInputElement;
+    protected readonly HTMLInputElement = HTMLInputElement;
 }
