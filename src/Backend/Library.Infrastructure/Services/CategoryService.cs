@@ -16,7 +16,7 @@ public interface ICategoryService
     Task DeleteCategoryAsync(Guid guid);
 }
 
-public class CategoryService(ICategoryRepository categoryRepository) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository, IBookRepository bookRepository) : ICategoryService
 {
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
@@ -24,7 +24,8 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         return categoriesList.Select(c => new CategoryDto
             {
                 Id = c.Id,
-                Name = c.Name
+                Name = c.Name,
+                isDelete = c.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();
@@ -97,6 +98,16 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         {
             throw new Exception("Category not found");
         }
-        await categoryRepository.DeleteCategoriesAsync(id);
+
+        var booksList = await bookRepository.GetAllAsync();
+        var isCategoryForSomeBook = booksList.Any(x => x.Category?.Name == categoryExist.Name);
+        if (isCategoryForSomeBook)
+        {
+            
+            throw new Exception("Category is in use");
+        }
+
+        categoryExist.SetSoftDelete();
+        await categoryRepository.Update(categoryExist);
     }
 }

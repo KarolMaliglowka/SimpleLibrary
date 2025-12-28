@@ -69,7 +69,7 @@ export class CategoryComponent implements OnInit {
         this.categoriesService
             .GetAllCategories()
             .then((data) => {
-                this.categories = data;
+                this.categories = data.filter(x => !x.isDelete);
                 this.cd.markForCheck();
             })
             .catch(() => {});
@@ -109,7 +109,6 @@ export class CategoryComponent implements OnInit {
         await this.loadData();
     }
     deleteCategory(category: Category) {
-        console.log('Delete', category);
         this.categoriesService.DeleteCategory(category.id as string);
     }
 
@@ -123,9 +122,9 @@ export class CategoryComponent implements OnInit {
             message: 'Please confirm to \n\b proceed.',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                var tst = this.deleteCategory(category);
                 this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
                 this.categories = this.categories.filter((val) => val.id !== category.id);
-                this.deleteCategory(category);
             },
             reject: () => {
                 this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });

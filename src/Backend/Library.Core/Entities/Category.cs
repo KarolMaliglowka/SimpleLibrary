@@ -18,6 +18,7 @@ public sealed class Category : BaseClass
     }
     
     public Name Name { get; set; }
+    public bool IsDeleted { get; set; }
     public ICollection<Book> Books => _books.AsReadOnly();
 
     public void SetCategory(string category)
@@ -28,6 +29,12 @@ public sealed class Category : BaseClass
         }
 
         Name = category;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
         UpdatedAt = DateTime.UtcNow;
     }
 }

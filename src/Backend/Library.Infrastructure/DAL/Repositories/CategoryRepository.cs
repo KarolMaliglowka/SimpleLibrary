@@ -42,14 +42,4 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
         await context.Categories.AddRangeAsync(category);
         await context.SaveChangesAsync();
     }
-
-    public async Task DeleteCategoriesAsync(Guid? id)
-    {
-        var categoryToDelete = await GetCategoryByIdAsync(id);
-        if (categoryToDelete != null)
-        {
-            context.Categories.Remove(categoryToDelete);
-            await context.SaveChangesAsync();
-        }
-    }
 }
