@@ -31,8 +31,8 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
             a.Surname.ToLower() == surname.ToLower()
         ).ToListAsync();
 
-    public Task<Author?> GetAuthorByNameAsync(string name) =>
-        _context.Authors.SingleOrDefaultAsync(a => a.Name == name);
+    public Task<Author?> GetAuthorByNameAsync(string name, string surName) =>
+        _context.Authors.FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName);
 
     public Task<Author?> GetAuthorByIdAsync(Guid id) =>
         _context.Authors.SingleOrDefaultAsync(a => a.Id == id);

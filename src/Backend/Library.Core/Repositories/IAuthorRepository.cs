@@ -22,7 +22,7 @@ public interface IAuthorReadRepository
 {
         Task<List<Author>> GetAuthorsAsync();
         Task<Author?> GetAuthorByIdAsync(Guid id);
-        Task<Author?> GetAuthorByNameAsync(string name);
+        Task<Author?> GetAuthorByNameAsync(string name, string surName);
         Task<List<Author>> GetAuthorBySurnameAsync(string surname);
         Task<List<Author>> GetAuthorsWithBooksAsync();
         Task<Author?> GetAuthorAsync(string surname,string? name = null);

@@ -9,13 +9,17 @@ public class Author : BaseClass
     public ICollection<Book> Books { get; set; }
     public string FullName => $"{Name} {Surname}";
 
-    public Author(Name? name, string? surname = null)
+    public Author(string? name, string? surname = null)
     {
         Id = Guid.NewGuid();
         SetName(name!);
         SetSurname(surname!);
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public Author()
+    {
     }
 
     public void SetName(string name)
