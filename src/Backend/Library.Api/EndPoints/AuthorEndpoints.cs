@@ -1,6 +1,7 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
+using Library.Infrastructure.Exceptions;
 using Library.Infrastructure.Services;
 
 namespace Library.Api.EndPoints;
@@ -10,15 +11,21 @@ public static class AuthorEndpoints
     public static void MapAuthorEndpoints(this WebApplication app)
     {
         app.MapGet("/authors", async (IAuthorService authorService) =>
-        {
-            var authors = await authorService.GetAuthorsAsync();
-            return Results.Ok(authors);
-        });
+            await authorService.GetAuthorsAsync() is { } author
+                ? Results.Ok(author)
+                : Results.NotFound());
 
-        app.MapPost("/authors/create", async (Author author, IAuthorRepository authorRepository) =>
+        app.MapPost("/authors/create", async (AuthorDto author, IAuthorService authorService) =>
         {
-            await authorRepository.AddAuthorAsync(author);
-            return Results.Created($"/author/{author.Id}", author);
+            try
+            {
+                var id = await authorService.CreateAuthorAsync(author);
+                return Results.Created($"/author/{id}", new { Id = id });
+            }
+            catch (AuthorAlreadyExistsException ex)
+            {
+                return Results.Content(ex.Message);
+            }
         });
 
         app.MapPost("/authors/createMany", async (List<Author> authors, IAuthorRepository authorRepository) =>
