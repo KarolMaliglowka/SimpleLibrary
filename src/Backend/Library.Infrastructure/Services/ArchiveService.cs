@@ -5,17 +5,34 @@ using Library.Infrastructure.Exceptions;
 
 namespace Library.Infrastructure.Services;
 
+/// <summary>
+/// Service responsible for creating archive entries when a borrowed book is returned.
+/// </summary>
 public interface IArchiveService
 {
+    /// <summary>
+    /// Creates an archive entry based on a borrow record.
+    /// </summary>
+    /// <param name="borrow">Borrow entity representing a book borrowing.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     Task AddArchive(Borrow borrow);
 }
 
+/// <summary>
+/// Implementation of <see cref="IArchiveService"/> responsible for storing archive records.
+/// </summary>
 public class ArchiveService : IArchiveService
 {
     private readonly IBookService _bookService;
     private readonly IUserService _userService;
     private readonly IArchiveRepository _archiveRepository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ArchiveService"/> class.
+    /// </summary>
+    /// <param name="bookService">Service used to retrieve book data.</param>
+    /// <param name="userService">Service used to retrieve user data.</param>
+    /// <param name="archiveRepository">Repository used to persist archive records.</param>
     public ArchiveService(
         IBookService bookService,
         IUserService userService,
@@ -26,6 +43,14 @@ public class ArchiveService : IArchiveService
         _archiveRepository = archiveRepository;
     }
 
+    /// <summary>
+    /// Adds a new archive entry for a returned book.
+    /// </summary>
+    /// <param name="borrow">Borrow entity containing information about the borrowing event.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the borrow object is null.</exception>
+    /// <exception cref="UserNotFoundException">Thrown when the user associated with the borrow record does not exist.</exception>
+    /// <exception cref="BookNotFoundException">Thrown when the book associated with the borrow record does not exist.</exception>
+    /// <returns>A task representing the asynchronous archive creation operation.</returns>
     public async Task AddArchive(Borrow borrow)
     {
         ArgumentNullException.ThrowIfNull(borrow);
