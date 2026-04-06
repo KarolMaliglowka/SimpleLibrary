@@ -31,8 +31,16 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
             a.Surname.ToLower() == surname.ToLower()
         ).ToListAsync();
 
-    public Task<Author?> GetAuthorByNameAsync(string name, string surName) =>
-        _context.Authors.FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName);
+    public Task<Author?> GetAuthorsBySurnameAndNameAsync(string? surName, string? name = null)
+    {
+        if (surName != null)
+        {   
+            return _context.Authors.FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName);        
+        }
+    
+        return null;
+    }
+    
 
     public Task<Author?> GetAuthorByIdAsync(Guid id) =>
         _context.Authors.SingleOrDefaultAsync(a => a.Id == id);
@@ -80,7 +88,7 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
         await _context.SaveChangesAsync();
     }
 
-    public Task<Author?> GetAuthorAsync(string surname, string? name = null) =>
+    public Task<Author?> GetAuthorAsync(string? surname, string? name = null) =>
         _context.Authors.SingleOrDefaultAsync(a =>
             a.Surname == surname &&
             (name == null || (a.Name != null && a.Name == name))
@@ -93,4 +101,9 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
                 x.Name == name &&
                 x.Surname == surname
             );
+
+    public async Task<List<Author>> GetAuthorsListBySurnameAndName(string? surName, string? name = null) => 
+     await _context.Authors
+         .Where(x => x.Surname == surName && name != null && x.Name == name)
+         .ToListAsync();
 }

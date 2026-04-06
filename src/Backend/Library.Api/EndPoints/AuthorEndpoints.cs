@@ -24,7 +24,7 @@ public static class AuthorEndpoints
             }
             catch (AuthorAlreadyExistsException ex)
             {
-                return Results.Conflict(ex.Message);
+                return Results.Content(ex.Message);
             }
         });
 

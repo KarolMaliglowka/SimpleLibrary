@@ -1,6 +1,7 @@
 ﻿using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
+using Library.Infrastructure.Exceptions;
 using Library.Infrastructure.Factories;
 
 namespace Library.Infrastructure.Services;
@@ -278,27 +279,32 @@ public class BookService(
         await bookRepository.UpdateBook(updatedBook);
     }
 
-    public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null!)
+    
+    //zmiana na jednego autora - tylko - i wyszukiwanie książek 
+    public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string? authorName = null)
     {
-        var listOfAuthor = await authorReadRepository.GetAuthorBySurnameAsync(authorSurname);
-        if (listOfAuthor is null)
+        var listOfAuthor = await authorReadRepository.GetAuthorsListBySurnameAndName(authorSurname, authorName);
+        if (listOfAuthor is null || listOfAuthor .Count == 0)
         {
-            throw new Exception("Author not found.");
+            throw new AuthorNotFoundException();
         }
 
         var author = listOfAuthor.FirstOrDefault();
         if (listOfAuthor.Count == 1)
         {
             author = listOfAuthor.FirstOrDefault();
+            //tutaj poprawic pobieranie z listy książek tylko tych z jednym autorem
         }
-        else if (!string.IsNullOrWhiteSpace(authorName))
+        else if (!string.IsNullOrWhiteSpace(authorName)) // zmienić
         {
+            //tutaj pobieraie z listy ksiązek z autorami z listy 
+            
             author = listOfAuthor.FirstOrDefault(x =>
                 string.Equals(x.Name!, authorName, StringComparison.CurrentCultureIgnoreCase));
-            if (author is null)
-            {
-                throw new Exception("Author not found.");
-            }
+            // if (author is null)
+            // {
+            //     throw new AuthorNotFoundException();
+            // }
         }
 
         var booksList = await bookRepository.GetAllAsync();
@@ -324,13 +330,16 @@ public class BookService(
                 IsAvailable = x.IsAvailable
             }).ToList();
     }
+    
+    //find books by author
+    
 
     public async Task<List<BookDto>> GetBooksByCategoryAsync(string category)
     {
         var categoryInSystem = await categoryRepository.GetCategoryByNameAsync(category);
         if (categoryInSystem is null)
         {
-            throw new Exception("Category not found.");
+            throw new CategoryNotFoundException();
         }
 
         var booksList = await bookRepository.GetAllAsync();
@@ -363,7 +372,7 @@ public class BookService(
         var publisherInSystem = await publisherRepository.GetPublisherByNameAsync(publisher);
         if (publisherInSystem is null)
         {
-            throw new Exception("Publisher not found.");
+            throw new PublisherNotFoundException();
         }
 
         var booksList = await bookRepository.GetAllAsync();
@@ -395,7 +404,7 @@ public class BookService(
         var book = await bookRepository.GetBookByIdAsync(bookId);
         if (book == null)
         {
-            throw new NullReferenceException("Book not found");
+            throw new BookNotFoundException();
         }
 
         book.IsAvailable = isAvailable;
@@ -415,7 +424,7 @@ public class BookService(
                     {
                         Name = a.Name ?? "",
                         Surname = a.Surname ?? "",
-                        Id = x.Id
+                        Id = a.Id
                     }
                 ).ToList(),
                 UserId = x.User.Id,
