@@ -2,8 +2,8 @@ namespace Library.Infrastructure.Exceptions;
 
 public class BookNotFoundException : Exception
 {
-    public BookNotFoundException()
-        : base("Book not found")
+    public BookNotFoundException(string? name = null)
+        : base($"Book {name} not found")
     {
     }
 }

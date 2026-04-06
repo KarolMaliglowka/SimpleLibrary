@@ -3,6 +3,7 @@ using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Exceptions;
 using Library.Infrastructure.Factories;
+using Microsoft.Extensions.Logging;
 
 namespace Library.Infrastructure.Services;
 
@@ -14,7 +15,7 @@ public interface IBookService
     Task<BookDto> GetBookByNameAsync(string name);
     Task CreateBooksAsync(List<BookDto> book);
     Task UpdateBook(BookDto book);
-    Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string authorName = null!);
+    Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string? authorName = null);
     Task<List<BookDto>> GetBooksByCategoryAsync(string category);
     Task<List<BookDto>> GetBooksByPublisherAsync(string publisher);
     Task SetBookAsBorrowed(Guid bookId, bool isAvailable);
@@ -27,19 +28,20 @@ public class BookService(
     IAuthorRepository authorRepository,
     IAuthorReadRepository authorReadRepository,
     ICategoryService categoryService,
-    ICategoryRepository categoryRepository
+    ICategoryRepository categoryRepository,
+    ILogger<BookService> _logger
 ) : IBookService
 {
     public async Task CreateBookAsync(BookDto book)
     {
-        var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher!.Name);
+        var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
         if (publisher == null)
         {
             publisher = PublisherFactory.CreatePublisher(book.Publisher);
             await publisherRepository.AddPublisherAsync(publisher);
         }
 
-        var category = await categoryRepository.GetCategoryByNameAsync(book.Category!.Name);
+        var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
         if (category is null)
         {
             category = new Category(book.Category.Name);
@@ -47,20 +49,27 @@ public class BookService(
         }
 
         var authors = new List<Author>();
-        foreach (var authorName in book.Authors!)
+        var authorsToImport = new List<Author>();
+        
+        var listOfAllAuthors = await authorReadRepository.GetAuthorsAsync();
+        
+        foreach (var authorName in book.Authors)
         {
-            var author = await authorReadRepository
-                .GetAuthorAsync(authorName.Surname, authorName.Name);
+            var author = listOfAllAuthors.FirstOrDefault(a => 
+                a.Name == authorName.Name && a.Surname == authorName.Surname);
+
             if (author is null)
             {
                 author = new Author(authorName.Name, authorName.Surname);
-                await authorRepository
-                    .AddAuthorAsync(author);
+                authorsToImport.Add(author);
+                listOfAllAuthors.Add(author); // ważne
             }
 
             authors.Add(author);
         }
 
+        await authorRepository.AddAuthorsAsync(authorsToImport);
+        
         var newBook = BookFactory
             .BuildBook(book, authors, publisher, category);
         await bookRepository
@@ -78,21 +87,21 @@ public class BookService(
                 Description = x.Description,
                 Publisher = new PublisherDto
                 {
-                    Name = x.Publisher!.Name,
-                    Id = x.Publisher!.Id
+                    Name = x.Publisher.Name,
+                    Id = x.Publisher.Id
                 },
                 Isbn = x.ISBN,
                 YearOfRelease = x.YearOfRelease,
                 Category = new CategoryDto
                 {
-                    Name = x.Category!.Name,
+                    Name = x.Category.Name,
                     Id = x.Category.Id
                 },
                 Authors = x.Authors?.Select(a => new AuthorDto
                     {
                         Name = a.Name ?? "",
                         Surname = a.Surname ?? "",
-                        Id = x.Id
+                        Id = a.Id
                     }
                 ).ToList(),
                 IsAvailable = x.IsAvailable
@@ -104,66 +113,20 @@ public class BookService(
     public async Task<BookDto> GetBookByIdAsync(Guid bookId)
     {
         var book = await bookRepository.GetBookByIdAsync(bookId);
-        if (book is null)
-        {
-            throw new Exception("Book not found.");
-        }
-
-        var authorsNames = book.Authors?
-            .Select(s => new AuthorDto
-            {
-                Name = s.Name ?? "",
-                Surname = s.Surname ?? "",
-            })
-            .ToList();
-        return new BookDto()
-        {
-            Id = book.Id,
-            Name = book.Name,
-            PagesCount = book.PagesCount,
-            Description = book.Description,
-            Publisher = new PublisherDto { Name = book.Publisher!.Name },
-            Isbn = book.ISBN,
-            YearOfRelease = book.YearOfRelease,
-            Category = new CategoryDto { Name = book.Category!.Name },
-            Authors = authorsNames,
-            IsAvailable = book.IsAvailable
-        };
+        return book is null ? throw new BookNotFoundException(bookId.ToString()) :
+            MapBookToDto(book);
     }
 
     public async Task<BookDto> GetBookByNameAsync(string name)
     {
         var book = await bookRepository.GetBookByNameAsync(name);
-        if (book is null)
-        {
-            throw new Exception("Book not found.");
-        }
-
-        var authorsNames = book.Authors?
-            .Select(s => new AuthorDto
-            {
-                Name = s.Name ?? "",
-                Surname = s.Surname ?? "",
-            })
-            .ToList();
-        return new BookDto()
-        {
-            Id = book.Id,
-            Name = book.Name,
-            PagesCount = book.PagesCount,
-            Description = book.Description,
-            Publisher = new PublisherDto { Name = book.Publisher!.Name },
-            Isbn = book.ISBN,
-            YearOfRelease = book.YearOfRelease,
-            Category = new CategoryDto { Name = book.Category!.Name },
-            Authors = authorsNames,
-            IsAvailable = book.IsAvailable
-        };
+        return book is null ? throw new BookNotFoundException(name) :
+            MapBookToDto(book);
     }
 
     public async Task CreateBooksAsync(List<BookDto> books)
     {
-        var categoryList = books.Select(x => x.Category!.Name)
+        var categoryList = books.Select(x => x.Category.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var categoryExistInSystem = await categoryService.GetCategoriesAsync();
@@ -178,7 +141,7 @@ public class BookService(
         }
 
         var publishersList = books
-            .Select(x => x.Publisher!.Name)
+            .Select(x => x.Publisher.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var publishersExistInSystem = await publisherRepository.GetPublishersAsync();
@@ -196,7 +159,7 @@ public class BookService(
             await publisherRepository.AddPublishersAsync(publishersToImport);
         }
 
-        var authorsList = books.SelectMany(x => x.Authors!)
+        var authorsList = books.SelectMany(x => x.Authors)
             .Distinct()
             .ToList();
         var authorsExistInSystem = await authorReadRepository.GetAuthorsAsync();
@@ -211,22 +174,23 @@ public class BookService(
         }
 
         var booksListToImport = new List<Book>();
+        
+        var listOfAllPublishers = await publisherRepository.GetPublishersAsync();
+        var listOfAllAuthors = await authorReadRepository.GetAuthorsAsync();
+        
         foreach (var book in books)
         {
-            var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher!.Name);
-            var authors = new List<Author>();
-            foreach (var authorName in book.Authors!)
-            {
-                var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
-                if (author is null)
-                {
-                    throw new Exception($"Author {authorName} not found.");
-                }
+            var publisher = listOfAllPublishers.FirstOrDefault(x => x.Name == book.Publisher.Name);
+            
+            var authors = book.Authors
+                .Select(bookAuthor =>
+                    listOfAllAuthors.FirstOrDefault(x =>
+                        x.Surname == bookAuthor.Surname && x.Name == bookAuthor.Name)
+                    ?? throw new AuthorNotFoundException($"{bookAuthor.Name} {bookAuthor.Surname}")
+                )
+                .ToList();
 
-                authors.Add(author);
-            }
-
-            var category = await categoryRepository.GetCategoryByNameAsync(book.Category!.Name);
+            var category = await categoryRepository.GetCategoryByNameAsync(book.Category?.Name);
 
             var newBook = BookFactory
                 .BuildBook(book, authors, publisher, category);
@@ -257,7 +221,7 @@ public class BookService(
         }
 
         var authors = new List<Author>();
-        foreach (var authorName in bookDto.Authors!)
+        foreach (var authorName in bookDto.Authors)
         {
             var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
             if (author is null)
@@ -272,99 +236,52 @@ public class BookService(
         var book = await bookRepository.GetBookByIdAsync(bookDto.Id);
         if (book is null)
         {
-            throw new Exception("Book not found.");
+            _logger.LogError("Book id: {book} not found", bookDto.Id);
+            throw new BookNotFoundException(bookDto.Id.ToString());
         }
 
         var updatedBook = BookFactory.BuildBook(bookDto, authors, publisher, category, book);
         await bookRepository.UpdateBook(updatedBook);
     }
 
-    
-    //zmiana na jednego autora - tylko - i wyszukiwanie książek 
     public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string? authorName = null)
     {
-        var listOfAuthor = await authorReadRepository.GetAuthorsListBySurnameAndName(authorSurname, authorName);
-        if (listOfAuthor is null || listOfAuthor .Count == 0)
+        var author = await authorReadRepository.GetAuthorAsync(authorSurname, authorName);
+        if (author is null)
         {
-            throw new AuthorNotFoundException();
-        }
-
-        var author = listOfAuthor.FirstOrDefault();
-        if (listOfAuthor.Count == 1)
-        {
-            author = listOfAuthor.FirstOrDefault();
-            //tutaj poprawic pobieranie z listy książek tylko tych z jednym autorem
-        }
-        else if (!string.IsNullOrWhiteSpace(authorName)) // zmienić
-        {
-            //tutaj pobieraie z listy ksiązek z autorami z listy 
+            var notExistAuthor = authorName is null
+                ? authorSurname
+                : $"{authorSurname} {authorName}";
             
-            author = listOfAuthor.FirstOrDefault(x =>
-                string.Equals(x.Name!, authorName, StringComparison.CurrentCultureIgnoreCase));
-            // if (author is null)
-            // {
-            //     throw new AuthorNotFoundException();
-            // }
+            _logger.LogError("Author {author} not found", notExistAuthor);
+            throw new AuthorNotFoundException(notExistAuthor);
         }
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x => x.Authors!.Any(a =>
+            .Where(x => x.Authors != null && x.Authors.Any(a =>
                 a.Name == author?.Name && a.Surname == author?.Surname))
-            .Select(x => new BookDto()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                PagesCount = x.PagesCount,
-                Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher!.Name },
-                Isbn = x.ISBN,
-                YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category!.Name },
-                Authors = x.Authors?.Select(a => new AuthorDto
-                    {
-                        Name = a.Name ?? "",
-                        Surname = a.Surname ?? "",
-                    }
-                ).ToList(),
-                IsAvailable = x.IsAvailable
-            }).ToList();
+            .Select(MapBookToDto)
+            .ToList();
     }
     
-    //find books by author
-    
-
     public async Task<List<BookDto>> GetBooksByCategoryAsync(string category)
     {
         var categoryInSystem = await categoryRepository.GetCategoryByNameAsync(category);
         if (categoryInSystem is null)
         {
-            throw new CategoryNotFoundException();
+            _logger.LogError("Category {name} not found",  category);
+            throw new CategoryNotFoundException(category);
         }
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x =>
-                (x.Category?.Name.Value.ToLower()!).Equals(categoryInSystem.Name.Value,
-                    StringComparison.CurrentCultureIgnoreCase))
-            .Select(x => new BookDto()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                PagesCount = x.PagesCount,
-                Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher!.Name },
-                Isbn = x.ISBN,
-                YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category!.Name },
-                Authors = x.Authors?.Select(a => new AuthorDto
-                    {
-                        Name = a.Name ?? "",
-                        Surname = a.Surname ?? "",
-                    }
-                ).ToList(),
-                IsAvailable = x.IsAvailable
-            }).ToList();
+            .Where(x => string.Equals(
+                x.Category?.Name.Value,
+                categoryInSystem.Name.Value,
+                StringComparison.CurrentCultureIgnoreCase))
+            .Select(MapBookToDto)
+            .ToList();
     }
 
     public async Task<List<BookDto>> GetBooksByPublisherAsync(string publisher)
@@ -372,31 +289,16 @@ public class BookService(
         var publisherInSystem = await publisherRepository.GetPublisherByNameAsync(publisher);
         if (publisherInSystem is null)
         {
-            throw new PublisherNotFoundException();
+            _logger.LogError("Publisher {name} not found", publisher);
+            throw new PublisherNotFoundException(publisher);
         }
 
         var booksList = await bookRepository.GetAllAsync();
         return booksList
-            .Where(x => string.Equals(x.Publisher!.Name, publisherInSystem.Name,
+            .Where(x => string.Equals(x.Publisher.Name, publisherInSystem.Name,
                 StringComparison.CurrentCultureIgnoreCase))
-            .Select(x => new BookDto()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                PagesCount = x.PagesCount,
-                Description = x.Description,
-                Publisher = new PublisherDto { Name = x.Publisher!.Name },
-                Isbn = x.ISBN,
-                YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto { Name = x.Category!.Name },
-                Authors = x.Authors?.Select(a => new AuthorDto
-                    {
-                        Name = a.Name ?? "",
-                        Surname = a.Surname ?? "",
-                    }
-                ).ToList(),
-                IsAvailable = x.IsAvailable
-            }).ToList();
+            .Select(MapBookToDto)
+            .ToList();
     }
 
     public async Task SetBookAsBorrowed(Guid bookId, bool isAvailable)
@@ -404,7 +306,8 @@ public class BookService(
         var book = await bookRepository.GetBookByIdAsync(bookId);
         if (book == null)
         {
-            throw new BookNotFoundException();
+            _logger.LogError("Book id: {id} not found", bookId);
+            throw new BookNotFoundException(bookId.ToString());
         }
 
         book.IsAvailable = isAvailable;
@@ -433,5 +336,26 @@ public class BookService(
             })
             .OrderBy(x => x.BookName)
             .ToList();
+    }
+    
+    private static BookDto MapBookToDto(Book book)
+    {
+        return new BookDto
+        {
+            Id = book.Id,
+            Name = book.Name,
+            PagesCount = book.PagesCount,
+            Description = book.Description,
+            Publisher = new PublisherDto { Name = book.Publisher!.Name },
+            Isbn = book.ISBN,
+            YearOfRelease = book.YearOfRelease,
+            Category = new CategoryDto { Name = book.Category!.Name },
+            Authors = book.Authors?.Select(a => new AuthorDto
+            {
+                Name = a.Name ?? "",
+                Surname = a.Surname ?? ""
+            }).ToList(),
+            IsAvailable = book.IsAvailable
+        };
     }
 }

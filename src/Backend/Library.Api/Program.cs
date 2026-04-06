@@ -4,8 +4,17 @@ using Library.Api.EndPoints;
 using Library.Infrastructure;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Validators;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 
 builder.Services.AddScoped<IValidator<BookDto>, BookDtoValidator>();
 builder.Services.AddScoped<IValidator<AuthorDto>, AuthorDtoValidator>();
