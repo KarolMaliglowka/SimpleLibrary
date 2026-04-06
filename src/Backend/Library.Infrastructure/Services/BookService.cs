@@ -197,7 +197,6 @@ public class BookService(
         return book is null ? throw new BookNotFoundException(bookId.ToString()) : MapBookToDto(book);
     }
 
-
     /// <summary>
     /// Retrieves a book by name.
     /// </summary>
