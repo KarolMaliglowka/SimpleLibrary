@@ -26,6 +26,11 @@ public sealed class ArchiveBuilder
         return this;
     }
 
+    /// <summary>
+    /// Archive builder
+    /// </summary>
+    /// <param name="bookAuthors"></param>
+    /// <returns>object</returns>
     public ArchiveBuilder SetAuthors(string bookAuthors)
     {
         _archive.BookAuthors = bookAuthors;
