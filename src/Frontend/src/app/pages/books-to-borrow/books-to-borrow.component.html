@@ -1,7 +1,15 @@
-<div class="card flex justify-left">
-    <p-toggleswitch [(ngModel)]="checked" (onChange)="loadData(checked)"/>
-    <div style="padding-left: 5px;"> Show with not available</div>
-</div>
+<div class="card">
+    <p-toast/>
+    <h2>Books to borrow</h2>
+
+    <p-toolbar class="m-1">
+        <ng-template #start>
+            <div class="flex justify-left">
+                <p-toggleswitch [(ngModel)]="checked" (onChange)="loadData(checked)"/>
+                <div style="padding-left: 5px; padding-top: 2px;"> Show with not available</div>
+            </div>
+        </ng-template>
+    </p-toolbar>
 
 <p-table
     #dt
@@ -16,7 +24,7 @@
 >
     <ng-template #caption>
         <div class="flex items-center justify-between">
-            <h5 class="m-0">Manage books</h5>
+            <h5 class="m-0">Manage books to borrow</h5>
             <p-iconfield>
                 <p-inputicon class="pi pi-search"/>
                 <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
