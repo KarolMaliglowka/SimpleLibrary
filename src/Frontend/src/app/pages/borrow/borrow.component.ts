@@ -54,6 +54,10 @@ export class BorrowComponent implements OnInit {
 
     ngOnInit() {
         this.loadData();
+        if(this.loadData() == null) {
+            console.log("Loading...");
+            //return "brak ksiązek";
+        }
     }
 
     loadData() {
