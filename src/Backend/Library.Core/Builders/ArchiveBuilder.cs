@@ -58,6 +58,12 @@ public sealed class ArchiveBuilder
 
     public Archive Build()
     {
+        if (_archive.BookId == Guid.Empty)
+            throw new InvalidOperationException("BookId is required");
+
+        if (_archive.UserId == Guid.Empty)
+            throw new InvalidOperationException("UserId is required");
+
         return _archive;
     }
 }

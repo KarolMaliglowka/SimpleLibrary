@@ -104,6 +104,11 @@
             </td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="7">No books to show</td>
+        </tr>
+    </ng-template>
 </p-table>
 
 <p-dialog [(visible)]="bookDialog" header="Book Details" [modal]="true">

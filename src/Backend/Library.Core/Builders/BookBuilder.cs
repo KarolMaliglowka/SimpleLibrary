@@ -90,7 +90,7 @@ public sealed class BookBuilder
     {
         if (string.IsNullOrWhiteSpace(input) || input.Length < minLength)
         {
-            throw new ArgumentException(
+            throw new ArgumentNullException(
                 $"{fieldName} cannot be empty and must have at least {minLength} characters.");
         }
     }

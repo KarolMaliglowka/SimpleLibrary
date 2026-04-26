@@ -60,6 +60,11 @@
             </td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="7">No pubslihers to show</td>
+        </tr>
+    </ng-template>
 </p-table>
 
 <p-dialog [(visible)]="publisherDialog" header="Publisher Details" [modal]="true">
