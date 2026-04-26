@@ -1,4 +1,6 @@
 <div class="card">
+    <p-toast/>
+    <h2>Borrows</h2>
     <p-table
         #dt
         [value]="borrows"
@@ -14,7 +16,7 @@
     >
         <ng-template #caption>
             <div class="flex items-center justify-between">
-                <h5 class="m-0">Manage users</h5>
+                <h5 class="m-0">Manage borrows</h5>
                 <p-iconfield>
                     <p-inputicon class="pi pi-search"/>
                     <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
