@@ -66,7 +66,7 @@
     </ng-template>
     <ng-template #body let-book>
         <tr>
-            <td style="min-width: 14rem" pTooltip="{{book.description}}">{{ book.name }}</td>
+            <td style="min-width: 14rem" pTooltip="{{book.description}}" tooltipPosition="right">{{ book.name }}</td>
             <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
             <td style="min-width: 5rem">{{ book.category.name }}</td>
             <td style="width: 5rem; text-align: center;">
@@ -100,6 +100,11 @@
                 />
             </td>
         </tr>
+        <ng-template #tooltipContent>
+            <div class="flex items-center" style="width: 100em; z-index: 999999999;">
+                <span> {{ book.description }}</span>
+            </div>
+        </ng-template>
     </ng-template>
     <ng-template pTemplate="emptymessage">
         <tr>

@@ -1,21 +1,5 @@
-:host ::ng-deep .p-tooltip .custom-tooltip {
-    width: 300px;
-    font-size: 14px;
-    color: yellow;
-    text-align: center;
-    background: transparent; /* tło bierze z tokena root */
-}
-
-:host ::ng-deep {
-    .p-tooltip.p-component.p-tooltip-bootom {
-        width: 800px !important;
+::ng-deep {
+    .p-tooltip {
+        max-width: 600px;
     }
-}
-
-:host ::ng-deep .p-button {
-}
-
-:host ::ng-deep .p-dialog {
-    width: 800px !important;
-    max-width: 90% !important; /* aby zachować responsywność */
 }
