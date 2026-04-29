@@ -17,7 +17,38 @@ export class PublishersService {
             Url: `${this.url}`
         };
         return firstValueFrom(this.httpService.get<Publisher[]>(apiRequest));
+    }
 
+    // GetAllPublishersDictionary() {
+    //     let apiRequest = <ApiRequestData>{
+    //         Url: `${this.url}/getpublishers`
+    //     };
+    //     return firstValueFrom(this.httpService.get<Record<string, string>[]>(apiRequest)
+    //         .then(arr =>
+    //         arr.flatMap(obj =>
+    //             Object.entries(obj).map(([key, value]) => ({
+    //                 label: value,
+    //                 value: key
+    //             }))
+    //         )
+    //     );
+    // }
+
+    GetAllPublishersDictionary() {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/getpublishers`
+        };
+
+        return firstValueFrom(
+            this.httpService.get<Record<string, string>[]>(apiRequest)
+        ).then(arr =>
+            arr.flatMap(obj =>
+                Object.entries(obj).map(([key, value]) => ({
+                    label: value,
+                    value: key
+                }))
+            )
+        );
     }
 
     GetPublisherById(id: string) {

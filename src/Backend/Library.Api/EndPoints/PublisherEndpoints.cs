@@ -35,5 +35,10 @@ public static class PublisherEndpoints
             var publisher = await publisherService.GetPublisherByNameAsync(name);
             return Results.Ok(publisher);
         });
+        
+        app.MapGet("/publishers/getPublishers", async (IPublisherService publisherService) =>
+            await publisherService.GetPublishersDictionaryAsync() is { } publishers
+                ? Results.Ok(publishers)
+                : Results.NotFound("No publishers found"));
     }
 }
