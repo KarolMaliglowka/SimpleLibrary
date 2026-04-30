@@ -51,4 +51,21 @@ export class CategoriesService {
         };
         return firstValueFrom(this.httpService.post(apiRequest));
     }
+
+    GetAllCategoriesDictionary() {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/getcategories`
+        };
+
+        return firstValueFrom(
+            this.httpService.get<Record<string, string>[]>(apiRequest)
+        ).then(arr =>
+            arr.flatMap(obj =>
+                Object.entries(obj).map(([key, value]) => ({
+                    name: value,
+                    id: key
+                }))
+            )
+        );
+    }
 }

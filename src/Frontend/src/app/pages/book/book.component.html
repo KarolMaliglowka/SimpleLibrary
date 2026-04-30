@@ -129,37 +129,37 @@
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Category</label>
-                <p-select [options]="countries" [(ngModel)]="selectedCountry" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full md:w-56">
+                <p-select [options]="categories" [(ngModel)]="selectedCategory" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
                         </div>
                     </ng-template>
-                    <ng-template let-country #item>
+                    <ng-template let-category #item>
                         <div class="flex items-center gap-2">
-                            <div>{{ country.name }}</div>
+                            <div>{{ category.name }}</div>
                         </div>
                     </ng-template>
                 </p-select>
             </div>
             <div>
-                <label for="label" class="block font-bold mb-3">Publisher</label>
-                <p-select [options]="publishers" [(ngModel)]="selectedPublisher" [filter]="true" appendTo="body" optionLabel="label" filterBy="label" [showClear]="true" placeholder="Select publisher" reqired class="w-full md:w-56">
+                <label for="name" class="block font-bold mb-3">Publisher</label>
+                <p-select [options]="publishers" [(ngModel)]="selectedPublisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
-                            <div>{{ selectedOption.label }}</div>
+                            <div>{{ selectedOption.name }}</div>
                         </div>
                     </ng-template>
                     <ng-template let-publisher #item>
                         <div class="flex items-center gap-2">
-                            <div>{{ publisher.label }}</div>
+                            <div>{{ publisher.name }}</div>
                         </div>
                     </ng-template>
                 </p-select>
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Authors</label>
-                <p-select [options]="countries" [(ngModel)]="selectedCountry" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full md:w-56">
+                <p-select [options]="countries" [(ngModel)]="selectedCountry" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>

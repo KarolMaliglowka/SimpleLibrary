@@ -21,6 +21,7 @@ import {Book} from '../../models/book';
 import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
 import {PublishersService} from '../../service/publisher.service';
+import {CategoriesService} from '../../service/category.service';
 
 @Component({
     selector: 'book-component',
@@ -34,7 +35,7 @@ import {PublishersService} from '../../service/publisher.service';
         ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
     ],
     providers: [
-        MessageService, ConfirmationService, BooksService, PublishersService
+        MessageService, ConfirmationService, BooksService, PublishersService, CategoriesService
     ]
 })
 export class BookComponent implements OnInit {
@@ -52,14 +53,17 @@ export class BookComponent implements OnInit {
 
     publishers: any[] | undefined;
     selectedPublisher: string | undefined;
-    selectedPublisherId: string | undefined;
+
+    categories: any[] | undefined;
+    selectedCategory: string | undefined;
 
     constructor(
         private bookService: BooksService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
-        private publisherService: PublishersService
+        private publisherService: PublishersService,
+        private categoriesService: CategoriesService
     ) {
     }
 
@@ -94,8 +98,16 @@ export class BookComponent implements OnInit {
 
         this.publisherService.GetAllPublishersDictionary()
             .then((data: any) => {
-                console.log(data);
                 this.publishers = data;
+                this.loading = false;
+                this.cd.markForCheck();
+            }).catch(() => {
+            this.loading = false;
+        });
+
+        this.categoriesService.GetAllCategoriesDictionary()
+            .then((data: any) => {
+                this.categories = data;
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {
@@ -104,6 +116,7 @@ export class BookComponent implements OnInit {
     }
 
     openNew() {
+        this.selectedPublisher = undefined;
         this.book = {};
         this.submitted = false;
         this.bookDialog = true;
@@ -114,9 +127,14 @@ export class BookComponent implements OnInit {
     }
 
     editBook(book: Book) {
-        console.log('costam',  book.publisher);
+        console.log(book);
         this.book = {...book};
-        this.selectedPublisherId = book.publisher;
+
+        this.selectedCategory = book.category;
+        console.log(this.selectedCategory);
+        this.selectedPublisher = book.publisher as string;
+        console.log(this.selectedPublisher);
+
         this.bookDialog = true;
     }
 
