@@ -51,4 +51,21 @@ export class AuthorsService {
         };
         return firstValueFrom(this.httpService.post(apiRequest));
     }
+
+    GetAllAuthorsDictionary() {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/getAuthors`
+        };
+
+        return firstValueFrom(
+            this.httpService.get<Record<string, string>[]>(apiRequest)
+        ).then(arr =>
+            arr.flatMap(obj =>
+                Object.entries(obj).map(([key, value]) => ({
+                    name: value,
+                    id: key
+                }))
+            )
+        );
+    }
 }

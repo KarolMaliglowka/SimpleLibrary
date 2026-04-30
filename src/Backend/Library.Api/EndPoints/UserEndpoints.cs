@@ -67,5 +67,11 @@ public static class UserEndpoints
             var authors = await userService.GetUsersWithBorrowedBooks();
             return Results.Ok(authors);
         });
+
+
+        app.MapGet("/users/getUsers", async (IUserService userService) =>
+            await userService.GetUsersDictionaryAsync() is { } users
+                ? Results.Ok(users)
+                : Results.NotFound("No publishers found"));
     }
 }
