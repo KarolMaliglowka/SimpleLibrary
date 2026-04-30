@@ -131,7 +131,7 @@ export class BookComponent implements OnInit {
         this.book = {...book};
 
         this.selectedCategory = book.category;
-        console.log(this.selectedCategory);
+        console.log(book.category);
         this.selectedPublisher = book.publisher as string;
         console.log(this.selectedPublisher);
 
