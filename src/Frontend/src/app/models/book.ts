@@ -9,6 +9,6 @@ export interface Book {
     publisher?: string;
     isbn?: string;
     yearOfRelease?: string;
-    category?: number;
+    category?: string;
     isAvailable?: boolean;
 }

@@ -50,5 +50,10 @@ public static class CategoryEndpoints
 
         app.MapDelete("/categories/delete/{id:guid}", async (Guid id, ICategoryService categoryService) =>
             await categoryService.DeleteCategoryAsync(id));
+        
+        app.MapGet("/categories/getCategories", async (ICategoryService categoryService) =>
+            await categoryService.GetCategoriesDictionaryAsync() is { } category
+                ? Results.Ok(category)
+                : Results.NotFound("No categories found."));
     }
 }

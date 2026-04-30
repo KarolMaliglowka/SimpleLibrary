@@ -11,6 +11,7 @@ public interface IPublisherService
     Task UpdatePublisher(PublisherDto publisher);
     Task<PublisherDto> GetPublisherByIdAsync(Guid id);
     Task<PublisherDto> GetPublisherByNameAsync(string name);
+    Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync();
 }
 
 public class PublisherService(IPublisherRepository publisherRepository) : IPublisherService
@@ -75,5 +76,17 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
             Id = publisher.Id,
             Name = publisher.Name
         };
+    }
+    
+    public async Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync()
+    {
+        var publishersList = await publisherRepository.GetPublishersAsync();
+        return publishersList
+            .OrderBy(x => x.Name.Value)
+            .Select(x => new Dictionary<Guid, string>
+            {
+                [x.Id] = x.Name.Value
+            })
+            .ToList();
     }
 }

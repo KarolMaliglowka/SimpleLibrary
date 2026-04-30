@@ -14,6 +14,7 @@ public interface ICategoryService
     Task<Category?> GetCategoryByIdAsync(Guid id);
     Task<Category?> GetCategoryByNameAsync(string name);
     Task DeleteCategoryAsync(Guid guid);
+    Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync();
 }
 
 public class CategoryService(ICategoryRepository categoryRepository, IBookRepository bookRepository) : ICategoryService
@@ -109,5 +110,17 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
 
         categoryExist.SetSoftDelete();
         await categoryRepository.Update(categoryExist);
+    }
+    
+    public async Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync()
+    {
+        var categoriesList = await categoryRepository.GetCategoriesAsync();
+        return categoriesList
+            .OrderBy(x => x.Name.Value)
+            .Select(x => new Dictionary<Guid, string>
+            {
+                [x.Id] = x.Name.Value
+            })
+            .ToList();
     }
 }

@@ -127,38 +127,66 @@
                 <textarea id="description" pTextarea [(ngModel)]="book.description" required rows="3" cols="20"
                           fluid></textarea>
             </div>
-
-            <!--            <div>-->
-            <!--                <span class="block font-bold mb-4">Category</span>-->
-            <!--                <div class="grid grid-cols-12 gap-4">-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category1">Accessories</label>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category2">Clothing</label>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category3">Electronics</label>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category4">Fitness</label>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-
+            <div>
+                <label for="name" class="block font-bold mb-3">Category</label>
+                <p-select [options]="categories" [(ngModel)]="selectedCategory" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
+                    <ng-template #selectedItem let-selectedOption>
+                        <div class="flex items-center gap-2">
+                            <div>{{ selectedOption.name }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-category #item>
+                        <div class="flex items-center gap-2">
+                            <div>{{ category.name }}</div>
+                        </div>
+                    </ng-template>
+                </p-select>
+            </div>
+            <div>
+                <label for="name" class="block font-bold mb-3">Publisher</label>
+                <p-select [options]="publishers" [(ngModel)]="selectedPublisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
+                    <ng-template #selectedItem let-selectedOption>
+                        <div class="flex items-center gap-2">
+                            <div>{{ selectedOption.name }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-publisher #item>
+                        <div class="flex items-center gap-2">
+                            <div>{{ publisher.name }}</div>
+                        </div>
+                    </ng-template>
+                </p-select>
+            </div>
+            <div>
+                <label for="name" class="block font-bold mb-3">Authors</label>
+                <p-select [options]="countries" [(ngModel)]="selectedCountry" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">
+                    <ng-template #selectedItem let-selectedOption>
+                        <div class="flex items-center gap-2">
+                            <div>{{ selectedOption.name }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-country #item>
+                        <div class="flex items-center gap-2">
+                            <div>{{ country.name }}</div>
+                        </div>
+                    </ng-template>
+                </p-select>
+            </div>
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     <label for="book.pagesCount" class="block font-bold mb-3">Pages count</label>
                     <p-inputnumber id="pagesCount" [(ngModel)]="book.pagesCount" fluid/>
                 </div>
-                <!--                <div class="col-span-6">-->
-                <!--                    <label for="book.yearOfRelease" class="block font-bold mb-3">Year od release</label>-->
-                <!--                    <p-datePicker id="yearOfRelease" [(ngModel)]="book.yearOfRelease" dateFormat="dd.mm.yy" fluid />-->
-                <!--                </div>-->
+                <div class="col-span-6">
+                    <label for="book.pagesCount" class="block font-bold mb-3">Year of release</label>
+                    <p-inputnumber id="pagesCount" [(ngModel)]="book.yearOfRelease" fluid/>
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12">
+                    <label for="book.pagesCount" class="block font-bold mb-3">ISBN</label>
+                    <p-inputnumber id="pagesCount" [(ngModel)]="book.isbn" fluid/>
+                </div>
             </div>
         </div>
     </ng-template>

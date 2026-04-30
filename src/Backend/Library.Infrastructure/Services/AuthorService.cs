@@ -29,12 +29,14 @@ public interface IAuthorService
     /// </summary>
     /// <returns>Lista autorów w postaci AuthorDto.</returns>
     Task<List<AuthorDto>> GetAuthorsAsync();
+    Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync();
 }
 
 /// <summary>
 /// Implementacja serwisu odpowiedzialnego za zarządzanie autorami.
 /// </summary>
-public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository) : IAuthorService
+public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository)
+    : IAuthorService
 {
     /// <summary>
     /// Tworzy nowego autora w bazie danych.
@@ -87,6 +89,18 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
                 Surname = x.Surname ?? string.Empty
             })
             .OrderBy(x => x.Name)
+            .ToList();
+    }
+
+    public async Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync()
+    {
+        var authorsList = await authorReadRepository.GetAuthorsAsync();
+        return authorsList
+            .OrderBy(x => x.FullName)
+            .Select(x => new Dictionary<Guid, string>
+            {
+                [x.Id] = x.FullName
+            })
             .ToList();
     }
 }

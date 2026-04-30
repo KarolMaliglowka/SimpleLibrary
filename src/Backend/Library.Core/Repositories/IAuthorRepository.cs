@@ -27,4 +27,5 @@ public interface IAuthorReadRepository
         Task<List<Author>> GetAuthorsWithBooksAsync();
         Task<Author?> GetAuthorAsync(string? surname,string? name = null);
         Task<List<Author>> GetAuthorsListBySurnameAndName(string? surName, string? name = null);
+        
 }

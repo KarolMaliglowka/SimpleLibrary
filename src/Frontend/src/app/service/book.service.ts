@@ -20,6 +20,13 @@ export class BooksService {
 
     }
 
+    GetAllBooksDictionary() {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/getbooks`
+        };
+        return firstValueFrom(this.httpService.get<Record<string, string>[]>(apiRequest));
+    }
+
     GetBookById(id: string) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/${id}`,

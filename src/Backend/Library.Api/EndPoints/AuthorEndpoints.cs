@@ -68,5 +68,10 @@ public static class AuthorEndpoints
             var author = await authorReadRepository.GetAuthorByIdAsync(id);
             return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
         });
+        
+        app.MapGet("/authors/getAuthors", async (IAuthorService authorService) =>
+            await authorService.GetAuthorsDictionaryAsync() is { } author
+                ? Results.Ok(author)
+                : Results.NotFound());
     }
 }

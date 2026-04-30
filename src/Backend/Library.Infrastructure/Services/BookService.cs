@@ -86,6 +86,8 @@ public interface IBookService
     /// </summary>
     /// <returns>List of borrowed books with user details.</returns>
     Task<List<BorrowDto>> GetBorrowingBooksWithUsers();
+
+    Task<List<Dictionary<Guid, string>>> GetBooksDictionaryAsync();
 }
 
 public class BookService(
@@ -487,5 +489,19 @@ public class BookService(
             }).ToList(),
             IsAvailable = book.IsAvailable
         };
+    }
+    
+    public async Task<List<Dictionary<Guid, string>>> GetBooksDictionaryAsync()
+    {
+        var booksList = await bookRepository.GetAllAsync();
+        
+        return booksList
+            .OrderBy(x => x.Name.Value)
+            .Select(x => new Dictionary<Guid, string>
+            {
+                [x.Id] = $"{x.Name.Value} - {string.Join(", ", x.Authors!.Select(a => a.FullName))}"
+            })
+            .ToList()
+            ;
     }
 }

@@ -20,6 +20,8 @@ import {TooltipModule} from 'primeng/tooltip'
 import {Book} from '../../models/book';
 import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
+import {PublishersService} from '../../service/publisher.service';
+import {CategoriesService} from '../../service/category.service';
 
 @Component({
     selector: 'book-component',
@@ -33,16 +35,8 @@ import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
         ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
     ],
     providers: [
-        MessageService, ConfirmationService, BooksService
+        MessageService, ConfirmationService, BooksService, PublishersService, CategoriesService
     ]
-    // styles: [
-    //     `:host ::ng-deep .p-dialog .product-image {
-    //         width: 300px;
-    //         margin: 0 auto 2rem auto;
-    //         display: block;
-    //         color: red;
-    //     }`
-    // ]
 })
 export class BookComponent implements OnInit {
     bookDialog: boolean = false;
@@ -54,23 +48,66 @@ export class BookComponent implements OnInit {
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
 
+    countries: any[] | undefined;
+    selectedCountry: string | undefined;
+
+    publishers: any[] | undefined;
+    selectedPublisher: string | undefined;
+
+    categories: any[] | undefined;
+    selectedCategory: string | undefined;
+
     constructor(
         private bookService: BooksService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
+        private publisherService: PublishersService,
+        private categoriesService: CategoriesService
     ) {
     }
 
     ngOnInit() {
         this.loadData();
+        console.log(this.selectedPublisher);
     }
 
     loadData() {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: any) => {
+                console.log(data);
                 this.books = data;
+                this.loading = false;
+                this.cd.markForCheck();
+            }).catch(() => {
+            this.loading = false;
+        });
+        this.countries = [
+            { name: 'Australia', code: 'AU' },
+            { name: 'Brazil', code: 'BR' },
+            { name: 'China', code: 'CN' },
+            { name: 'Egypt', code: 'EG' },
+            { name: 'France', code: 'FR' },
+            { name: 'Germany', code: 'DE' },
+            { name: 'India', code: 'IN' },
+            { name: 'Japan', code: 'JP' },
+            { name: 'Spain', code: 'ES' },
+            { name: 'United States', code: 'US' }
+        ];
+
+        this.publisherService.GetAllPublishersDictionary()
+            .then((data: any) => {
+                this.publishers = data;
+                this.loading = false;
+                this.cd.markForCheck();
+            }).catch(() => {
+            this.loading = false;
+        });
+
+        this.categoriesService.GetAllCategoriesDictionary()
+            .then((data: any) => {
+                this.categories = data;
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {
@@ -79,6 +116,7 @@ export class BookComponent implements OnInit {
     }
 
     openNew() {
+        this.selectedPublisher = undefined;
         this.book = {};
         this.submitted = false;
         this.bookDialog = true;
@@ -89,7 +127,14 @@ export class BookComponent implements OnInit {
     }
 
     editBook(book: Book) {
+        console.log(book);
         this.book = {...book};
+
+        this.selectedCategory = book.category;
+        console.log(book.category);
+        this.selectedPublisher = book.publisher as string;
+        console.log(this.selectedPublisher);
+
         this.bookDialog = true;
     }
 
@@ -141,6 +186,9 @@ export class BookComponent implements OnInit {
 
     saveBook() {
         this.submitted = true;
+
+        console.log(this.book);
+        this.book.publisher = this.selectedPublisher;
 
         if (this.book.name?.trim()) {
             if (this.book.id) {
