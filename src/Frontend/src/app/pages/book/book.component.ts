@@ -137,8 +137,8 @@ export class BookComponent implements OnInit {
         console.log(book.category);
         this.selectedPublisher = book.publisher as string;
         console.log(this.selectedPublisher);
-        this.selectedAuthors = book.authors?.filter(x => x.name);
-        console.log(this.selectedAuthors);
+        //this.selectedAuthors = book.authors?.filter(x => x.name);
+        //console.log(this.selectedAuthors);
         this.bookDialog = true;
     }
 
