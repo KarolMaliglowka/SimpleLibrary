@@ -4,8 +4,8 @@ namespace Library.Core.Entities;
 
 public class Author : BaseClass
 {
-    public Name? Name { get; set; }
-    public string? Surname { get; set; }
+    public Name? Name { get; private set; }
+    public string? Surname { get; private set; }
     public ICollection<Book> Books { get; set; }
     public string FullName => $"{Name} {Surname}";
 

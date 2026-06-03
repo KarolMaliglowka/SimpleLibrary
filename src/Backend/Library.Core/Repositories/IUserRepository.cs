@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<User?> GetUserByNameAsync(string name);
     Task<User?> GetUserBySurnameAsync(string surname);
     Task AddUserAsync(User user);
-    Task UpdateUser(User user);
+    void UpdateUser(User user);
     Task AddUsersAsync(List<User> users);
     Task<List<User>> GetUsersWithBorrowedBooksAsync();
     Task<User?> GetUserWithBorrowedBooksByIdAsync(Guid id);

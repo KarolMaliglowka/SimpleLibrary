@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Core;
+using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 
@@ -15,7 +16,8 @@ public class BorrowService(
     IUserRepository userRepository,
     IBookRepository bookRepository,
     IBookService bookService,
-    IArchiveService archiveService)
+    IArchiveService archiveService,
+    IUnitOfWork unitOfWork)
     : IBorrowService
 {
     public async Task CreateBorrow(BorrowDto borrowDto)
@@ -33,6 +35,7 @@ public class BorrowService(
         var newBorrow = new Borrow(user, book, DateTime.UtcNow);
         await borrowRepository.AddBorrowAsync(newBorrow);
         await bookService.SetBookAsBorrowed(book.Id, false);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteBorrow(Guid id)
@@ -42,8 +45,9 @@ public class BorrowService(
         {
             throw new NullReferenceException("Borrow not found");
         }
-        await borrowRepository.RemoveBorrowAsync(borrowToRemove);
+        borrowRepository.RemoveBorrow(borrowToRemove);
         await bookService.SetBookAsBorrowed(borrowToRemove.BookId, true);
         await archiveService.AddArchive(borrowToRemove);
+        await unitOfWork.SaveChangesAsync();
     }
 }

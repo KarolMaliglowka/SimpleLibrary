@@ -1,4 +1,5 @@
-﻿using Library.Core.Builders;
+﻿using Library.Core;
+using Library.Core.Builders;
 using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.Exceptions;
@@ -26,6 +27,7 @@ public class ArchiveService : IArchiveService
     private readonly IBookService _bookService;
     private readonly IUserService _userService;
     private readonly IArchiveRepository _archiveRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArchiveService"/> class.
@@ -33,14 +35,17 @@ public class ArchiveService : IArchiveService
     /// <param name="bookService">Service used to retrieve book data.</param>
     /// <param name="userService">Service used to retrieve user data.</param>
     /// <param name="archiveRepository">Repository used to persist archive records.</param>
+    /// <param name="unitOfWork"></param>
     public ArchiveService(
         IBookService bookService,
         IUserService userService,
-        IArchiveRepository archiveRepository)
+        IArchiveRepository archiveRepository,
+        IUnitOfWork unitOfWork)
     {
         _bookService = bookService;
         _userService = userService;
         _archiveRepository = archiveRepository;
+        _unitOfWork = unitOfWork;
     }
 
     /// <summary>
@@ -76,5 +81,6 @@ public class ArchiveService : IArchiveService
             .Build();
 
         await _archiveRepository.AddArchive(archive);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

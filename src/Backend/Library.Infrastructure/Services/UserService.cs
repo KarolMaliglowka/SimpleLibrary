@@ -1,4 +1,5 @@
-﻿using Library.Core.Repositories;
+﻿using Library.Core;
+using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Factories;
 
@@ -19,7 +20,7 @@ public interface IUserService
     Task<List<Dictionary<Guid, string>>> GetUsersDictionaryAsync();
 }
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork) : IUserService
 {
     public async Task<List<UserDto>> GetUsers()
     {
@@ -35,6 +36,7 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         var user = UserFactory.BuildUser(userDto);
         await userRepository.AddUserAsync(user);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task UpdateUser(UserDto userDto)
@@ -46,7 +48,8 @@ public class UserService(IUserRepository userRepository) : IUserService
         }
 
         var updatedUser = UserFactory.BuildUser(userDto, user);
-        await userRepository.UpdateUser(updatedUser);
+        userRepository.UpdateUser(updatedUser);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<UserDto> GetUserById(Guid id)
@@ -77,7 +80,8 @@ public class UserService(IUserRepository userRepository) : IUserService
 
         UserFactory.ActiveUser(isActive, user);
 
-        await userRepository.UpdateUser(user);
+        userRepository.UpdateUser(user);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task CreateUsersAsync(List<UserDto> usersDto)
@@ -93,6 +97,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             .ToList();
 
         await userRepository.AddUsersAsync(users);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<UserDto> GetUserWithBorrowedBooksById(Guid id)

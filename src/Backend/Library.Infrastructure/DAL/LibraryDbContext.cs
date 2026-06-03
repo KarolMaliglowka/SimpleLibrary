@@ -1,9 +1,10 @@
-﻿using Library.Core.Entities;
+﻿using Library.Core;
+using Library.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.DAL;
 
-public class LibraryDbContext : DbContext
+public class LibraryDbContext : DbContext, IUnitOfWork
 {
     public DbSet<Book> Books { get; set; }
     public DbSet<Borrow> Borrows { get; set; }
