@@ -1,10 +1,10 @@
-﻿using Library.Core;
+﻿using Library.Application.DTO;
+using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 public interface ICategoryService
 {

@@ -1,12 +1,12 @@
-﻿using Library.Core;
+﻿using Library.Application.DTO;
+using Library.Application.Factories;
+using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 using Library.Infrastructure.Exceptions;
-using Library.Infrastructure.Factories;
 using Microsoft.Extensions.Logging;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 /// <summary>
 /// Defines operations for managing books in the library system.

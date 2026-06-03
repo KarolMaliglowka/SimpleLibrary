@@ -4,7 +4,7 @@ using Library.Core.Entities;
 using Library.Core.Repositories;
 using Library.Infrastructure.Exceptions;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 /// <summary>
 /// Service responsible for creating archive entries when a borrowed book is returned.

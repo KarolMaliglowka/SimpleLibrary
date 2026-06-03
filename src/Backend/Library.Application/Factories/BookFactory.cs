@@ -1,8 +1,8 @@
-﻿using Library.Core.Builders;
+﻿using Library.Application.DTO;
+using Library.Core.Builders;
 using Library.Core.Entities;
-using Library.Infrastructure.DTO;
 
-namespace Library.Infrastructure.Factories;
+namespace Library.Application.Factories;
 
 public static class BookFactory
 {

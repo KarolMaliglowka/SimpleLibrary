@@ -1,10 +1,10 @@
-﻿using Library.Core;
+﻿using Library.Application.DTO;
+using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 using Library.Infrastructure.Exceptions;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 /// <summary>
 /// Interfejs serwisu odpowiedzialnego za operacje związane z autorami.

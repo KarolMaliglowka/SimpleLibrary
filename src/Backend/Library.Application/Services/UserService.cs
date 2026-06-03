@@ -1,9 +1,9 @@
-﻿using Library.Core;
+﻿using Library.Application.DTO;
+using Library.Application.Factories;
+using Library.Core;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
-using Library.Infrastructure.Factories;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 public interface IUserService
 {

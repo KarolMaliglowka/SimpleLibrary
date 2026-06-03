@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Library.Api.Extensions;
-using Library.Infrastructure.DTO;
-using Library.Infrastructure.Services;
+using Library.Application.DTO;
+using Library.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.EndPoints;

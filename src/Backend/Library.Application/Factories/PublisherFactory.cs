@@ -1,8 +1,8 @@
 ﻿using Library.Core.Builders;
 using Library.Core.Entities;
-using Library.Infrastructure.DTO;
+using Library.Application.DTO;
 
-namespace Library.Infrastructure.Factories;
+namespace Library.Application.Factories;
 
 public static class PublisherFactory
 {

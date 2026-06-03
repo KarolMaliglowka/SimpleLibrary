@@ -1,6 +1,5 @@
-﻿using Library.Infrastructure.DTO;
-using Library.Infrastructure.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Library.Application.DTO;
+using Library.Application.Services;
 
 namespace Library.Api.EndPoints;
 

@@ -1,4 +1,4 @@
-﻿namespace Library.Infrastructure.DTO;
+﻿namespace Library.Application.DTO;
 
 public class BorrowDto
 {
