@@ -21,7 +21,6 @@ public class PublisherRepository : IPublisherRepository
     public async Task<Publisher> AddPublisherAsync(Publisher publisher)
     {
         await _context.Publishers.AddAsync(publisher);
-        await _context.SaveChangesAsync();
         return publisher;
     }
 
@@ -40,12 +39,10 @@ public class PublisherRepository : IPublisherRepository
     public async Task AddPublishersAsync(List<Publisher> publishers)
     {
         await _context.Publishers.AddRangeAsync(publishers);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task UpdatePublisherAsync(Publisher publisher)
+    public void UpdatePublisher(Publisher publisher)
     {
         _context.Publishers.Update(publisher);
-        await _context.SaveChangesAsync();
     }
 }

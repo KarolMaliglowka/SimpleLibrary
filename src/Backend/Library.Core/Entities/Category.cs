@@ -17,8 +17,8 @@ public sealed class Category : BaseClass
         CreatedAt = DateTime.UtcNow;
     }
     
-    public Name Name { get; set; }
-    public bool IsDeleted { get; set; }
+    public Name Name { get; private set; }
+    public bool IsDeleted { get; private set; }
     public ICollection<Book> Books => _books.AsReadOnly();
 
     public void SetCategory(string category)

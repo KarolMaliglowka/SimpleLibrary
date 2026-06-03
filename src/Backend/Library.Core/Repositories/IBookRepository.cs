@@ -8,7 +8,7 @@ public interface IBookRepository
     Task<Book?> GetBookByIdAsync(Guid id);
     Task AddBookAsync(Book book);
     Task<List<Book>> GetAllAsync();
-    Task UpdateBook(Book book);
+    void UpdateBook(Book book);
     Task<Book?> GetBookByNameAsync(string name);
     IQueryable<Book> QueryAsNoTracking();
     Task<List<Borrow>> GetBorrowBooksWithUsersAsync();

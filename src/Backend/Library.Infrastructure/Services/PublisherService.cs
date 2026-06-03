@@ -1,4 +1,5 @@
-﻿using Library.Core.Repositories;
+﻿using Library.Core;
+using Library.Core.Repositories;
 using Library.Infrastructure.DTO;
 using Library.Infrastructure.Factories;
 
@@ -14,7 +15,7 @@ public interface IPublisherService
     Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync();
 }
 
-public class PublisherService(IPublisherRepository publisherRepository) : IPublisherService
+public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork) : IPublisherService
 {
     public async Task<List<PublisherDto>> GetPublishersAsync()
     {
@@ -33,6 +34,7 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
         ArgumentNullException.ThrowIfNull(publisher);
         var newPublisher = PublisherFactory.CreatePublisher(publisher);
         await publisherRepository.AddPublisherAsync(newPublisher);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task UpdatePublisher(PublisherDto publisher)
@@ -45,7 +47,8 @@ public class PublisherService(IPublisherRepository publisherRepository) : IPubli
         }
 
         var publisherToUpdate = PublisherFactory.CreatePublisher(publisher, oldPublisher);
-        await publisherRepository.UpdatePublisherAsync(publisherToUpdate);
+        publisherRepository.UpdatePublisher(publisherToUpdate);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<PublisherDto> GetPublisherByIdAsync(Guid id)
