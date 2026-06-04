@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Library.Infrastructure.DTO;
-using Library.Infrastructure.Services;
+using Library.Application.DTO;
+using Library.Application.Services;
 
 namespace Library.Api.EndPoints;
 

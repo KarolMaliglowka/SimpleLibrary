@@ -1,4 +1,5 @@
-﻿using Library.Infrastructure.DAL;
+﻿using Library.Core;
+using Library.Infrastructure.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,5 +18,8 @@ public static class ServicesRegistration
                 .EnableSensitiveDataLogging()
                 .UseNpgsql(configuration.GetSection("ConnectionString:default").Value);
         });
+        
+        services.AddScoped<IUnitOfWork>(
+            sp => sp.GetRequiredService<LibraryDbContext>());
     }
 }

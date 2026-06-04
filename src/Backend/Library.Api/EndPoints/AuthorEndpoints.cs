@@ -1,8 +1,8 @@
-﻿using Library.Core.Entities;
+﻿using Library.Application.DTO;
+using Library.Application.Services;
+using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 using Library.Infrastructure.Exceptions;
-using Library.Infrastructure.Services;
 
 namespace Library.Api.EndPoints;
 
@@ -30,7 +30,7 @@ public static class AuthorEndpoints
 
         app.MapPost("/authors/createMany", async (List<Author> authors, IAuthorRepository authorRepository) =>
         {
-            await authorRepository.AddAuthorsAsync(authors);
+            authorRepository.AddAuthors(authors);// przerobić na serwis z warstwy application
             return Results.Created();
         });
 
@@ -46,26 +46,26 @@ public static class AuthorEndpoints
                 return Results.NotFound("Author not found :/");
             }
 
-            await authorRepository.UpdateAuthorAsync(author);
+            await authorRepository.UpdateAuthorAsync(author);// przerobić na serwis z warstwy application
             return Results.Ok("Author updated");
         });
 
         app.MapDelete("/authors/delete/{id:guid}",
             async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
             {
-                var author = await authorReadRepository.GetAuthorByIdAsync(id);
+                var author = await authorReadRepository.GetAuthorByIdAsync(id);// przerobić na serwis z warstwy application
                 if (author == null)
                 {
                     return Results.NotFound("Author not found");
                 }
 
-                await authorRepository.DeleteAuthorAsync(author);
+                authorRepository.DeleteAuthor(author); // przerobić na serwis z warstwy application
                 return Results.Ok("Author deleted");
             });
 
         app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {
-            var author = await authorReadRepository.GetAuthorByIdAsync(id);
+            var author = await authorReadRepository.GetAuthorByIdAsync(id);// przerobić na serwis z warstwy application
             return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
         });
         

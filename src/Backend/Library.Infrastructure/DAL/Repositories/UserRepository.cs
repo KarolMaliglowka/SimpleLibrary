@@ -26,19 +26,16 @@ public class UserRepository(LibraryDbContext context) : IUserRepository
     public async Task AddUserAsync(User user)
     {
         await context.Users.AddAsync(user);
-        await context.SaveChangesAsync();
     }
 
-    public async Task UpdateUser(User user)
+    public void UpdateUser(User user)
     {
         context.Users.Update(user);
-        await context.SaveChangesAsync();
     }
 
     public async Task AddUsersAsync(List<User> users)
     {
         await context.Users.AddRangeAsync(users);
-        await context.SaveChangesAsync();
     }
     
     public async Task<List<User>> GetUsersWithBorrowedBooksAsync() => await 

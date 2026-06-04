@@ -1,9 +1,9 @@
-﻿using Library.Core.Builders;
+﻿using Library.Application.DTO;
+using Library.Application.Factories;
+using Library.Core.Builders;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.ValueObjects;
-using Library.Infrastructure.DTO;
-using Library.Infrastructure.Factories;
 
 namespace Library.Tests.Unit;
 

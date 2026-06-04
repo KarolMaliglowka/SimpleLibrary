@@ -67,4 +67,21 @@ export class UsersService {
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
+
+    GetAllUsersDictionary() {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/getusers`
+        };
+
+        return firstValueFrom(
+            this.httpService.get<Record<string, string>[]>(apiRequest)
+        ).then(arr =>
+            arr.flatMap(obj =>
+                Object.entries(obj).map(([key, value]) => ({
+                    name: value,
+                    id: key
+                }))
+            )
+        );
+    }
 }

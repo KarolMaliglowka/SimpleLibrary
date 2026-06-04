@@ -1,9 +1,10 @@
-﻿using Library.Core.Entities;
+﻿using Library.Application.DTO;
+using Library.Core;
+using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 public interface ICategoryService
 {
@@ -17,7 +18,7 @@ public interface ICategoryService
     Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync();
 }
 
-public class CategoryService(ICategoryRepository categoryRepository, IBookRepository bookRepository) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository, IBookRepository bookRepository, IUnitOfWork unitOfWork) : ICategoryService
 {
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
@@ -42,6 +43,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
 
         var category = new Category(categoryDto.Name);
         await categoryRepository.AddCategoryAsync(category);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task UpdateCategoryAsync(CategoryDto category)
@@ -53,7 +55,8 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         }
 
         existingCategory.SetCategory(category.Name);
-        await categoryRepository.Update(existingCategory);
+        categoryRepository.Update(existingCategory);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<Category?> GetCategoryByIdAsync(Guid id)
@@ -89,6 +92,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         if (categoriesToImport.Count != 0)
         {
             await categoryRepository.AddCategoriesAsync(categoriesToImport);
+            await unitOfWork.SaveChangesAsync();
         }
     }
 
@@ -109,7 +113,8 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         }
 
         categoryExist.SetSoftDelete();
-        await categoryRepository.Update(categoryExist);
+        categoryRepository.Update(categoryExist);
+        await unitOfWork.SaveChangesAsync();
     }
     
     public async Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync()

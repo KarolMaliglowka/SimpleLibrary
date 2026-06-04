@@ -26,13 +26,11 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
     public async Task AddBorrowAsync(Borrow borrow)
     {
         await context.Borrows.AddAsync(borrow);
-        await context.SaveChangesAsync();
     }
 
-    public async Task RemoveBorrowAsync(Borrow borrow)
+    public void RemoveBorrow(Borrow borrow)
     {
         context.Borrows.Remove(borrow);
-        await context.SaveChangesAsync();
     }
 
     public async Task<Borrow?> GetBorrowByUserIdAndBookIdAsync(Guid userId, Guid bookId)

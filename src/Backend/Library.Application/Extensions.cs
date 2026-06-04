@@ -1,7 +1,7 @@
-﻿using Library.Core.Entities;
-using Library.Infrastructure.DTO;
+﻿using Library.Application.DTO;
+using Library.Core.Entities;
 
-namespace Library.Infrastructure;
+namespace Library.Application;
 
 public static class Extensions
 {

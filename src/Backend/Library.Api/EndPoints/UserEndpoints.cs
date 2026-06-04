@@ -1,6 +1,5 @@
-﻿using Library.Infrastructure.DTO;
-using Library.Infrastructure.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Library.Application.DTO;
+using Library.Application.Services;
 
 namespace Library.Api.EndPoints;
 
@@ -67,5 +66,11 @@ public static class UserEndpoints
             var authors = await userService.GetUsersWithBorrowedBooks();
             return Results.Ok(authors);
         });
+
+
+        app.MapGet("/users/getUsers", async (IUserService userService) =>
+            await userService.GetUsersDictionaryAsync() is { } users
+                ? Results.Ok(users)
+                : Results.NotFound("No publishers found"));
     }
 }

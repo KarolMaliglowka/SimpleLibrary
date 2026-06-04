@@ -159,15 +159,15 @@
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Authors</label>
-                <p-select [options]="countries" [(ngModel)]="selectedCountry" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">
+                <p-select [options]="authors" [(ngModel)]="selectedAuthors" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
                         </div>
                     </ng-template>
-                    <ng-template let-country #item>
+                    <ng-template let-author #item>
                         <div class="flex items-center gap-2">
-                            <div>{{ country.name }}</div>
+                            <div>{{ author.name }}</div>
                         </div>
                     </ng-template>
                 </p-select>

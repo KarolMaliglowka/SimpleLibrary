@@ -22,6 +22,7 @@ import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
 import {PublishersService} from '../../service/publisher.service';
 import {CategoriesService} from '../../service/category.service';
+import {AuthorsService} from '../../service/author.service';
 
 @Component({
     selector: 'book-component',
@@ -35,7 +36,12 @@ import {CategoriesService} from '../../service/category.service';
         ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
     ],
     providers: [
-        MessageService, ConfirmationService, BooksService, PublishersService, CategoriesService
+        MessageService,
+        ConfirmationService,
+        BooksService,
+        PublishersService,
+        CategoriesService,
+        AuthorsService
     ]
 })
 export class BookComponent implements OnInit {
@@ -48,14 +54,14 @@ export class BookComponent implements OnInit {
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
 
-    countries: any[] | undefined;
-    selectedCountry: string | undefined;
-
     publishers: any[] | undefined;
     selectedPublisher: string | undefined;
 
     categories: any[] | undefined;
     selectedCategory: string | undefined;
+
+    authors: any[] | undefined;
+    selectedAuthors: string[] | undefined;
 
     constructor(
         private bookService: BooksService,
@@ -63,7 +69,8 @@ export class BookComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
         private publisherService: PublishersService,
-        private categoriesService: CategoriesService
+        private categoriesService: CategoriesService,
+        private authorsService: AuthorsService
     ) {
     }
 
@@ -76,25 +83,12 @@ export class BookComponent implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: any) => {
-                console.log(data);
                 this.books = data;
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {
             this.loading = false;
         });
-        this.countries = [
-            { name: 'Australia', code: 'AU' },
-            { name: 'Brazil', code: 'BR' },
-            { name: 'China', code: 'CN' },
-            { name: 'Egypt', code: 'EG' },
-            { name: 'France', code: 'FR' },
-            { name: 'Germany', code: 'DE' },
-            { name: 'India', code: 'IN' },
-            { name: 'Japan', code: 'JP' },
-            { name: 'Spain', code: 'ES' },
-            { name: 'United States', code: 'US' }
-        ];
 
         this.publisherService.GetAllPublishersDictionary()
             .then((data: any) => {
@@ -108,6 +102,15 @@ export class BookComponent implements OnInit {
         this.categoriesService.GetAllCategoriesDictionary()
             .then((data: any) => {
                 this.categories = data;
+                this.loading = false;
+                this.cd.markForCheck();
+            }).catch(() => {
+            this.loading = false;
+        });
+
+        this.authorsService.GetAllAuthorsDictionary()
+            .then((data: any) => {
+                this.authors = data;
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {
@@ -134,7 +137,8 @@ export class BookComponent implements OnInit {
         console.log(book.category);
         this.selectedPublisher = book.publisher as string;
         console.log(this.selectedPublisher);
-
+        //this.selectedAuthors = book.authors?.filter(x => x.name);
+        //console.log(this.selectedAuthors);
         this.bookDialog = true;
     }
 

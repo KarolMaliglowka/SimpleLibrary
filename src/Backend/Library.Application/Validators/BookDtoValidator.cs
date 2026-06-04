@@ -1,9 +1,9 @@
 using FluentValidation;
+using Library.Application.DTO;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.Infrastructure.Validators;
+namespace Library.Application.Validators;
 
 public class BookDtoValidator : AbstractValidator<BookDto>
 {

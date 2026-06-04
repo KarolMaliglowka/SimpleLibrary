@@ -1,8 +1,8 @@
 using FluentValidation;
+using Library.Application.DTO;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 
-namespace Library.Infrastructure.Validators;
+namespace Library.Application.Validators;
 
 public class AuthorDtoValidator : AbstractValidator<AuthorDto>
 {

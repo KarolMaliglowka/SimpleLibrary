@@ -16,13 +16,11 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
     public async Task AddBookAsync(Book book)
     {
         await context.Books.AddAsync(book);
-        await context.SaveChangesAsync();
     }
 
     public async Task AddBooksAsync(IEnumerable<Book> books)
     {
         await context.Books.AddRangeAsync(books);
-        await context.SaveChangesAsync();
     }
 
     public async Task<Book?> GetBookByIdAsync(Guid id) =>
@@ -39,10 +37,9 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
             .Include(c => c.Category)
             .FirstOrDefaultAsync(b => b.Name == name);
 
-    public async Task UpdateBook(Book book)
+    public void UpdateBook(Book book)
     {
         context.Books.Update(book);
-        await context.SaveChangesAsync();
     }
 
     public IQueryable<Book> QueryAsNoTracking() =>

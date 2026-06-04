@@ -1,8 +1,9 @@
-﻿using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
-using Library.Infrastructure.Factories;
+﻿using Library.Application.DTO;
+using Library.Application.Factories;
+using Library.Core;
+using Library.Core.Repositories;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 public interface IUserService
 {
@@ -16,16 +17,17 @@ public interface IUserService
     Task CreateUsersAsync(List<UserDto> usersDto);
     Task<UserDto> GetUserWithBorrowedBooksById(Guid id);
     Task<List<UserDto>> GetUsersWithBorrowedBooks();
+    Task<List<Dictionary<Guid, string>>> GetUsersDictionaryAsync();
 }
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork) : IUserService
 {
     public async Task<List<UserDto>> GetUsers()
     {
         var users = await userRepository.GetUsersAsync();
         return users.Select(user =>
-            user.BuildUserDto()
-        )
+                user.BuildUserDto()
+            )
             .OrderBy(x => x.Surname)
             .ToList();
     }
@@ -34,6 +36,7 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         var user = UserFactory.BuildUser(userDto);
         await userRepository.AddUserAsync(user);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task UpdateUser(UserDto userDto)
@@ -45,7 +48,8 @@ public class UserService(IUserRepository userRepository) : IUserService
         }
 
         var updatedUser = UserFactory.BuildUser(userDto, user);
-        await userRepository.UpdateUser(updatedUser);
+        userRepository.UpdateUser(updatedUser);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<UserDto> GetUserById(Guid id)
@@ -76,7 +80,8 @@ public class UserService(IUserRepository userRepository) : IUserService
 
         UserFactory.ActiveUser(isActive, user);
 
-        await userRepository.UpdateUser(user);
+        userRepository.UpdateUser(user);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task CreateUsersAsync(List<UserDto> usersDto)
@@ -92,6 +97,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             .ToList();
 
         await userRepository.AddUsersAsync(users);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<UserDto> GetUserWithBorrowedBooksById(Guid id)
@@ -141,39 +147,39 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         var users = await userRepository.GetUsersWithBorrowedBooksAsync();
         return users.Select(user => new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Surname = user.Surname,
-            Email = user.Email,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            City = user.City,
-            Country = user.Country,
-            PostalCode = user.PostalCode,
-            IsActive = user.IsActive,
-            FullName = user.FullName,
-            Books = user.Borrows.Select(x => x.Book).ToList().Select(y => new BookDto()
             {
-                Id = y.Id,
-                Name = y.Name,
-                PagesCount = y.PagesCount,
-                Description = y.Description,
-                Publisher = new PublisherDto { Name = y.Publisher?.Name, Id = y.Publisher.Id },
-                Isbn = y.ISBN,
-                YearOfRelease = y.YearOfRelease,
-                Category = new CategoryDto { Name = y.Category?.Name, Id = y.Category.Id },
-                Authors = y.Authors?.Select(s => new AuthorDto
-                    {
-                        Name = s.Name ?? "",
-                        Surname = s.Surname ?? "",
-                        Id = s.Id
-                    })
-                    .ToList(),
-                IsAvailable = y.IsAvailable
-            }).ToList()
-        }).Where(x => 
-            x.Books.Count != 0)
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Address = user.Address,
+                PhoneNumber = user.PhoneNumber,
+                City = user.City,
+                Country = user.Country,
+                PostalCode = user.PostalCode,
+                IsActive = user.IsActive,
+                FullName = user.FullName,
+                Books = user.Borrows.Select(x => x.Book).ToList().Select(y => new BookDto()
+                {
+                    Id = y.Id,
+                    Name = y.Name,
+                    PagesCount = y.PagesCount,
+                    Description = y.Description,
+                    Publisher = new PublisherDto { Name = y.Publisher?.Name, Id = y.Publisher.Id },
+                    Isbn = y.ISBN,
+                    YearOfRelease = y.YearOfRelease,
+                    Category = new CategoryDto { Name = y.Category?.Name, Id = y.Category.Id },
+                    Authors = y.Authors?.Select(s => new AuthorDto
+                        {
+                            Name = s.Name ?? "",
+                            Surname = s.Surname ?? "",
+                            Id = s.Id
+                        })
+                        .ToList(),
+                    IsAvailable = y.IsAvailable
+                }).ToList()
+            }).Where(x =>
+                x.Books.Count != 0)
             .ToList();
     }
 
@@ -184,5 +190,17 @@ public class UserService(IUserRepository userRepository) : IUserService
         return new string(Enumerable.Repeat(chars, longString)
             .Select(s => s[random.Next(s.Length)])
             .ToArray());
+    }
+
+    public async Task<List<Dictionary<Guid, string>>> GetUsersDictionaryAsync()
+    {
+        var usersList = await userRepository.GetUsersAsync();
+        return usersList
+            .OrderBy(x => x.FullName)
+            .Select(x => new Dictionary<Guid, string>
+            {
+                [x.Id] = x.FullName
+            })
+            .ToList();
     }
 }

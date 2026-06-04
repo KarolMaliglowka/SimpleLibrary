@@ -1,9 +1,9 @@
 using FluentValidation;
 using Library.Api;
 using Library.Api.EndPoints;
+using Library.Application.DTO;
+using Library.Application.Validators;
 using Library.Infrastructure;
-using Library.Infrastructure.DTO;
-using Library.Infrastructure.Validators;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

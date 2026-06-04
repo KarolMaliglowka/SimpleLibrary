@@ -9,6 +9,6 @@ public interface ICategoryRepository
     Task<Category?> GetCategoryByIdAsync(Guid? id);
     Task<Category?> GetCategoryByNameAsync(string name);
     Task<bool> ExistCategoryAsync(Category category);
-    Task Update(Category category);
+    void Update(Category category);
     Task AddCategoriesAsync(IEnumerable<Category> category);
 }

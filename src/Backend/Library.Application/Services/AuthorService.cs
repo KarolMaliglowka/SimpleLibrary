@@ -1,9 +1,10 @@
-﻿using Library.Core.Entities;
+﻿using Library.Application.DTO;
+using Library.Core;
+using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 using Library.Infrastructure.Exceptions;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 /// <summary>
 /// Interfejs serwisu odpowiedzialnego za operacje związane z autorami.
@@ -35,7 +36,7 @@ public interface IAuthorService
 /// <summary>
 /// Implementacja serwisu odpowiedzialnego za zarządzanie autorami.
 /// </summary>
-public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository)
+public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository, IUnitOfWork unitOfWork)
     : IAuthorService
 {
     /// <summary>
@@ -56,6 +57,7 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
 
         var newAuthors = new Author(authors.Name, authors.Surname);
         await authorRepository.AddAuthorAsync(newAuthors);
+        await unitOfWork.SaveChangesAsync();
         return newAuthors.Id;
     }
 
@@ -70,7 +72,8 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
             .Select(autor => new Author(autor.Name, autor.Surname))
             .ToList();
 
-        await authorRepository.AddAuthorsAsync(newAuthors);
+        authorRepository.AddAuthors(newAuthors);
+        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>

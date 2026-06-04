@@ -1,11 +1,12 @@
-﻿using Library.Core.Entities;
+﻿using Library.Application.DTO;
+using Library.Application.Factories;
+using Library.Core;
+using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.DTO;
 using Library.Infrastructure.Exceptions;
-using Library.Infrastructure.Factories;
 using Microsoft.Extensions.Logging;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Application.Services;
 
 /// <summary>
 /// Defines operations for managing books in the library system.
@@ -97,7 +98,8 @@ public class BookService(
     IAuthorReadRepository authorReadRepository,
     ICategoryService categoryService,
     ICategoryRepository categoryRepository,
-    ILogger<BookService> logger
+    ILogger<BookService> logger,
+    IUnitOfWork unitOfWork
 ) : IBookService
 {
     /// <summary>
@@ -112,6 +114,7 @@ public class BookService(
         {
             publisher = PublisherFactory.CreatePublisher(book.Publisher);
             await publisherRepository.AddPublisherAsync(publisher);
+            await unitOfWork.SaveChangesAsync();
         }
 
         var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
@@ -119,6 +122,7 @@ public class BookService(
         {
             category = new Category(book.Category.Name);
             await categoryRepository.AddCategoryAsync(category);
+            await unitOfWork.SaveChangesAsync();
         }
 
         var authors = new List<Author>();
@@ -141,12 +145,13 @@ public class BookService(
             authors.Add(author);
         }
 
-        await authorRepository.AddAuthorsAsync(authorsToImport);
+        authorRepository.AddAuthors(authorsToImport);
 
         var newBook = BookFactory
             .BuildBook(book, authors, publisher, category);
         await bookRepository
             .AddBookAsync(newBook);
+        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
@@ -263,7 +268,7 @@ public class BookService(
             .Select(x => new Author(x.Name, x.Surname)).Distinct().ToList();
         if (authorsToImport.Count != 0)
         {
-            await authorRepository.AddAuthorsAsync(authorsToImport);
+            authorRepository.AddAuthors(authorsToImport);
         }
 
         var booksListToImport = new List<Book>();
@@ -292,6 +297,7 @@ public class BookService(
         }
 
         await bookRepository.AddBooksAsync(booksListToImport);
+        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
@@ -339,7 +345,8 @@ public class BookService(
         }
 
         var updatedBook = BookFactory.BuildBook(bookDto, authors, publisher, category, book);
-        await bookRepository.UpdateBook(updatedBook);
+        bookRepository.UpdateBook(updatedBook);
+        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
@@ -434,7 +441,8 @@ public class BookService(
         }
 
         book.IsAvailable = isAvailable;
-        await bookRepository.UpdateBook(book);
+        bookRepository.UpdateBook(book);
+        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>

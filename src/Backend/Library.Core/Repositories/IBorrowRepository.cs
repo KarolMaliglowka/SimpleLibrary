@@ -7,7 +7,7 @@ public interface IBorrowRepository
     Task<List<Borrow>> GetBorrowsBookByUserIdAsync(Guid userId);
     Task<User?> GetUserByBorrowedBookIdAsync(Guid bookId);
     Task AddBorrowAsync(Borrow borrow);
-    Task RemoveBorrowAsync(Borrow borrow);
+    void RemoveBorrow(Borrow borrow);
     Task<Borrow?> GetBorrowByUserIdAndBookIdAsync(Guid userId, Guid bookId);
     Task<bool> ExistBorrowAsync(Guid bookId);
     Task<Borrow?> GetBorrowByIdAsync(Guid id);
