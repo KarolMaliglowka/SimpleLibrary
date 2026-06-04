@@ -55,7 +55,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         }
 
         existingCategory.SetCategory(category.Name);
-        categoryRepository.Update(existingCategory);
+        categoryRepository.UpdateCategory(existingCategory);
         await unitOfWork.SaveChangesAsync();
     }
 
@@ -113,7 +113,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         }
 
         categoryExist.SetSoftDelete();
-        categoryRepository.Update(categoryExist);
+        categoryRepository.UpdateCategory(categoryExist);
         await unitOfWork.SaveChangesAsync();
     }
     

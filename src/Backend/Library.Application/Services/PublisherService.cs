@@ -1,6 +1,8 @@
 ﻿using Library.Application.DTO;
 using Library.Application.Factories;
 using Library.Core;
+using Library.Core.Entities;
+using Library.Core.Exceptions;
 using Library.Core.Repositories;
 
 namespace Library.Application.Services;
@@ -32,7 +34,12 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
     public async Task CreatePublisherAsync(PublisherDto publisher)
     {
         ArgumentNullException.ThrowIfNull(publisher);
-        var newPublisher = PublisherFactory.CreatePublisher(publisher);
+        var existingPublisher = await publisherRepository.GetPublisherByNameAsync(publisher.Name);
+        if (existingPublisher != null)
+        {
+            throw new AlreadyExistsException(nameof(Publisher), publisher.Name);
+        }
+        var newPublisher = new Publisher(publisher.Name);
         await publisherRepository.AddPublisherAsync(newPublisher);
         await unitOfWork.SaveChangesAsync();
     }
@@ -40,14 +47,15 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
     public async Task UpdatePublisher(PublisherDto publisher)
     {
         ArgumentNullException.ThrowIfNull(publisher);
-        var oldPublisher = await publisherRepository.GetPublisherByIdAsync(publisher.Id);
-        if (oldPublisher == null)
+        var existingPublisher = await publisherRepository.GetPublisherByIdAsync(publisher.Id);
+        if (existingPublisher == null)
         {
             throw new NullReferenceException("Publisher not found");
         }
 
-        var publisherToUpdate = PublisherFactory.CreatePublisher(publisher, oldPublisher);
-        publisherRepository.UpdatePublisher(publisherToUpdate);
+        existingPublisher.SetPublisher(publisher.Name);
+        
+        publisherRepository.UpdatePublisher(existingPublisher);
         await unitOfWork.SaveChangesAsync();
     }
 
