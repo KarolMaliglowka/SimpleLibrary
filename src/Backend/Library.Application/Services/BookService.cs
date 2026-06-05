@@ -112,8 +112,12 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
         if (publisher == null)
         {
-            publisher = PublisherFactory.CreatePublisher(book.Publisher);
-            await publisherRepository.AddPublisherAsync(publisher);
+            if (publisher != null)
+            {
+                var newPublisher = new Publisher(publisher.Name);
+                await publisherRepository.AddPublisherAsync(newPublisher);
+            }
+
             await unitOfWork.SaveChangesAsync();
         }
 
@@ -224,7 +228,7 @@ public class BookService(
     /// <param name="books">Collection of books to import.</param>
     public async Task CreateBooksAsync(List<BookDto> books)
     {
-        var categoryList = books.Select(x => x.Category.Name)
+        var categoryList = books.Select(x => x?.Category.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var categoryExistInSystem = await categoryService.GetCategoriesAsync();
@@ -247,10 +251,7 @@ public class BookService(
             .Where(x => !publishersExistInSystem
                 .Any(y =>
                     y.Name.Value.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
-            .Select(x => PublisherFactory.CreatePublisher(new PublisherDto
-            {
-                Name = x
-            }))
+            .Select(x => new Publisher(x ))
             .ToList();
         if (publishersToImport.Count != 0)
         {
@@ -310,10 +311,9 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
         if (publisher == null)
         {
-            publisher = PublisherFactory.CreatePublisher(new PublisherDto
-            {
-                Name = bookDto.Publisher.Name
-            });
+            publisher = new Publisher(
+                bookDto.Publisher.Name
+            );
             await publisherRepository.AddPublisherAsync(publisher);
         }
 

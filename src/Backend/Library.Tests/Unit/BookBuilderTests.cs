@@ -116,10 +116,8 @@ public class BookBuilderTests
     {
         // Arrange
         var bookBuilder = new BookBuilder();
-        var publisher = PublisherFactory.CreatePublisher(new PublisherDto
-        {
-            Name = "PublisherName"
-        });
+        var publisher = new Publisher("PublisherName"
+        );
 
         // Act
         bookBuilder.SetPublisher(publisher);

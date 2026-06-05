@@ -3,8 +3,36 @@
 namespace Library.Core.Entities;
 public sealed class Publisher : BaseClass
 {
+    public Publisher()
+    {
+    }
+    public Publisher(Name name)
+    {
+        Id = Guid.NewGuid();
+        Name = name;
+        CreatedAt = DateTime.Now;
+        UpdatedAt = DateTime.Now;
+    }
+
     private readonly List<Book> _books = [];
 
-    public Name Name { get; set; }
+    public Name Name { get; private set; }
+    public bool IsDeleted { get; private set; }
     public IEnumerable<Book> Books => _books.AsReadOnly();
+    
+    public void SetPublisher(string publisher)
+    {
+        if (string.IsNullOrWhiteSpace(publisher) || publisher.Length < 3)
+        {
+            throw new ArgumentException("Publisher cannot be empty. It requires minimum 4 characters.");
+        }
+
+        Name = publisher;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

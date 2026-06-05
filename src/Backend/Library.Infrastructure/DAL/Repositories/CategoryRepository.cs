@@ -30,7 +30,7 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
             .AnyAsync(c => c.Name == category.Name);
     }
 
-    public void Update(Category category)
+    public void UpdateCategory(Category category)
     {
         context.Categories.Update(category);
     }
