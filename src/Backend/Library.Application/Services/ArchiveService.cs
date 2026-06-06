@@ -1,8 +1,9 @@
-﻿using Library.Core;
+﻿using Library.Application.DTO;
+using Library.Core;
 using Library.Core.Builders;
 using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.Exceptions;
+using Library.Core.Exceptions;
 
 namespace Library.Application.Services;
 
@@ -81,6 +82,5 @@ public class ArchiveService : IArchiveService
             .Build();
 
         await _archiveRepository.AddArchive(archive);
-        await _unitOfWork.SaveChangesAsync();
     }
 }

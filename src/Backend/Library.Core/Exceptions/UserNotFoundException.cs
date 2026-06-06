@@ -1,4 +1,4 @@
-﻿namespace Library.Infrastructure.Exceptions;
+﻿namespace Library.Core.Exceptions;
 
 public class UserNotFoundException : Exception
 {

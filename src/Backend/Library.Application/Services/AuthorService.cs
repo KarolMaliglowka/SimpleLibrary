@@ -1,8 +1,8 @@
 ﻿using Library.Application.DTO;
 using Library.Core;
 using Library.Core.Entities;
+using Library.Core.Exceptions;
 using Library.Core.Repositories;
-using Library.Infrastructure.Exceptions;
 
 namespace Library.Application.Services;
 

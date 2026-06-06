@@ -1,6 +1,6 @@
 using FluentValidation;
-using Library.Api;
 using Library.Api.EndPoints;
+using Library.Application;
 using Library.Application.DTO;
 using Library.Application.Validators;
 using Library.Infrastructure;

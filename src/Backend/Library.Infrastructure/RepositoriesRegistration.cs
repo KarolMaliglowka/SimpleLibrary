@@ -1,7 +1,8 @@
 ﻿using Library.Core.Repositories;
 using Library.Infrastructure.DAL.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Library.Api;
+namespace Library.Infrastructure;
 
 public static class RepositoriesRegistration
 {

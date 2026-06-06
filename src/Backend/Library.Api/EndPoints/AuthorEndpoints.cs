@@ -1,8 +1,9 @@
 ﻿using Library.Application.DTO;
 using Library.Application.Services;
 using Library.Core.Entities;
+using Library.Core.Exceptions;
 using Library.Core.Repositories;
-using Library.Infrastructure.Exceptions;
+
 
 namespace Library.Api.EndPoints;
 

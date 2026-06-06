@@ -73,12 +73,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
     public async Task<Category?> GetCategoryByNameAsync(string name)
     {
         var categoryExist = await categoryRepository.GetCategoryByNameAsync(name);
-        if (categoryExist == null)
-        {
-            throw new CategoryNotFoundException(name);
-        }
-
-        return categoryExist;
+        return categoryExist ?? throw new CategoryNotFoundException(name);
     }
 
     public async Task AddCategoriesAsync(List<CategoryDto> categoryDto)
