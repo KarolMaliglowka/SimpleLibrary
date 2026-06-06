@@ -50,7 +50,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var existingPublisher = await publisherRepository.GetPublisherByIdAsync(publisher.Id);
         if (existingPublisher == null)
         {
-            throw new NullReferenceException("Publisher not found");
+            throw new PublisherNotFoundException(publisher.Name);
         }
 
         existingPublisher.SetPublisher(publisher.Name);
@@ -64,7 +64,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var publisher = await publisherRepository.GetPublisherByIdAsync(id);
         if (publisher == null)
         {
-            throw new NullReferenceException("Publisher not found");
+            throw new PublisherNotFoundException($"with id: { id }");
         }
 
         return new PublisherDto()
@@ -79,7 +79,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var publisher = await publisherRepository.GetPublisherByNameAsync(name);
         if (publisher == null)
         {
-            throw new NullReferenceException("Publisher not found");
+            throw new  PublisherNotFoundException(name);
         }
 
         return new PublisherDto()
