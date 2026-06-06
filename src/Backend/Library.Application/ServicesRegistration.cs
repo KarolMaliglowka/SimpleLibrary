@@ -13,6 +13,5 @@ public static class ServicesRegistration
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPublisherService, PublisherService>();
         services.AddScoped<IBorrowService, BorrowService>();
-        services.AddScoped<IArchiveService, ArchiveService>();
     }
 }

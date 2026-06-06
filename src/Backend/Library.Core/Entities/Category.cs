@@ -12,9 +12,7 @@ public sealed class Category : BaseClass
     
     public Category(Name name)
     {
-        Id = Guid.NewGuid();
         SetCategory(name);
-        CreatedAt = DateTime.UtcNow;
     }
     
     public Name Name { get; private set; }
@@ -29,12 +27,10 @@ public sealed class Category : BaseClass
         }
 
         Name = category;
-        UpdatedAt = DateTime.UtcNow;
     }
     
     public void SetSoftDelete()
     {
         IsDeleted = true;
-        UpdatedAt = DateTime.UtcNow;
     }
 }

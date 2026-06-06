@@ -8,10 +8,7 @@ public sealed class Publisher : BaseClass
     }
     public Publisher(Name name)
     {
-        Id = Guid.NewGuid();
         Name = name;
-        CreatedAt = DateTime.Now;
-        UpdatedAt = DateTime.Now;
     }
 
     private readonly List<Book> _books = [];
@@ -28,11 +25,9 @@ public sealed class Publisher : BaseClass
         }
 
         Name = publisher;
-        UpdatedAt = DateTime.UtcNow;
     }
     public void SetSoftDelete()
     {
         IsDeleted = true;
-        UpdatedAt = DateTime.UtcNow;
     }
 }

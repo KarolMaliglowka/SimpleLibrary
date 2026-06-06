@@ -1,6 +1,7 @@
 ﻿using Library.Application.DTO;
 using Library.Application.Factories;
 using Library.Core;
+using Library.Core.Entities;
 using Library.Core.Repositories;
 
 namespace Library.Application.Services;

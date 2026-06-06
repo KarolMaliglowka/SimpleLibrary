@@ -12,8 +12,6 @@ public sealed class UserBuilder
     {
         _user = new User
         {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
         };
     }
 
