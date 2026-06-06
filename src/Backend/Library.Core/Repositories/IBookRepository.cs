@@ -12,4 +12,5 @@ public interface IBookRepository
     Task<Book?> GetBookByNameAsync(string name);
     IQueryable<Book> QueryAsNoTracking();
     Task<List<Borrow>> GetBorrowBooksWithUsersAsync();
+    Task<bool> ExistsAsync(string name, List<Guid> authorIds, Guid excludedBookId);
 }

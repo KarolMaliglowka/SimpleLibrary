@@ -193,7 +193,6 @@ public class BookBuilderTests
         // Arrange
         var existingBook = new Book
         {
-            Id = Guid.NewGuid(),
             Name = new Name(Name),
             PagesCount = PagesCount,
             Description = Description,
