@@ -2,17 +2,17 @@
 
 #nullable disable
 
-namespace Library.Infrastructure.DAL.Migrations
+namespace Library.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CategoryIsDeleteFieldt : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
                 name: "IsDeleted",
-                table: "Categories",
+                table: "Publishers",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
@@ -23,7 +23,7 @@ namespace Library.Infrastructure.DAL.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsDeleted",
-                table: "Categories");
+                table: "Publishers");
         }
     }
 }

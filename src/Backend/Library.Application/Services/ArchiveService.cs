@@ -3,7 +3,7 @@ using Library.Core;
 using Library.Core.Builders;
 using Library.Core.Entities;
 using Library.Core.Repositories;
-using Library.Infrastructure.Exceptions;
+using Library.Core.Exceptions;
 
 namespace Library.Application.Services;
 

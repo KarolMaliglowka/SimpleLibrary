@@ -2,8 +2,8 @@
 using Library.Application.Factories;
 using Library.Core;
 using Library.Core.Entities;
+using Library.Core.Exceptions;
 using Library.Core.Repositories;
-using Library.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Library.Application.Services;

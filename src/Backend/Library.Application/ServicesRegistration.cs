@@ -1,6 +1,7 @@
 ﻿using Library.Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Library.Api;
+namespace Library.Application;
 
 public static class ServicesRegistration
 {
