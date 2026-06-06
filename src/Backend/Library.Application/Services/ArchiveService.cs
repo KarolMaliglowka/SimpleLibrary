@@ -1,5 +1,4 @@
-﻿using Library.Application.DTO;
-using Library.Core;
+﻿using Library.Core;
 using Library.Core.Builders;
 using Library.Core.Entities;
 using Library.Core.Repositories;
@@ -25,28 +24,28 @@ public interface IArchiveService
 /// </summary>
 public class ArchiveService : IArchiveService
 {
-    private readonly IBookService _bookService;
-    private readonly IUserService _userService;
+    private readonly IBookRepository _bookRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IArchiveRepository _archiveRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArchiveService"/> class.
     /// </summary>
-    /// <param name="bookService">Service used to retrieve book data.</param>
-    /// <param name="userService">Service used to retrieve user data.</param>
+    /// <param name="bookRepository">Repository used to retrieve book data.</param>
+    /// <param name="userRepository">Repository used to retrieve user data.</param>
     /// <param name="archiveRepository">Repository used to persist archive records.</param>
     /// <param name="unitOfWork"></param>
     public ArchiveService(
-        IBookService bookService,
-        IUserService userService,
         IArchiveRepository archiveRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IBookRepository bookRepository,
+        IUserRepository userRepository)
     {
-        _bookService = bookService;
-        _userService = userService;
         _archiveRepository = archiveRepository;
         _unitOfWork = unitOfWork;
+        _bookRepository = bookRepository;
+        _userRepository = userRepository;
     }
 
     /// <summary>
@@ -61,12 +60,10 @@ public class ArchiveService : IArchiveService
     {
         ArgumentNullException.ThrowIfNull(borrow);
 
-        var user = await _userService.GetUserById(borrow.UserId)
+        var user = await _userRepository.GetUserByIdAsync(borrow.UserId)
                    ?? throw new UserNotFoundException(borrow.UserId.ToString());
-
-        var book = await _bookService.GetBookByIdAsync(borrow.BookId)
-                   ?? throw new BookNotFoundException(borrow.BookId.ToString());
-
+        var book = await _bookRepository.GetBookByIdAsync(borrow.BookId)
+                    ?? throw new BookNotFoundException(borrow.BookId.ToString());
         var authors = book.Authors == null
             ? string.Empty
             : string.Join(", ", book.Authors.Select(a => $"{a.Name} {a.Surname}"));
@@ -82,5 +79,6 @@ public class ArchiveService : IArchiveService
             .Build();
 
         await _archiveRepository.AddArchive(archive);
+        await _unitOfWork.SaveChangesAsync();
     }
 }
