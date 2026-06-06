@@ -11,11 +11,8 @@ public class Author : BaseClass
 
     public Author(string? name, string? surname = null)
     {
-        Id = Guid.NewGuid();
         SetName(name!);
         SetSurname(surname!);
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
     }
 
     public Author()
@@ -30,12 +27,10 @@ public class Author : BaseClass
         }
 
         Name = name;
-        UpdatedAt = DateTime.UtcNow;
     }
 
     public void SetSurname(string surname)
     {
         Surname = surname;
-        UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -11,8 +11,6 @@ public sealed class BookBuilder
     {
         _book = new Book
         {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
         };
     }
 
