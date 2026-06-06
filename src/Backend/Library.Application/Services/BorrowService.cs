@@ -20,7 +20,7 @@ public class BorrowService(
     IBookRepository bookRepository,
     IArchiveRepository archiveRepository,
     IUnitOfWork unitOfWork,
-    ILogger<IBookRepository> logger)
+    ILogger<IBorrowService> logger)
     : IBorrowService
 {
     public async Task CreateBorrow(BorrowDto borrowDto)

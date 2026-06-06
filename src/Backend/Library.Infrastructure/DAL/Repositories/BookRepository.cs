@@ -51,4 +51,21 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
         .ThenInclude(a => a.Authors)
         .AsNoTracking()
         .ToListAsync();
+    
+    public async Task<bool> ExistsAsync(
+        string name,
+        List<Guid> authorIds,
+        Guid excludedBookId)
+    {
+        return await context.Books
+            .AsNoTracking()
+            .AnyAsync(book =>
+                book.Id != excludedBookId &&
+                book.Name == name &&
+                book.Authors != null &&
+                book.Authors
+                    .Select(x => x.Id)
+                    .OrderBy(x => x)
+                    .SequenceEqual(authorIds.OrderBy(x => x)));
+    }
 }

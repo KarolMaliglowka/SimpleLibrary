@@ -1,17 +1,16 @@
 using FluentValidation;
 using Library.Application.DTO;
 using Library.Core.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application.Validators;
 
 public class BookDtoValidator : AbstractValidator<BookDto>
 {
-    private readonly IBookRepository _bookService;
+    private readonly IBookRepository _bookRepository;
 
-    public BookDtoValidator(IBookRepository bookService)
+    public BookDtoValidator(IBookRepository bookRepository)
     {
-        _bookService = bookService;
+        _bookRepository = bookRepository;
 
         RuleFor(b => b.Name)
             .NotEmpty()
@@ -37,12 +36,7 @@ public class BookDtoValidator : AbstractValidator<BookDto>
 
     private async Task<bool> NotExists(string bookName, Guid bookId, List<AuthorDto> authors)
     {
-        return !await _bookService
-            .QueryAsNoTracking()
-            .AnyAsync(x =>
-                x.Id != bookId &&
-                x.Name == bookName 
-               );
-        // TODO: add authors check
+        var guidsList = authors.Select(x => x.Id!.Value).ToList();
+        return !await _bookRepository.ExistsAsync(bookName, guidsList , bookId);
     }
 }
