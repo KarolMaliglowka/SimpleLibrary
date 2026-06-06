@@ -20,7 +20,7 @@ public class BorrowService(
     IBookRepository bookRepository,
     IArchiveRepository archiveRepository,
     IUnitOfWork unitOfWork,
-    ILogger<IBorrowService> logger)
+    ILogger<BorrowService> logger)
     : IBorrowService
 {
     public async Task CreateBorrow(BorrowDto borrowDto)
@@ -77,6 +77,8 @@ public class BorrowService(
             ? string.Empty
             : string.Join(", ", book.Authors.Select(a => $"{a.Name} {a.Surname}"));
 
+        
+        
         var archive = new ArchiveBuilder()
             .SetBookId(book.Id)
             .SetBookName(book.Name ?? string.Empty)
