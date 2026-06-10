@@ -68,4 +68,16 @@ public sealed class Book : BaseClass
     {
         ISBN = isbn ?? throw new NullReferenceException(nameof(isbn));
     }
+
+    public void SetYearOfRelease(string yearOfRelease)
+    {
+        YearOfRelease = yearOfRelease ?? throw new NullReferenceException(nameof(yearOfRelease));
+    }
+    
+    public void SetPagesCount(int pagesCount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(pagesCount);
+
+        PagesCount = pagesCount;
+    }
 }

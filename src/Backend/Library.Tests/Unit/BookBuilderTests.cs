@@ -1,7 +1,4 @@
-﻿using Library.Application.DTO;
-using Library.Application.Factories;
-using Library.Core.Builders;
-using Library.Core.Entities;
+﻿using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.ValueObjects;
 
@@ -19,7 +16,7 @@ public class BookBuilderTests
     public void Build_ShouldCreateBookWithDefaultValues()
     {
         // Act
-        var book = new BookBuilder().Build();
+        var book = new Book();
 
         // Assert
         Assert.NotNull(book);
@@ -34,16 +31,15 @@ public class BookBuilderTests
     [InlineData("E")]
     public void SetName_ShouldSetBookName(string? name)
     {
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         if (name == null || name.Length < 2)
         {
-            Assert.Throws<InvalidNameException>(() => bookBuilder.SetName(new Name(name!)));
+            Assert.Throws<InvalidNameException>(() => book.SetName(new Name(name!)));
         }
         else
         {
-            bookBuilder.SetName(name);
-            var book = bookBuilder.Build();
+            book.SetName(name);
             Assert.Equal(name, book.Name);
         }
     }
@@ -52,11 +48,10 @@ public class BookBuilderTests
     public void SetPagesCount_ShouldSetPagesCount()
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         // Act
-        bookBuilder.SetPagesCount(PagesCount);
-        var book = bookBuilder.Build();
+        book.SetPagesCount(PagesCount);
 
         // Assert
         Assert.Equal(PagesCount, book.PagesCount);
@@ -68,22 +63,22 @@ public class BookBuilderTests
     public void SetPagesCount_ShouldThrowException(int pageCounts)
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         // Act & Assert
-        Assert.Throws<Exception>(() => bookBuilder.SetPagesCount(pageCounts));
+        Assert.Throws<Exception>(() => book.SetPagesCount(pageCounts));
     }
 
     [Fact]
     public void SetAuthors_ShouldSetBookAuthors()
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
         var authors = new List<Author> { new Author("John", "Doe") };
 
         // Act
-        bookBuilder.SetAuthors(authors);
-        var book = bookBuilder.Build();
+        book.SetAuthors(authors);
+        
 
         // Assert
         Assert.NotNull(book.Authors);
@@ -96,16 +91,15 @@ public class BookBuilderTests
     [InlineData("E")]
     public void SetDescription_ShouldThrowException(string? description)
     {
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         if (string.IsNullOrEmpty(description) || description.Length < 2)
         {
-            Assert.Throws<ArgumentException>(() => bookBuilder.SetDescription(description!));
+            Assert.Throws<ArgumentException>(() => book.SetDescription(description!));
         }
         else
         {
-            bookBuilder.SetDescription(Description);
-            var book = bookBuilder.Build();
+            book.SetDescription(Description);
             Assert.NotNull(book.Description);
             Assert.Equal(Description, book.Description);
         }
@@ -115,13 +109,12 @@ public class BookBuilderTests
     public void SetPublisher_ShouldSetBookPublisher()
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
         var publisher = new Publisher("PublisherName"
         );
 
         // Act
-        bookBuilder.SetPublisher(publisher);
-        var book = bookBuilder.Build();
+        book.SetPublisher(publisher);
 
         // Assert
         Assert.NotNull(book.Publisher);
@@ -174,42 +167,41 @@ public class BookBuilderTests
     public void SetYearOfRelease_ShouldSetBookYearOfRelease()
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         // Act
-        bookBuilder.SetYearOfRelease(YearOfRelease);
-        var book = bookBuilder.Build();
+        book.SetYearOfRelease(YearOfRelease);
 
         // Assert
         Assert.NotNull(book.YearOfRelease);
         Assert.Equal(YearOfRelease, book.YearOfRelease);
     }
 
-    [Fact]
-    public void BookBuilder_ShouldInitializeFromExistingBook()
-    {
-        // Arrange
-        var existingBook = new Book
-        {
-            Name = new Name(Name),
-            PagesCount = PagesCount,
-            Description = Description,
-            ISBN = Isbn,
-            YearOfRelease = YearOfRelease,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        // Act
-        var bookBuilder = new BookBuilder(existingBook);
-        var newBook = bookBuilder.Build();
-
-        // Assert
-        Assert.Equal(existingBook.Id, newBook.Id);
-        Assert.Equal(existingBook.Name, newBook.Name);
-        Assert.Equal(existingBook.PagesCount, newBook.PagesCount);
-        Assert.Equal(existingBook.Description, newBook.Description);
-        Assert.Equal(existingBook.ISBN, newBook.ISBN);
-        Assert.Equal(existingBook.YearOfRelease, newBook.YearOfRelease);
-        Assert.Equal(existingBook.CreatedAt, newBook.CreatedAt);
-    }
+    // [Fact]
+    // public void BookBuilder_ShouldInitializeFromExistingBook()
+    // {
+    //     // Arrange
+    //     var existingBook = new Book
+    //     {
+    //         Name = new Name(Name),
+    //         PagesCount = PagesCount,
+    //         Description = Description,
+    //         ISBN = Isbn,
+    //         YearOfRelease = YearOfRelease,
+    //         CreatedAt = DateTime.UtcNow
+    //     };
+    //
+    //     // Act
+    //     var bookBuilder = new BookBuilder(existingBook);
+    //     var newBook = bookBuilder.Build();
+    //
+    //     // Assert
+    //     Assert.Equal(existingBook.Id, newBook.Id);
+    //     Assert.Equal(existingBook.Name, newBook.Name);
+    //     Assert.Equal(existingBook.PagesCount, newBook.PagesCount);
+    //     Assert.Equal(existingBook.Description, newBook.Description);
+    //     Assert.Equal(existingBook.ISBN, newBook.ISBN);
+    //     Assert.Equal(existingBook.YearOfRelease, newBook.YearOfRelease);
+    //     Assert.Equal(existingBook.CreatedAt, newBook.CreatedAt);
+    // }
 }
