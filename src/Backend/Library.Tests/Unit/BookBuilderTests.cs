@@ -132,12 +132,11 @@ public class BookBuilderTests
     public void SetCategory_ShouldSetBookCategory()
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
         var category = new Category("CategoryName");
 
         // Act
-        bookBuilder.SetCategory(category);
-        var book = bookBuilder.Build();
+        book.SetCategory(category);
 
         // Assert
         Assert.NotNull(book.Category);
@@ -148,12 +147,11 @@ public class BookBuilderTests
     public void SetIsbn_ShouldSetBookIsbn()
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         // Act
-        bookBuilder.SetIsbn(Isbn);
-        var book = bookBuilder.Build();
-
+        book.SetIsbn(Isbn);
+        
         // Assert
         Assert.NotNull(book.ISBN);
         Assert.Equal(Isbn, book.ISBN);
@@ -166,10 +164,10 @@ public class BookBuilderTests
     public void SetIsbn_ShouldThrowException(string? isbn)
     {
         // Arrange
-        var bookBuilder = new BookBuilder();
+        var book = new Book();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => bookBuilder.SetDescription(isbn!));
+        Assert.Throws<ArgumentException>(() => book.SetDescription(isbn!));
     }
 
     [Fact]

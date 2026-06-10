@@ -42,7 +42,7 @@ public class BorrowService(
         var newBorrow = new Borrow(user, book, DateTime.UtcNow);
         await borrowRepository.AddBorrowAsync(newBorrow);
         
-        book.IsAvailable = false;
+        book.SetAvailable(false);
         bookRepository.UpdateBook(book);
         
         await unitOfWork.SaveChangesAsync();
@@ -67,7 +67,7 @@ public class BorrowService(
             throw new BookNotFoundException(borrowToRemove.BookId.ToString());
         }
 
-        book.IsAvailable = true;
+        book.SetAvailable(true);
         bookRepository.UpdateBook(book);
       
         var user = await userRepository.GetUserByIdAsync(borrowToRemove.UserId)
