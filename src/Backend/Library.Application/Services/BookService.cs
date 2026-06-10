@@ -151,8 +151,8 @@ public class BookService(
 
         authorRepository.AddAuthors(authorsToImport);
 
-        var newBook = BookFactory
-            .BuildBook(book, authors, publisher, category);
+        var newBook = new Book(book.Name, authors, publisher, category); 
+            
         await bookRepository
             .AddBookAsync(newBook);
         await unitOfWork.SaveChangesAsync();
@@ -291,8 +291,7 @@ public class BookService(
 
             var category = await categoryRepository.GetCategoryByNameAsync(book.Category?.Name);
 
-            var newBook = BookFactory
-                .BuildBook(book, authors, publisher, category);
+            var newBook = new Book(book.Name, authors, publisher, category);  
 
             booksListToImport.Add(newBook);
         }
@@ -344,7 +343,9 @@ public class BookService(
             throw new BookNotFoundException(bookDto.Id.ToString());
         }
 
-        var updatedBook = BookFactory.BuildBook(bookDto, authors, publisher, category, book);
+        var updatedBook = await bookRepository.GetBookByIdAsync(bookDto.Id);
+        updatedBook.SetName(bookDto.Name);
+        
         bookRepository.UpdateBook(updatedBook);
         await unitOfWork.SaveChangesAsync();
     }
@@ -440,7 +441,7 @@ public class BookService(
             throw new BookNotFoundException(bookId.ToString());
         }
 
-        book.IsAvailable = isAvailable;
+        book.SetAvailable(isAvailable);
         bookRepository.UpdateBook(book);
         await unitOfWork.SaveChangesAsync();
     }

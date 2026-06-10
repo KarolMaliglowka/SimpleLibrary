@@ -20,7 +20,7 @@ public class BorrowService(
     IBookRepository bookRepository,
     IArchiveRepository archiveRepository,
     IUnitOfWork unitOfWork,
-    ILogger<IBorrowService> logger)
+    ILogger<BorrowService> logger)
     : IBorrowService
 {
     public async Task CreateBorrow(BorrowDto borrowDto)
@@ -42,7 +42,7 @@ public class BorrowService(
         var newBorrow = new Borrow(user, book, DateTime.UtcNow);
         await borrowRepository.AddBorrowAsync(newBorrow);
         
-        book.IsAvailable = false;
+        book.SetAvailable(false);
         bookRepository.UpdateBook(book);
         
         await unitOfWork.SaveChangesAsync();
@@ -67,7 +67,7 @@ public class BorrowService(
             throw new BookNotFoundException(borrowToRemove.BookId.ToString());
         }
 
-        book.IsAvailable = true;
+        book.SetAvailable(true);
         bookRepository.UpdateBook(book);
       
         var user = await userRepository.GetUserByIdAsync(borrowToRemove.UserId)
@@ -77,6 +77,8 @@ public class BorrowService(
             ? string.Empty
             : string.Join(", ", book.Authors.Select(a => $"{a.Name} {a.Surname}"));
 
+        
+        
         var archive = new ArchiveBuilder()
             .SetBookId(book.Id)
             .SetBookName(book.Name ?? string.Empty)
