@@ -1,9 +1,9 @@
 ﻿using Library.Application.DTO;
-using Library.Application.Factories;
 using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
+
 
 namespace Library.Application.Services;
 
@@ -17,7 +17,7 @@ public interface IPublisherService
     Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync();
 }
 
-public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork) : IPublisherService
+public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, IAiService aiservice) : IPublisherService
 {
     public async Task<List<PublisherDto>> GetPublishersAsync()
     {
@@ -40,6 +40,10 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
             throw new AlreadyExistsException(nameof(Publisher), publisher.Name);
         }
         var newPublisher = new Publisher(publisher.Name);
+
+        var zapytanie = $"Podaj mi informacje o wydawcy o nazwe {publisher.Name} w maksymalnie 200 znakach";
+        var test = await aiservice.AskAsync(zapytanie);
+        
         await publisherRepository.AddPublisherAsync(newPublisher);
         await unitOfWork.SaveChangesAsync();
     }
