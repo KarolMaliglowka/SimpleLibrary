@@ -25,7 +25,6 @@ builder.Services.RegisterServices();
 
 builder.Services.AddOpenApi();
 builder.Services.AddDatabase(builder.Configuration);
-builder.Services.AddAi(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",

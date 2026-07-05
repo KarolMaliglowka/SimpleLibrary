@@ -1,6 +1,5 @@
 ﻿using Library.Core.Repositories;
 using Library.Infrastructure.DAL.Repositories;
-using Library.Infrastructure.External;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Infrastructure;
@@ -17,7 +16,5 @@ public static class RepositoriesRegistration
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IBorrowRepository, BorrowRepository>();
         services.AddScoped<IArchiveRepository, ArchiveRepository>();
-        
-        services.AddHttpClient<AiService, AiService>();
     }
 }

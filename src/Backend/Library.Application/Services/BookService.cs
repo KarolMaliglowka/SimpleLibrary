@@ -503,14 +503,13 @@ public class BookService(
     public async Task<List<Dictionary<Guid, string>>> GetBooksDictionaryAsync()
     {
         var booksList = await bookRepository.GetAllAsync();
-        
+
         return booksList
             .OrderBy(x => x.Name.Value)
             .Select(x => new Dictionary<Guid, string>
             {
                 [x.Id] = $"{x.Name.Value} - {string.Join(", ", x.Authors!.Select(a => a.FullName))}"
             })
-            .ToList()
-            ;
+            .ToList();
     }
 }

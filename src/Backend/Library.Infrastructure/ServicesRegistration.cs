@@ -1,8 +1,5 @@
-﻿using System.Net.Http.Headers;
-using Library.Application.Services;
-using Library.Core;
+﻿using Library.Core;
 using Library.Infrastructure.DAL;
-using Library.Infrastructure.External;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,20 +22,4 @@ public static class ServicesRegistration
         services.AddScoped<IUnitOfWork>(
             sp => sp.GetRequiredService<LibraryDbContext>());
     }
-    public static void AddAi(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddHttpClient<IAiService,
-            AiService>(client =>
-        {
-            client.BaseAddress =
-                new Uri("https://api.openai.com/v1/");
-
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(
-                    "Bearer",
-                    configuration["OpenAI:ApiKey"]);
-        });
-    }
-    
 }
