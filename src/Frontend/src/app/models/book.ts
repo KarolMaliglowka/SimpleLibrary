@@ -11,4 +11,5 @@ export interface Book {
     yearOfRelease?: string;
     category?: string;
     isAvailable?: boolean;
+    isDelete?: boolean;
 }

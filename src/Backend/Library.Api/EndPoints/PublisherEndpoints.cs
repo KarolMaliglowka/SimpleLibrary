@@ -40,5 +40,8 @@ public static class PublisherEndpoints
             await publisherService.GetPublishersDictionaryAsync() is { } publishers
                 ? Results.Ok(publishers)
                 : Results.NotFound("No publishers found"));
+        
+        app.MapDelete("/publishers/delete/{id:guid}", async (Guid id, IPublisherService publisherService) =>
+            await publisherService.DeletePublisherAsync(id));
     }
 }

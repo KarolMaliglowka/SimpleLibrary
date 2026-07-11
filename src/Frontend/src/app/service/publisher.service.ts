@@ -44,13 +44,13 @@ export class PublishersService {
         return firstValueFrom(this.httpService.get<Publisher>(apiRequest));
     }
 
-    // DeleteBook(id: string) {
-    //     let apiRequest = <ApiRequestData>{
-    //         Url: `${this.url}/book/${id}`,
-    //         RequestBody: id
-    //     };
-    //     return firstValueFrom(this.httpService.put(apiRequest));
-    // }
+     DeletePublisher(id: string) {
+         let apiRequest = <ApiRequestData>{
+             Url: `${this.url}/delete/${id}`,
+             RequestBody: id
+         };
+         return firstValueFrom(this.httpService.delete(apiRequest));
+     }
 
     UpdatePublisher(publisher: Publisher) {
         let apiRequest = <ApiRequestData>{
