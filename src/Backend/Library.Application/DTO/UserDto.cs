@@ -14,4 +14,5 @@ public record UserDto
     public bool IsActive { get; set; }
     public string FullName { get; set; }
     public List<BookDto> Books { get; set; }
+    public bool isDelete { get; set; }
 }

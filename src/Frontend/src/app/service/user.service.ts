@@ -28,13 +28,13 @@ export class UsersService {
         return firstValueFrom(this.httpService.get<User>(apiRequest));
     }
 
-    // DeleteBook(id: string) {
-    //     let apiRequest = <ApiRequestData>{
-    //         Url: `${this.url}/book/${id}`,
-    //         RequestBody: id
-    //     };
-    //     return firstValueFrom(this.httpService.put(apiRequest));
-    // }
+     DeleteUser(id: string) {
+         let apiRequest = <ApiRequestData>{
+             Url: `${this.url}/delete/${id}`,
+             RequestBody: id
+         };
+         return firstValueFrom(this.httpService.delete(apiRequest));
+     }
 
     UpdateUser(user: any) {
         let apiRequest = <ApiRequestData>{

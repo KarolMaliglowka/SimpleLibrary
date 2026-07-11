@@ -110,21 +110,17 @@
                     />
                     <p-button
                         icon="pi pi-pencil"
-                        pTooltip="Edit"
                         class="mr-2"
-                        tooltipPosition="top"
                         [rounded]="true"
                         [outlined]="true"
                         (click)="editUser(user)"
                     />
                     <p-button
                         icon="pi pi-trash"
-                        pTooltip="Remove"
                         severity="danger"
-                        tooltipPosition="top"
                         [rounded]="true"
                         [outlined]="true"
-                        (click)="deleteUser(user)"
+                        (click)="confirm(user)"
                     />
                 </td>
             </tr>
@@ -149,30 +145,6 @@
                     <textarea id="description" pTextarea [(ngModel)]="user.name" required rows="3" cols="20"
                               fluid></textarea>
                 </div>
-
-                <!--            <div>-->
-                <!--                <span class="block font-bold mb-4">Category</span>-->
-                <!--                <div class="grid grid-cols-12 gap-4">-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category1">Accessories</label>-->
-                <!--                    </div>-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category2">Clothing</label>-->
-                <!--                    </div>-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category3">Electronics</label>-->
-                <!--                    </div>-->
-                <!--                    <div class="flex items-center gap-2 col-span-6">-->
-                <!--                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />-->
-                <!--                        <label for="category4">Fitness</label>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <!--            </div>-->
-
-
             </div>
         </ng-template>
 
@@ -182,5 +154,21 @@
         </ng-template>
     </p-dialog>
 
-    <p-confirmDialog [style]="{ width: '450px' }"/>
+    <p-confirmdialog #cd>
+        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+            <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                <div
+                    class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                    <i class="pi pi-question !text-5xl"></i>
+                </div>
+                <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                <p class="mb-0">{{ message.message }}</p>
+                <div class="flex items-center gap-2 mt-6">
+                    <p-button label="Delete" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                    <p-button label="Cancel" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-confirmdialog>
+
 </div>

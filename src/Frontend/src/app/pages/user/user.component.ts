@@ -75,32 +75,7 @@ export class UserComponent implements OnInit {
     }
 
     deleteUser(user: User) {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + user.name + '?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            rejectButtonProps: {
-                label: 'No',
-                severity: 'secondary',
-                variant: 'text'
-            },
-            acceptButtonProps: {
-                severity: 'danger',
-                label: 'Yes'
-            },
-            accept: () => {
-                this.users = this.users.filter((val) => val.id !== user.id);
-                //przesłac do servisu http i wykasować
-
-                this.user;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'User deleted',
-                    life: 3000
-                });
-            }
-        });
+        this.userService.DeleteUser(user.id as string);
     }
 
     findIndexById(id: string): number {
@@ -147,7 +122,8 @@ export class UserComponent implements OnInit {
         this.loading = true;
         try {
             const data = await this.userService.GetAllUsers();
-            this.users = [...data];
+            this.users = [...data].filter(x => !x.isDelete);
+            console.log(this.users);
         } catch (err) {
             console.error(err);
         } finally {
@@ -189,4 +165,21 @@ export class UserComponent implements OnInit {
     messageInfo(message: string, kind: string) {
         this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
+
+    confirm(user: User) {
+        this.confirmationService.confirm({
+            header: 'Are you confirm delete: ' + user.name + '?',
+            message: 'Please confirm to \n\b proceed.',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                var tst = this.deleteUser(user);
+                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+                this.users = this.users.filter((val) => val.id !== user.id);
+            },
+            reject: () => {
+                this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
+            },
+        });
+    }
+    protected readonly HTMLInputElement = HTMLInputElement;
 }
