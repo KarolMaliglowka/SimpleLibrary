@@ -1,9 +1,9 @@
 ﻿using Library.Application.DTO;
-using Library.Application.Factories;
 using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
+
 
 namespace Library.Application.Services;
 
@@ -15,9 +15,10 @@ public interface IPublisherService
     Task<PublisherDto> GetPublisherByIdAsync(Guid id);
     Task<PublisherDto> GetPublisherByNameAsync(string name);
     Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync();
+    Task DeletePublisherAsync(Guid guid);
 }
 
-public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork) : IPublisherService
+public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, IBookRepository bookRepository) : IPublisherService
 {
     public async Task<List<PublisherDto>> GetPublishersAsync()
     {
@@ -25,7 +26,8 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         return publishersList.Select(p => new PublisherDto()
             {
                 Id = p.Id,
-                Name = p.Name
+                Name = p.Name,
+                isDelete = p.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();
@@ -40,6 +42,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
             throw new AlreadyExistsException(nameof(Publisher), publisher.Name);
         }
         var newPublisher = new Publisher(publisher.Name);
+        
         await publisherRepository.AddPublisherAsync(newPublisher);
         await unitOfWork.SaveChangesAsync();
     }
@@ -99,5 +102,25 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
                 [x.Id] = x.Name.Value
             })
             .ToList();
+    }
+    
+    public async Task DeletePublisherAsync(Guid id)
+    {
+        var publisherExist = await publisherRepository.GetPublisherByIdAsync(id);
+        if (publisherExist == null)
+        {
+            throw new Exception("Publisher not found");
+        }
+
+        var booksList = await bookRepository.GetAllAsync();
+        var isPublisherForSomeBook = booksList.Any(x => x.Category?.Name == publisherExist.Name);
+        if (isPublisherForSomeBook)
+        {
+            throw new Exception("Publisher is in use");
+        }
+
+        publisherExist.SetSoftDelete();
+        publisherRepository.UpdatePublisher(publisherExist);
+        await unitOfWork.SaveChangesAsync();
     }
 }

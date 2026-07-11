@@ -70,17 +70,18 @@ export class AppMenu {
                         routerLink: ['/pages/publisher']
                     }
                 ]
-            },
-            {
-                label: 'Settings',
-                items: [
-                    {
-                        label: 'Settings',
-                        icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/pages/setting']
-                    }
-                ]
             }
+            // ,
+            // {
+            //     label: 'Settings',
+            //     items: [
+            //         {
+            //             label: 'Settings',
+            //             icon: 'pi pi-fw pi-cog',
+            //             routerLink: ['/pages/setting']
+            //         }
+            //     ]
+            // }
         ];
     }
 }

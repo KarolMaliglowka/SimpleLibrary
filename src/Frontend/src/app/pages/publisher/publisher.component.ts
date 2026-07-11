@@ -62,12 +62,14 @@ export class PublisherComponent implements OnInit {
 
     async loadData() {
         this.loading = true;
-        this.publisherService.GetAllPublishers()
-            .then((data: any) => {
-                this.publishers = data;
+        this.publisherService
+            .GetAllPublishers()
+            .then((data) => {
+                this.publishers = data.filter(x => !x.isDelete);
                 this.loading = false;
                 this.cd.markForCheck();
-            }).catch(() => {
+            })
+            .catch(() => {
             this.loading = false;
         });
     }
@@ -86,33 +88,37 @@ export class PublisherComponent implements OnInit {
         this.editMode = true;
     }
 
-    deletePublisher(publisher: Publisher) {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + publisher.name + '?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            rejectButtonProps: {
-                label: 'No',
-                severity: 'secondary',
-                variant: 'text'
-            },
-            acceptButtonProps: {
-                severity: 'danger',
-                label: 'Yes'
-            },
-            accept: () => {
-                this.publishers = this.publishers.filter((val) => val.id !== publisher.id);
-                //przesłac do servisu http i wykasować
+    // deletePublisher(publisher: Publisher) {
+    //     this.confirmationService.confirm({
+    //         message: 'Are you sure you want to delete ' + publisher.name + '?',
+    //         header: 'Confirm',
+    //         icon: 'pi pi-exclamation-triangle',
+    //         rejectButtonProps: {
+    //             label: 'No',
+    //             severity: 'secondary',
+    //             variant: 'text'
+    //         },
+    //         acceptButtonProps: {
+    //             severity: 'danger',
+    //             label: 'Yes'
+    //         },
+    //         accept: () => {
+    //             this.publishers = this.publishers.filter((val) => val.id !== publisher.id);
+    //             //przesłac do servisu http i wykasować
+    //
+    //             this.publisher;
+    //             this.messageService.add({
+    //                 severity: 'success',
+    //                 summary: 'Successful',
+    //                 detail: 'Publisher Deleted',
+    //                 life: 3000
+    //             });
+    //         }
+    //     });
+    // }
 
-                this.publisher;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Publisher Deleted',
-                    life: 3000
-                });
-            }
-        });
+    deletePublisher(publisher: Publisher) {
+        this.publisherService.DeletePublisher(publisher.id as string);
     }
 
     async savePublisher() {
@@ -137,4 +143,23 @@ export class PublisherComponent implements OnInit {
     messageInfo(message: string, kind: string) {
         this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
+
+    confirm(publisher: Publisher) {
+        console.log("środek potwierdzenia")
+        this.confirmationService.confirm({
+            header: 'Are you confirm delete: ' + publisher.name + '?',
+            message: 'Please confirm to \n\b proceed.',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                var tst = this.deletePublisher(publisher);
+                console.log("potwierdzenie: ", tst)
+                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+                this.publishers = this.publishers.filter((val) => val.id !== publisher.id);
+            },
+            reject: () => {
+                this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
+            },
+        });
+    }
+    protected readonly HTMLInputElement = HTMLInputElement;
 }

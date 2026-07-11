@@ -13,4 +13,5 @@ export interface User {
     isActive?: boolean;
     fullName?: string;
     books?: Book[];
+    isDelete?: boolean;
 }
