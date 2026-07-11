@@ -113,7 +113,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         }
 
         var booksList = await bookRepository.GetAllAsync();
-        var isPublisherForSomeBook = booksList.Any(x => x.Category?.Name == publisherExist.Name);
+        var isPublisherForSomeBook = booksList.Any(x => x.Publisher?.Name == publisherExist.Name);
         if (isPublisherForSomeBook)
         {
             throw new Exception("Publisher is in use");

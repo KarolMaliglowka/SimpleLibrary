@@ -1,7 +1,6 @@
 ﻿using Library.Application.DTO;
 using Library.Application.Factories;
 using Library.Core;
-using Library.Core.Entities;
 using Library.Core.Repositories;
 
 namespace Library.Application.Services;
@@ -19,9 +18,10 @@ public interface IUserService
     Task<UserDto> GetUserWithBorrowedBooksById(Guid id);
     Task<List<UserDto>> GetUsersWithBorrowedBooks();
     Task<List<Dictionary<Guid, string>>> GetUsersDictionaryAsync();
+    Task DeleteUserAsync(Guid id);
 }
 
-public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork) : IUserService
+public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IBorrowRepository borrowRepository) : IUserService
 {
     public async Task<List<UserDto>> GetUsers()
     {
@@ -203,5 +203,25 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork)
                 [x.Id] = x.FullName
             })
             .ToList();
+    }
+    
+    public async Task DeleteUserAsync(Guid id)
+    {
+        var userExist = await userRepository.GetUserByIdAsync(id);
+        if (userExist == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        var borrowsBookList = await borrowRepository.GetBorrowsBookByUserIdAsync(userExist.Id);
+        if (borrowsBookList.Count > 0)
+        {
+            var usedBooks  = borrowsBookList.Select(x => x.Book.Name).ToList();
+            throw new Exception("User borrow books: " + string.Join(", ", usedBooks));
+        }
+
+        userExist.SetSoftDelete();
+        userRepository.UpdateUser(userExist);
+        await unitOfWork.SaveChangesAsync();
     }
 }

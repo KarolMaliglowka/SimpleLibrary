@@ -72,5 +72,8 @@ public static class UserEndpoints
             await userService.GetUsersDictionaryAsync() is { } users
                 ? Results.Ok(users)
                 : Results.NotFound("No publishers found"));
+        
+        app.MapDelete("/users/delete/{id:guid}", async (Guid id, IUserService userService) =>
+            await userService.DeleteUserAsync(id));
     }
 }

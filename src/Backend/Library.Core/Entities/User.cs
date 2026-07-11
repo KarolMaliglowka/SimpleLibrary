@@ -16,4 +16,10 @@ public sealed class User : BaseClass
     public List<Borrow> Borrows { get; set; } = [];
     public bool IsActive { get; set; }
     public string FullName => $"{Name.Value} {Surname}";
+    public bool IsDeleted { get; private set; }
+    
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
+    }
 }
