@@ -1,5 +1,6 @@
 using FluentValidation;
 using Library.Api.EndPoints;
+using Library.Api.GlobalHandlers;
 using Library.Application;
 using Library.Application.DTO;
 using Library.Application.Validators;
@@ -15,7 +16,8 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddScoped<IValidator<BookDto>, BookDtoValidator>();
 builder.Services.AddScoped<IValidator<AuthorDto>, AuthorDtoValidator>();
 builder.Services.AddScoped<IValidator<BorrowDto>, BorrowDtoValidator>();
@@ -38,7 +40,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 app.MapAuthorEndpoints();

@@ -109,14 +109,14 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var publisherExist = await publisherRepository.GetPublisherByIdAsync(id);
         if (publisherExist == null)
         {
-            throw new Exception("Publisher not found");
+            throw new PublisherNotFoundException($"{id}");
         }
 
         var booksList = await bookRepository.GetAllAsync();
-        var isPublisherForSomeBook = booksList.Any(x => x.Category?.Name == publisherExist.Name);
+        var isPublisherForSomeBook = booksList.Any(x => (x.Publisher?.Name.Value.ToLower()).Equals(publisherExist.Name.Value, StringComparison.CurrentCultureIgnoreCase));
         if (isPublisherForSomeBook)
         {
-            throw new Exception("Publisher is in use");
+            throw new PublisherIsInUseException(publisherExist.Name);
         }
 
         publisherExist.SetSoftDelete();

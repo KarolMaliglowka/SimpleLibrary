@@ -26,6 +26,7 @@ public class PublisherRepository : IPublisherRepository
 
     public async Task<Publisher?> GetPublisherByIdAsync(Guid? id) => 
         await _context.Publishers
+            .Where(p => !p.IsDeleted)
             .SingleOrDefaultAsync(p => p.Id == id);
     
     public async Task<Publisher?> GetPublisherByNameAsync(string name) => 
