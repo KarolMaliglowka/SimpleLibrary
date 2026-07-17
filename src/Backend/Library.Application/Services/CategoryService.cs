@@ -96,15 +96,14 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
         if (categoryExist == null)
         {
-            throw new Exception("Category not found");
+            throw new CategoryNotFoundException("Category not found");
         }
 
         var booksList = await bookRepository.GetAllAsync();
         var isCategoryForSomeBook = booksList.Any(x => x.Category?.Name == categoryExist.Name);
         if (isCategoryForSomeBook)
         {
-            
-            throw new Exception("Category is in use");
+            throw new CategoryIsInUseException("Category is in use");
         }
 
         categoryExist.SetSoftDelete();

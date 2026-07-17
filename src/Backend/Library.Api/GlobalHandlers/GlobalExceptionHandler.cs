@@ -12,9 +12,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         switch (exception)
         {
             case PublisherNotFoundException ex:
-
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
-
                 await context.Response.WriteAsJsonAsync(new
                 {
                     message = ex.Message
@@ -23,9 +21,7 @@ public class GlobalExceptionHandler : IExceptionHandler
                 return true;
 
             case PublisherIsInUseException ex:
-
                 context.Response.StatusCode = StatusCodes.Status409Conflict;
-
                 await context.Response.WriteAsJsonAsync(new
                 {
                     message = ex.Message
@@ -34,9 +30,7 @@ public class GlobalExceptionHandler : IExceptionHandler
                 return true;
 
             default:
-
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
                 await context.Response.WriteAsJsonAsync(new
                 {
                     message = "Unexpected error."

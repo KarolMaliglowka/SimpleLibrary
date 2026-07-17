@@ -4,7 +4,6 @@ using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
 
-
 namespace Library.Application.Services;
 
 public interface IPublisherService
