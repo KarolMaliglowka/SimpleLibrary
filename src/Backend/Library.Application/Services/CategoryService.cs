@@ -18,7 +18,10 @@ public interface ICategoryService
     Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync();
 }
 
-public class CategoryService(ICategoryRepository categoryRepository, IBookRepository bookRepository, IUnitOfWork unitOfWork) : ICategoryService
+public class CategoryService(
+    ICategoryRepository categoryRepository,
+    IBookRepository bookRepository,
+    IUnitOfWork unitOfWork) : ICategoryService
 {
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
@@ -38,7 +41,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         var existingCategory = await categoryRepository.GetCategoryByNameAsync(categoryDto.Name);
         if (existingCategory != null)
         {
-            throw new Exception("Category already exists");
+            throw new CategoryNotFoundException($" with {categoryDto.Id} ");
         }
 
         var category = new Category(categoryDto.Name);
@@ -51,7 +54,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         var existingCategory = await categoryRepository.GetCategoryByIdAsync(category.Id);
         if (existingCategory == null)
         {
-            throw new Exception("Category not exists");
+            throw new CategoryNotFoundException($" with {category.Id} ");
         }
 
         existingCategory.SetCategory(category.Name);
@@ -62,12 +65,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
     public async Task<Category?> GetCategoryByIdAsync(Guid id)
     {
         var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
-        if (categoryExist == null)
-        {
-            throw new Exception("Category not found");
-        }
-
-        return categoryExist;
+        return categoryExist ?? throw new CategoryNotFoundException($" with {id} ");
     }
 
     public async Task<Category?> GetCategoryByNameAsync(string name)
@@ -96,21 +94,21 @@ public class CategoryService(ICategoryRepository categoryRepository, IBookReposi
         var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
         if (categoryExist == null)
         {
-            throw new CategoryNotFoundException("Category not found");
+            throw new CategoryNotFoundException($" with {id} ");
         }
 
         var booksList = await bookRepository.GetAllAsync();
         var isCategoryForSomeBook = booksList.Any(x => x.Category?.Name == categoryExist.Name);
         if (isCategoryForSomeBook)
         {
-            throw new CategoryIsInUseException("Category is in use");
+            throw new CategoryIsInUseException($"{categoryExist.Name}");
         }
 
         categoryExist.SetSoftDelete();
         categoryRepository.UpdateCategory(categoryExist);
         await unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync()
     {
         var categoriesList = await categoryRepository.GetCategoriesAsync();
