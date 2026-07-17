@@ -17,7 +17,6 @@ public class GlobalExceptionHandler : IExceptionHandler
                 {
                     message = ex.Message
                 });
-
                 return true;
 
             case PublisherIsInUseException ex:
@@ -26,7 +25,6 @@ public class GlobalExceptionHandler : IExceptionHandler
                 {
                     message = ex.Message
                 });
-
                 return true;
 
             default:
@@ -35,7 +33,6 @@ public class GlobalExceptionHandler : IExceptionHandler
                 {
                     message = "Unexpected error."
                 });
-
                 return true;
         }
     }

@@ -18,6 +18,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
 builder.Services.AddScoped<IValidator<BookDto>, BookDtoValidator>();
 builder.Services.AddScoped<IValidator<AuthorDto>, AuthorDtoValidator>();
 builder.Services.AddScoped<IValidator<BorrowDto>, BorrowDtoValidator>();

@@ -3,6 +3,7 @@ using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Library.Application.Services;
 
@@ -17,7 +18,7 @@ public interface IPublisherService
     Task DeletePublisherAsync(Guid guid);
 }
 
-public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, IBookRepository bookRepository) : IPublisherService
+public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, IBookRepository bookRepository, ILogger<PublisherService> logger) : IPublisherService
 {
     public async Task<List<PublisherDto>> GetPublishersAsync()
     {
@@ -38,6 +39,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var existingPublisher = await publisherRepository.GetPublisherByNameAsync(publisher.Name);
         if (existingPublisher != null)
         {
+            logger.Log(LogLevel.Error, "{PublisherName} '{Name}' already exists.", nameof(Publisher), publisher.Name);
             throw new AlreadyExistsException(nameof(Publisher), publisher.Name);
         }
         var newPublisher = new Publisher(publisher.Name);
@@ -52,6 +54,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var existingPublisher = await publisherRepository.GetPublisherByIdAsync(publisher.Id);
         if (existingPublisher == null)
         {
+            logger.Log(LogLevel.Error, "Publisher with id: '{PublisherName}' not found", publisher.Name);
             throw new PublisherNotFoundException(publisher.Name);
         }
 
@@ -64,31 +67,27 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
     public async Task<PublisherDto> GetPublisherByIdAsync(Guid id)
     {
         var publisher = await publisherRepository.GetPublisherByIdAsync(id);
-        if (publisher == null)
-        {
-            throw new PublisherNotFoundException($"with id: { id }");
-        }
-
-        return new PublisherDto()
-        {
-            Id = publisher.Id,
-            Name = publisher.Name
-        };
+        if (publisher != null)
+            return new PublisherDto()
+            {
+                Id = publisher.Id,
+                Name = publisher.Name
+            };
+        logger.Log(LogLevel.Error, "Publisher with id: '{PublisherName}' not found", publisher.Name);
+        throw new PublisherNotFoundException($"with id: { id }");
     }
 
     public async Task<PublisherDto> GetPublisherByNameAsync(string name)
     {
         var publisher = await publisherRepository.GetPublisherByNameAsync(name);
-        if (publisher == null)
-        {
-            throw new  PublisherNotFoundException(name);
-        }
-
-        return new PublisherDto()
-        {
-            Id = publisher.Id,
-            Name = publisher.Name
-        };
+        if (publisher != null)
+            return new PublisherDto()
+            {
+                Id = publisher.Id,
+                Name = publisher.Name
+            };
+        logger.Log(LogLevel.Error, "Publisher with id: '{PublisherName}' not found", publisher.Name);
+        throw new  PublisherNotFoundException(name);
     }
     
     public async Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync()
@@ -108,6 +107,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         var publisherExist = await publisherRepository.GetPublisherByIdAsync(id);
         if (publisherExist == null)
         {
+            logger.Log(LogLevel.Error, "Publisher with id: '{PublisherId}' not found", id);
             throw new PublisherNotFoundException($"{id}");
         }
 
