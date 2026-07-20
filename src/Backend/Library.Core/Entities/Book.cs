@@ -16,6 +16,7 @@ public sealed class Book : BaseClass
     public ICollection<Author>? Authors { get; private set; }
     public List<Borrow> Borrows { get; private set; }
     public bool IsAvailable { get; private set; } = true;
+    public bool IsDeleted { get; private set; }
 
     public Book()
     {
@@ -79,5 +80,10 @@ public sealed class Book : BaseClass
         ArgumentOutOfRangeException.ThrowIfNegative(pagesCount);
 
         PagesCount = pagesCount;
+    }
+    
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
     }
 }

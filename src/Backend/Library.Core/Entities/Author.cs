@@ -8,6 +8,7 @@ public class Author : BaseClass
     public string? Surname { get; private set; }
     public ICollection<Book> Books { get; set; }
     public string FullName => $"{Name} {Surname}";
+    public bool IsDeleted { get; private set; }
 
     public Author(string? name, string? surname = null)
     {
@@ -32,5 +33,10 @@ public class Author : BaseClass
     public void SetSurname(string surname)
     {
         Surname = surname;
+    }
+    
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
     }
 }

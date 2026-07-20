@@ -11,7 +11,7 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         switch (exception)
         {
-            case PublisherNotFoundException ex:
+            case NotFoundException ex:
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsJsonAsync(new
                 {
@@ -19,7 +19,7 @@ public class GlobalExceptionHandler : IExceptionHandler
                 });
                 return true;
 
-            case PublisherIsInUseException ex:
+            case IsInUseException ex:
                 context.Response.StatusCode = StatusCodes.Status409Conflict;
                 await context.Response.WriteAsJsonAsync(new
                 {

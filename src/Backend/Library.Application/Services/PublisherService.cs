@@ -18,7 +18,12 @@ public interface IPublisherService
     Task DeletePublisherAsync(Guid guid);
 }
 
-public class PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, IBookRepository bookRepository, ILogger<PublisherService> logger) : IPublisherService
+public class PublisherService(
+    IPublisherRepository publisherRepository,
+    IBookRepository bookRepository,
+    IUnitOfWork unitOfWork,
+    ILogger<PublisherService> logger
+) : IPublisherService
 {
     public async Task<List<PublisherDto>> GetPublishersAsync()
     {
@@ -27,7 +32,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
             {
                 Id = p.Id,
                 Name = p.Name,
-                isDelete = p.IsDeleted
+                isDelete = !p.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();
@@ -42,8 +47,9 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
             logger.Log(LogLevel.Error, "{PublisherName} '{Name}' already exists.", nameof(Publisher), publisher.Name);
             throw new AlreadyExistsException(nameof(Publisher), publisher.Name);
         }
+
         var newPublisher = new Publisher(publisher.Name);
-        
+
         await publisherRepository.AddPublisherAsync(newPublisher);
         await unitOfWork.SaveChangesAsync();
     }
@@ -55,11 +61,11 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
         if (existingPublisher == null)
         {
             logger.Log(LogLevel.Error, "Publisher with id: '{PublisherName}' not found", publisher.Name);
-            throw new PublisherNotFoundException(publisher.Name);
+            throw new NotFoundException("Publisher", publisher.Name);
         }
 
         existingPublisher.SetPublisher(publisher.Name);
-        
+
         publisherRepository.UpdatePublisher(existingPublisher);
         await unitOfWork.SaveChangesAsync();
     }
@@ -74,7 +80,7 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
                 Name = publisher.Name
             };
         logger.Log(LogLevel.Error, "Publisher with id: '{PublisherName}' not found", publisher.Name);
-        throw new PublisherNotFoundException($"with id: { id }");
+        throw new NotFoundException("Publisher", $"with id: {id}");
     }
 
     public async Task<PublisherDto> GetPublisherByNameAsync(string name)
@@ -87,9 +93,9 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
                 Name = publisher.Name
             };
         logger.Log(LogLevel.Error, "Publisher with id: '{PublisherName}' not found", publisher.Name);
-        throw new  PublisherNotFoundException(name);
+        throw new NotFoundException("Publisher", name);
     }
-    
+
     public async Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync()
     {
         var publishersList = await publisherRepository.GetPublishersAsync();
@@ -101,21 +107,23 @@ public class PublisherService(IPublisherRepository publisherRepository, IUnitOfW
             })
             .ToList();
     }
-    
+
     public async Task DeletePublisherAsync(Guid id)
     {
         var publisherExist = await publisherRepository.GetPublisherByIdAsync(id);
         if (publisherExist == null)
         {
             logger.Log(LogLevel.Error, "Publisher with id: '{PublisherId}' not found", id);
-            throw new PublisherNotFoundException($"{id}");
+            throw new NotFoundException("Publisher", $"{id}");
         }
 
         var booksList = await bookRepository.GetAllAsync();
-        var isPublisherForSomeBook = booksList.Any(x => (x.Publisher?.Name.Value.ToLower()).Equals(publisherExist.Name.Value, StringComparison.CurrentCultureIgnoreCase));
+        var isPublisherForSomeBook = booksList.Any(x =>
+            (x.Publisher?.Name.Value.ToLower()).Equals(publisherExist.Name.Value,
+                StringComparison.CurrentCultureIgnoreCase));
         if (isPublisherForSomeBook)
         {
-            throw new PublisherIsInUseException(publisherExist.Name);
+            throw new IsInUseException("Publisher", publisherExist.Name);
         }
 
         publisherExist.SetSoftDelete();

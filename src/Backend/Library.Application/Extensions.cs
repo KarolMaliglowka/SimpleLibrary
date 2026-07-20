@@ -19,7 +19,8 @@ public static class Extensions
             Country = user.Country,
             PostalCode = user.PostalCode,
             IsActive = user.IsActive,
-            FullName = user.FullName
+            FullName = user.FullName,
+            IsDelete = user.IsDeleted
         };
     }
 }

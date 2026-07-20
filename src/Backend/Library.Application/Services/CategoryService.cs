@@ -30,7 +30,7 @@ public class CategoryService(
             {
                 Id = c.Id,
                 Name = c.Name,
-                isDelete = c.IsDeleted
+                isDelete = !c.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();
@@ -101,7 +101,7 @@ public class CategoryService(
         var isCategoryForSomeBook = booksList.Any(x => x.Category?.Name == categoryExist.Name);
         if (isCategoryForSomeBook)
         {
-            throw new CategoryIsInUseException($"{categoryExist.Name}");
+            throw new IsInUseException("Category", categoryExist.Name.Value);
         }
 
         categoryExist.SetSoftDelete();
