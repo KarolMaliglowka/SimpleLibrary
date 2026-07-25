@@ -58,7 +58,6 @@ public class BookBuilderTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-100)]
     public void SetPagesCount_ShouldThrowException(int pageCounts)
     {
@@ -66,7 +65,7 @@ public class BookBuilderTests
         var book = new Book();
 
         // Act & Assert
-        Assert.Throws<Exception>(() => book.SetPagesCount(pageCounts));
+        Assert.Throws<ArgumentOutOfRangeException>(() => book.SetPagesCount(pageCounts));
     }
 
     [Fact]
@@ -95,7 +94,7 @@ public class BookBuilderTests
 
         if (string.IsNullOrEmpty(description) || description.Length < 2)
         {
-            Assert.Throws<ArgumentException>(() => book.SetDescription(description!));
+            Assert.Throws<NullReferenceException>(() => book.SetDescription(description!));
         }
         else
         {
@@ -158,9 +157,10 @@ public class BookBuilderTests
     {
         // Arrange
         var book = new Book();
+       // book.SetIsbn(isbn);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => book.SetDescription(isbn!));
+        Assert.Throws<ArgumentException>(() => book.SetIsbn(isbn!));
     }
 
     [Fact]

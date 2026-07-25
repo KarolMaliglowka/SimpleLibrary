@@ -3,6 +3,7 @@ using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Library.Application.Services;
 
@@ -36,7 +37,7 @@ public interface IAuthorService
 /// <summary>
 /// Implementacja serwisu odpowiedzialnego za zarządzanie autorami.
 /// </summary>
-public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository, IUnitOfWork unitOfWork)
+public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository, IUnitOfWork unitOfWork, ILogger<AuthorService> logger)
     : IAuthorService
 {
     /// <summary>
@@ -105,5 +106,28 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
                 [x.Id] = x.FullName
             })
             .ToList();
+    }
+    
+    public async Task DeleteAuthorAsync(Guid id)
+    {
+        var authorExist = await authorReadRepository.GetAuthorByIdAsync(id);
+        if (authorExist == null)
+        {
+            logger.Log(LogLevel.Error, "Author with id: '{AuthorId}' not found", id);
+            throw new NotFoundException("Author", $" with id: {id}");
+        }
+
+        var authorsList = await authorReadRepository.GetAuthorsAsync();
+        var isAuthorForSomeBook = authorsList.Any(x =>
+            (x.Name.Value.ToLower()).Equals(authorExist.Name.Value,
+                StringComparison.CurrentCultureIgnoreCase)); //TODO do poprawy
+        if (isAuthorForSomeBook)
+        {
+            throw new IsInUseException("Author", authorExist.Name);
+        }
+
+        authorExist.SetSoftDelete();
+        await authorRepository.UpdateAuthorAsync(authorExist);
+        await unitOfWork.SaveChangesAsync();
     }
 }

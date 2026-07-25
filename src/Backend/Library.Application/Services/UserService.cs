@@ -1,6 +1,8 @@
-﻿using Library.Application.DTO;
+using Library.Application.DTO;
 using Library.Application.Factories;
 using Library.Core;
+using Library.Core.Entities;
+using Library.Core.Exceptions;
 using Library.Core.Repositories;
 
 namespace Library.Application.Services;
@@ -29,6 +31,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         return users.Select(user =>
                 user.BuildUserDto()
             )
+            .Where(x => !x.IsDelete)
             .OrderBy(x => x.Surname)
             .ToList();
     }
@@ -106,7 +109,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         var user = await userRepository.GetUserWithBorrowedBooksByIdAsync(id);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User", $"with {id}");
         }
 
         return new UserDto

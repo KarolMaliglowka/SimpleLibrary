@@ -19,6 +19,7 @@ import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
 import {Publisher} from '../../models/publisher';
 import {PublishersService} from '../../service/publisher.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-publisher',
@@ -145,19 +146,27 @@ export class PublisherComponent implements OnInit {
     }
 
     confirm(publisher: Publisher) {
-        console.log("środek potwierdzenia")
         this.confirmationService.confirm({
             header: 'Are you confirm delete: ' + publisher.name + '?',
             message: 'Please confirm to \n\b proceed.',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                var tst = this.deletePublisher(publisher);
-                console.log("potwierdzenie: ", tst)
-                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
-                this.publishers = this.publishers.filter((val) => val.id !== publisher.id);
-            },
-            reject: () => {
-                this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
+            accept: async () => {
+                try {
+                    await this.publisherService.DeletePublisher(publisher.id!);
+                    this.publishers = this.publishers.filter(x => x.id !== publisher.id);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Sukces',
+                        detail: 'Wydawnictwo zostało usunięte.'
+                    });
+
+                } catch (err: any) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Błąd',
+                        detail: err?.error?.message ?? 'Wystąpił nieoczekiwany błąd.'
+                    });
+                }
             },
         });
     }

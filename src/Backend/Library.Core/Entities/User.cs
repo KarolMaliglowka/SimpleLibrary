@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Library.Core.ValueObjects;
 
 namespace Library.Core.Entities;
@@ -15,6 +15,7 @@ public sealed class User : BaseClass
     public string PostalCode { get; set; }
     public List<Borrow> Borrows { get; set; } = [];
     public bool IsActive { get; set; }
+    public bool IsDeleted { get; private set; }
     public string FullName => $"{Name.Value} {Surname}";
     public bool IsDeleted { get; private set; }
     

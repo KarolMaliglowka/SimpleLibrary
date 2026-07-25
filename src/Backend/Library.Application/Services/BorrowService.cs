@@ -29,14 +29,14 @@ public class BorrowService(
         
         if (user == null)
         {
-            throw new UserNotFoundException($"{borrowDto.UserFullName} with id: {borrowDto.UserId}");
+            throw new NotFoundException("User", $"{borrowDto.UserFullName} with id: {borrowDto.UserId}");
         }
         
         var book = await bookRepository.GetBookByIdAsync(borrowDto.BookId);
         
         if (book == null)
         {
-            throw new BookNotFoundException($"{borrowDto.BookName} with id: {borrowDto.BookId}");
+            throw new NotFoundException("Book",$"{borrowDto.BookName} with id: {borrowDto.BookId}");
         }
         
         var newBorrow = new Borrow(user, book, DateTime.UtcNow);
@@ -54,7 +54,7 @@ public class BorrowService(
         
         if (borrowToRemove == null)
         {
-            throw new BorrowNotFoundException(id);
+            throw new NotFoundException("Borrow", $" with id: {id}");
         }
         
         borrowRepository.RemoveBorrow(borrowToRemove);
@@ -64,20 +64,18 @@ public class BorrowService(
         if (book == null)
         {
             logger.LogError("Book id: {id} not found", borrowToRemove.BookId);
-            throw new BookNotFoundException(borrowToRemove.BookId.ToString());
+            throw new NotFoundException("Book", $" with id: {borrowToRemove.BookId}");
         }
 
         book.SetAvailable(true);
         bookRepository.UpdateBook(book);
       
         var user = await userRepository.GetUserByIdAsync(borrowToRemove.UserId)
-                   ?? throw new UserNotFoundException(borrowToRemove.UserId.ToString());
+                   ?? throw new NotFoundException("User", $"with id: {borrowToRemove.UserId}");
 
         var authors = book.Authors == null
             ? string.Empty
             : string.Join(", ", book.Authors.Select(a => $"{a.Name} {a.Surname}"));
-
-        
         
         var archive = new ArchiveBuilder()
             .SetBookId(book.Id)

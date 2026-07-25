@@ -1,6 +1,6 @@
 ﻿namespace Library.Core.Exceptions;
 
-public class AuthorAlreadyExistsException : Exception
+public class AuthorAlreadyExistsException : CustomException
 {
     public AuthorAlreadyExistsException()
         : base("Author already exists")

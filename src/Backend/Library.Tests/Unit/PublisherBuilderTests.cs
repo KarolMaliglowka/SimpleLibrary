@@ -11,7 +11,7 @@ public class PublisherBuilderTests
     public void Build_ShouldCreatePublisherWithDefaultValues()
     {
         // Act
-        var publisher = new Publisher();
+        var publisher = new Publisher(Name);
 
         // Assert
         Assert.NotNull(publisher);

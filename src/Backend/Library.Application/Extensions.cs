@@ -20,7 +20,7 @@ public static class Extensions
             PostalCode = user.PostalCode,
             IsActive = user.IsActive,
             FullName = user.FullName,
-            isDelete = user.IsDeleted
+            IsDelete = user.IsDeleted
         };
     }
 }

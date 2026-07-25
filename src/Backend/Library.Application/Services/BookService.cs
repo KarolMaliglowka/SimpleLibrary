@@ -192,6 +192,7 @@ public class BookService(
                 ).ToList(),
                 IsAvailable = x.IsAvailable
             })
+            .Where(x => !x.isDelete)
             .OrderBy(x => x.Name)
             .ToList();
     }
@@ -408,14 +409,14 @@ public class BookService(
     /// </summary>
     /// <param name="publisher">Publisher name.</param>
     /// <returns>List of books from the publisher.</returns>
-    /// <exception cref="PublisherNotFoundException">Thrown when the publisher does not exist.</exception>
+    /// <exception cref="NotFoundException">Thrown when the publisher does not exist.</exception>
     public async Task<List<BookDto>> GetBooksByPublisherAsync(string publisher)
     {
         var publisherInSystem = await publisherRepository.GetPublisherByNameAsync(publisher);
         if (publisherInSystem is null)
         {
             logger.LogError("Publisher {name} not found", publisher);
-            throw new PublisherNotFoundException(publisher);
+            throw new NotFoundException("Publisher", publisher);
         }
 
         var booksList = await bookRepository.GetAllAsync();
