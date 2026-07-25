@@ -12,5 +12,5 @@ public record BookDto
     public string? YearOfRelease { get; set; }
     public CategoryDto? Category { get; set; }
     public bool IsAvailable { get; set; }
-    public bool isDelete { get; set; }
+    public bool IsDelete { get; set; }
 }

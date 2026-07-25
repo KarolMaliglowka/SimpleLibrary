@@ -32,7 +32,7 @@ public class PublisherService(
             {
                 Id = p.Id,
                 Name = p.Name,
-                isDelete = !p.IsDeleted
+                IsDelete = !p.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();

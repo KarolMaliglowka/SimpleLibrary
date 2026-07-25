@@ -192,7 +192,7 @@ public class BookService(
                 ).ToList(),
                 IsAvailable = x.IsAvailable
             })
-            .Where(x => !x.isDelete)
+            .Where(x => !x.IsDelete)
             .OrderBy(x => x.Name)
             .ToList();
     }

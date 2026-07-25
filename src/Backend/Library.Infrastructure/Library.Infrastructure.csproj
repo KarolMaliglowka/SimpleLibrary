@@ -19,5 +19,9 @@
     <ProjectReference Include="..\Library.Application\Library.Application.csproj" />
     <ProjectReference Include="..\Library.Core\Library.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DAL\Migrations\" />
+  </ItemGroup>
   
 </Project>
