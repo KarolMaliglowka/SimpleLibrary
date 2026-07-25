@@ -121,6 +121,7 @@ public class PublisherService(
         var isPublisherForSomeBook = booksList.Any(x =>
             (x.Publisher?.Name.Value.ToLower()).Equals(publisherExist.Name.Value,
                 StringComparison.CurrentCultureIgnoreCase));
+
         if (isPublisherForSomeBook)
         {
             throw new IsInUseException("Publisher", publisherExist.Name);
