@@ -17,7 +17,6 @@ public sealed class User : BaseClass
     public bool IsActive { get; set; }
     public bool IsDeleted { get; private set; }
     public string FullName => $"{Name.Value} {Surname}";
-    public bool IsDeleted { get; private set; }
     
     public void SetSoftDelete()
     {
