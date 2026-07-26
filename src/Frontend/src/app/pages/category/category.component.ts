@@ -69,7 +69,7 @@ export class CategoryComponent implements OnInit {
         this.categoriesService
             .GetAllCategories()
             .then((data) => {
-                this.categories = data.filter(x => !x.isDelete);
+                this.categories = data.filter(x => x.isDelete);
                 this.cd.markForCheck();
             })
             .catch(() => {});

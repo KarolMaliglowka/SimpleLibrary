@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {ApiRequestData} from "../domain/api.request.data";
-import {environment} from "../environment/environment";
+import {environment} from "../../environments/environment";
 import {catchError, Observable, retry, throwError} from "rxjs";
 
 @Injectable({
