@@ -23,7 +23,7 @@ public static class AuthorEndpoints
                 var id = await authorService.CreateAuthorAsync(author);
                 return Results.Created($"/author/{id}", new { Id = id });
             }
-            catch (AuthorAlreadyExistsException ex)
+            catch (AlreadyExistsException ex)
             {
                 return Results.Content(ex.Message);
             }

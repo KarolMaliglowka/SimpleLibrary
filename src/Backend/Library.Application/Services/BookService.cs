@@ -286,7 +286,7 @@ public class BookService(
                 .Select(bookAuthor =>
                     listOfAllAuthors.FirstOrDefault(x =>
                         x.Surname == bookAuthor.Surname && x.Name == bookAuthor.Name)
-                    ?? throw new AuthorNotFoundException($"{bookAuthor.Name} {bookAuthor.Surname}")
+                    ?? throw new NotFoundException("Author", $"{bookAuthor.Name} {bookAuthor.Surname}")
                 )
                 .ToList();
 
@@ -368,7 +368,7 @@ public class BookService(
                 : $"{authorSurname} {authorName}";
 
             logger.LogError("Author {author} not found", notExistAuthor);
-            throw new AuthorNotFoundException(notExistAuthor);
+            throw new NotFoundException("Author", notExistAuthor);
         }
 
         var booksList = await bookRepository.GetAllAsync();

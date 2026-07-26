@@ -50,10 +50,10 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
     /// </exception>
     public async Task<Guid> CreateAuthorAsync(AuthorDto authors)
     {
-        var existingAuthors = await authorReadRepository.GetAuthorAsync(authors.Surname, authors.Name);
-        if (existingAuthors != null)
+        var existingAuthor = await authorReadRepository.GetAuthorAsync(authors.Surname, authors.Name);
+        if (existingAuthor != null)
         {
-            throw new AuthorAlreadyExistsException();
+            throw new AlreadyExistsException("Author", existingAuthor.FullName);
         }
 
         var newAuthors = new Author(authors.Name, authors.Surname);
