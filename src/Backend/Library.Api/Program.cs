@@ -30,10 +30,27 @@ builder.Services.AddOpenApi();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular",
-        policy => policy.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.SetIsOriginAllowed(origin =>
+            {
+                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    return false;
+
+                return uri.Host == "localhost"
+                       || uri.Host.StartsWith("192.168.77.");
+            });
+        }
+        else
+        {
+            policy.WithOrigins("https://library.twojadomena.pl");
+        }
+
+        policy.AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 var app = builder.Build();
 
