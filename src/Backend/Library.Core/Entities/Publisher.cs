@@ -8,9 +8,7 @@ public sealed class Publisher : BaseClass
     }
     public Publisher(Name name)
     {
-        Name = name;
-        CreatedAt = DateTime.Now;
-        UpdatedAt = DateTime.Now;
+        SetPublisher(name);
     }
 
     private readonly List<Book> _books = [];
