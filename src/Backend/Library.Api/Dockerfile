@@ -6,17 +6,17 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Kopiowanie plików projektów (lepsze wykorzystanie cache)
-COPY ["Library.Api/Library.Api.csproj", "Library.Api/"]
-COPY ["Library.Application/Library.Application.csproj", "Library.Application/"]
-COPY ["Library.Infrastructure/Library.Infrastructure.csproj", "Library.Infrastructure/"]
-COPY ["Library.Core/Library.Core.csproj", "Library.Core/"]
+COPY ["src/Backend/Library.Api/Library.Api.csproj", "src/Backend/Library.Api/"]
+COPY ["src/Backend/Library.Application/Library.Application.csproj", "src/Backend/Library.Application/"]
+COPY ["src/Backend/Library.Infrastructure/Library.Infrastructure.csproj", "src/Backend/Library.Infrastructure/"]
+COPY ["src/Backend/Library.Core/Library.Core.csproj", "src/Backend/Library.Core/"]
 
-RUN dotnet restore "Library.Api/Library.Api.csproj"
+RUN dotnet restore "src/Backend/Library.Api/Library.Api.csproj"
 
 # Kopiowanie całego rozwiązania
 COPY . .
 
-WORKDIR "/src/Library.Api"
+WORKDIR "/src/Backend/Library.Api"
 
 RUN dotnet publish -c Release -o /app/publish --no-restore
 
