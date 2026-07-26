@@ -16,14 +16,10 @@ RUN dotnet restore "src/Backend/Library.Api/Library.Api.csproj"
 # Kopiowanie całego rozwiązania
 COPY . .
 
-WORKDIR "/src/Backend/Library.Api"
-
-RUN pwd
-RUN ls -la
-RUN find /src -name "*.csproj"
-
-RUN dotnet publish -c Release -o /app/publish --no-restore
-
+RUN dotnet publish src/Backend/Library.Api/Library.Api.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore
 # ==========================
 # Runtime stage
 # ==========================
