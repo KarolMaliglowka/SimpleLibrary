@@ -32,24 +32,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        Console.WriteLine(builder.Environment.EnvironmentName);
-        //if (builder.Environment.IsDevelopment())
-        //{
-            policy.SetIsOriginAllowed(origin =>
+        policy.SetIsOriginAllowed(origin =>
             {
                 if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                     return false;
 
                 return uri.Host == "localhost"
                        || uri.Host.StartsWith("192.168.77.");
-            });
-        //}
-        //else
-        //{
-          //  policy.WithOrigins("https://library.twojadomena.pl");
-        //}
-
-        policy.AllowAnyHeader()
+            })
+            .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
