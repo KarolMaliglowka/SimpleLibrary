@@ -19,7 +19,7 @@ import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
 import {Publisher} from '../../models/publisher';
 import {PublishersService} from '../../service/publisher.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
     selector: 'app-publisher',
@@ -51,7 +51,8 @@ export class PublisherComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
         private fb: FormBuilder
-    ) {}
+    ) {
+    }
 
     async ngOnInit() {
         await this.loadData();
@@ -71,8 +72,8 @@ export class PublisherComponent implements OnInit {
                 this.cd.markForCheck();
             })
             .catch(() => {
-            this.loading = false;
-        });
+                this.loading = false;
+            });
     }
 
     openNew() {
@@ -95,7 +96,7 @@ export class PublisherComponent implements OnInit {
 
     async savePublisher() {
         if (this.publisherForm.invalid) return;
-        const newPublisher:Publisher = this.publisherForm.value;
+        const newPublisher: Publisher = this.publisherForm.value;
         try {
             if (this.editMode) {
                 await this.publisherService.UpdatePublisher(newPublisher);
@@ -107,13 +108,17 @@ export class PublisherComponent implements OnInit {
             this.publisherDialog = false;
         } catch (err) {
             console.error(err);
-            this.messageInfo('Some error: ' + err, 'error');
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
         }
         await this.loadData();
     }
 
     messageInfo(message: string, kind: string) {
-        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
+        this.messageService.add({severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000});
     }
 
     confirm(publisher: Publisher) {
@@ -141,5 +146,6 @@ export class PublisherComponent implements OnInit {
             },
         });
     }
+
     protected readonly HTMLInputElement = HTMLInputElement;
 }
