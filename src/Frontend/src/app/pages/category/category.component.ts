@@ -13,6 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Category } from '../../models/category';
 import { CategoriesService } from '../../service/category.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-category',
@@ -103,8 +104,11 @@ export class CategoryComponent implements OnInit {
             }
             this.categoryDialog = false;
         } catch (err) {
-            console.error(err);
-            this.messageInfo('Some error: ' + err, 'error');
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
         }
         await this.loadData();
     }
