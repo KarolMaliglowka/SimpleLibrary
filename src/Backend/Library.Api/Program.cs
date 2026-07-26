@@ -32,6 +32,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
+        Console.WriteLine(builder.Environment.EnvironmentName);
         //if (builder.Environment.IsDevelopment())
         //{
             policy.SetIsOriginAllowed(origin =>
@@ -59,7 +60,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 app.UseExceptionHandler();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 app.MapAuthorEndpoints();
 app.MapBookEndpoint();
