@@ -26,7 +26,9 @@ RUN dotnet publish -c Release -o /app/publish --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 
 WORKDIR /app
-
+RUN pwd
+RUN ls -la
+RUN find /src -name "*.csproj"
 COPY --from=build /app/publish .
 
 ENV ASPNETCORE_URLS=http://+:5280
