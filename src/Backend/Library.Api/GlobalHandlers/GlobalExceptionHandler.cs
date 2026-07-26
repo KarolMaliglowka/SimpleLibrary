@@ -26,6 +26,14 @@ public class GlobalExceptionHandler : IExceptionHandler
                     message = ex.Message
                 });
                 return true;
+            
+            case AlreadyExistsException ex:
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = ex.Message
+                });
+                return true;
 
             default:
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;

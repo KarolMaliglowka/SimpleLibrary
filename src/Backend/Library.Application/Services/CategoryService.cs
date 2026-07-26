@@ -41,7 +41,7 @@ public class CategoryService(
         var existingCategory = await categoryRepository.GetCategoryByNameAsync(categoryDto.Name);
         if (existingCategory != null)
         {
-            throw new AlreadyExistsException("Category", $" with {categoryDto.Id} ");
+            throw new AlreadyExistsException("Category", categoryDto.Name);
         }
 
         var category = new Category(categoryDto.Name);
