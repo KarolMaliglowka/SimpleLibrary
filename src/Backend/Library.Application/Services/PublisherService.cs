@@ -44,8 +44,8 @@ public class PublisherService(
         var existingPublisher = await publisherRepository.GetPublisherByNameAsync(publisher.Name);
         if (existingPublisher != null)
         {
-            logger.Log(LogLevel.Error, "{PublisherName} '{Name}' already exists.", nameof(Publisher), publisher.Name);
-            throw new AlreadyExistsException(nameof(Publisher), publisher.Name);
+            logger.Log(LogLevel.Error, "{PublisherName} '{Name}' already exists.", "Publisher", publisher.Name);
+            throw new AlreadyExistsException("Publisher", publisher.Name);
         }
 
         var newPublisher = new Publisher(publisher.Name);
