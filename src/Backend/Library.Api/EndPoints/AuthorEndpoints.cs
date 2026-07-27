@@ -29,16 +29,16 @@ public static class AuthorEndpoints
             }
         });
 
-        app.MapPost("/authors/createMany", async (List<Author> authors, IAuthorRepository authorRepository) =>
+        app.MapPost("/authors/createMany", async (List<AuthorDto> authors, IAuthorService authorService) =>
         {
-            authorRepository.AddAuthors(authors);// przerobić na serwis z warstwy application
+            await authorService.CreateAuthorsAsync(authors);
             return Results.Created();
         });
 
         app.MapPut("/authors/update", async (
-            Author author,
+            AuthorDto author,
             IAuthorReadRepository authorReadRepository,
-            IAuthorRepository authorRepository
+            IAuthorService authorService
         ) =>
         {
             var authorInDb = await authorReadRepository.GetAuthorByIdAsync(author.Id);
@@ -47,7 +47,7 @@ public static class AuthorEndpoints
                 return Results.NotFound("Author not found :/");
             }
 
-            await authorRepository.UpdateAuthorAsync(author);// przerobić na serwis z warstwy application
+            await authorService.UpdateAuthorAsync(author);
             return Results.Ok("Author updated");
         });
 

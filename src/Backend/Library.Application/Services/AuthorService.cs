@@ -32,6 +32,7 @@ public interface IAuthorService
     /// <returns>Lista autorów w postaci AuthorDto.</returns>
     Task<List<AuthorDto>> GetAuthorsAsync();
     Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync();
+    Task UpdateAuthorAsync(AuthorDto author);
 }
 
 /// <summary>
@@ -128,6 +129,23 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
 
         authorExist.SetSoftDelete();
         await authorRepository.UpdateAuthorAsync(authorExist);
+        await unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task UpdateAuthorAsync(AuthorDto author)
+    {
+        ArgumentNullException.ThrowIfNull(author);
+        var existingAuthor = await authorReadRepository.GetAuthorByIdAsync(author.Id);
+        if (existingAuthor == null)
+        {
+            logger.Log(LogLevel.Error, "Author with id: '{AuthorId}' not found", author.Id);
+            throw new NotFoundException("Author", $" with id: {author.Id}");
+        }
+
+        existingAuthor.SetName(author.Name);
+        existingAuthor.SetName(author.Surname);
+
+        await authorRepository.UpdateAuthorAsync(existingAuthor);
         await unitOfWork.SaveChangesAsync();
     }
 }

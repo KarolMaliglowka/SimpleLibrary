@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Application.DTO;
+using Library.Core.Entities;
 using Library.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,8 +42,10 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
     }
     
 
-    public Task<Author?> GetAuthorByIdAsync(Guid id) =>
-        _context.Authors.SingleOrDefaultAsync(a => a.Id == id);
+    public async Task<Author?> GetAuthorByIdAsync(Guid? id) =>
+        await _context.Authors
+            .Where(p => !p.IsDeleted)
+            .SingleOrDefaultAsync(a => a.Id == id);
 
     public async Task AddAuthorAsync(Author author)
     {
