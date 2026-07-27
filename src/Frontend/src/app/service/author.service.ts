@@ -28,15 +28,15 @@ export class AuthorsService {
         return firstValueFrom(this.httpService.get<Author>(apiRequest));
     }
 
-    // DeleteBook(id: string) {
-    //     let apiRequest = <ApiRequestData>{
-    //         Url: `${this.url}/book/${id}`,
-    //         RequestBody: id
-    //     };
-    //     return firstValueFrom(this.httpService.put(apiRequest));
-    // }
+    DeleteAuthor(id: string) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/delete/${id}`,
+            RequestBody: id
+        };
+        return firstValueFrom(this.httpService.delete(apiRequest));
+    }
 
-    UpdateAuthor(author: any) {
+    UpdateAuthor(author: Author) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: author
@@ -44,7 +44,7 @@ export class AuthorsService {
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateAuthor(author: any) {
+    CreateAuthor(author: Author) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: author

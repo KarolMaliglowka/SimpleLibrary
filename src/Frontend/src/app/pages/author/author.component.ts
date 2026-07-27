@@ -1,6 +1,14 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {Dialog} from 'primeng/dialog';
+import {ToastModule} from 'primeng/toast';
+import {ToolbarModule} from 'primeng/toolbar';
+import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputTextModule} from 'primeng/inputtext';
+import {TextareaModule} from 'primeng/textarea';
+import {CommonModule} from '@angular/common';
 import {SelectModule} from 'primeng/select';
-import {FormsModule} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
@@ -11,56 +19,55 @@ import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
 import {Author} from '../../models/author';
 import {AuthorsService} from '../../service/author.service';
-import {Dialog} from "primeng/dialog";
-import {ToastModule} from "primeng/toast";
-import {ToolbarModule} from "primeng/toolbar";
-import {ConfirmDialog} from "primeng/confirmdialog";
-import {InputTextModule} from "primeng/inputtext";
-import {TextareaModule} from "primeng/textarea";
-import {CommonModule} from "@angular/common";
-import {ConfirmationService, MessageService} from "primeng/api";
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
-  selector: 'app-author',
+    selector: 'app-author',
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule
+        ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule
     ],
     providers: [
         MessageService, ConfirmationService, AuthorsService
     ],
-  templateUrl: './author.component.html',
-  styleUrl: './author.component.scss'
+    templateUrl: './author.component.html',
+    styleUrl: './author.component.scss'
 })
 export class AuthorComponent {
     authorDialog: boolean = false;
     authors!: Author[];
     author!: Author;
-    selectedAuthors!: Author[] | null;
-    submitted: boolean = false;
-    statuses!: any[];
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
+    editMode = false;
+    authorForm!: FormGroup;
+    editingAuthor?: Author;
 
     constructor(
         private authorService: AuthorsService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
-    ) {}
-
-    ngOnInit() {
-        this.loadData();
+        private fb: FormBuilder
+    ) {
     }
 
-    loadData() {
+    async ngOnInit() {
+        await this.loadData();
+        this.authorForm = this.fb.group({
+            id: [null],
+            name: ['', Validators.required],
+            surname: ['', Validators.required],
+        });
+    }
+
+    async loadData() {
         this.loading = true;
         this.authorService.GetAllAuthors()
-            .then((data: any) => {
-                console.log('authors: ', data);
-                this.authors = data;
+            .then((data) => {
+                this.authors = data.filter(x => x.isDelete);
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {
@@ -69,48 +76,21 @@ export class AuthorComponent {
     }
 
     openNew() {
-        this.author = {};
-        this.submitted = false;
+        this.editingAuthor = undefined;
+        this.authorForm.reset();
         this.authorDialog = true;
+        this.editMode = false;
     }
 
     editAuthor(author: Author) {
-        this.author = {...author};
+        this.editingAuthor = author;
+        this.authorForm.patchValue(author);
         this.authorDialog = true;
-    }
-
-    hideDialog() {
-        this.authorDialog = false;
-        this.submitted = false;
+        this.editMode = true;
     }
 
     deleteAuthor(author: Author) {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + author.name + '?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            rejectButtonProps: {
-                label: 'No',
-                severity: 'secondary',
-                variant: 'text'
-            },
-            acceptButtonProps: {
-                severity: 'danger',
-                label: 'Yes'
-            },
-            accept: () => {
-                this.authors = this.authors.filter((val) => val.id !== author.id);
-                //przesłac do servisu http i wykasować
-
-                this.author;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Author Deleted',
-                    life: 3000
-                });
-            }
-        });
+        this.authorService.DeleteAuthor(author.id as string);
     }
 
     findIndexById(id: string): number {
@@ -124,31 +104,57 @@ export class AuthorComponent {
         return index;
     }
 
-    saveAuthor() {
-        this.submitted = true;
-        if (this.author.name?.trim()) {
-            if (this.author.id) {
-                this.authors[this.findIndexById(this.author.id)] = this.author;
-                this.authorService.UpdateAuthor(this.author);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Author Updated',
-                    life: 3000
-                });
+    async saveAuthor() {
+        if (this.authorForm.invalid) return;
+        const newAuthor: Author = this.authorForm.value;
+        try {
+            if (this.editMode) {
+                await this.authorService.UpdateAuthor(newAuthor);
+                this.messageInfo('Updated author', 'success');
             } else {
-                this.authors.push(this.author);
-                this.authorService.CreateAuthor(this.author);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Author Created',
-                    life: 3000
-                });
+                await this.authorService.CreateAuthor(newAuthor);
+                this.messageInfo('Created new author', 'success');
             }
-            this.authors = [...this.authors];
             this.authorDialog = false;
-            this.author;
+        } catch (err) {
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
         }
+        await this.loadData();
     }
+
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000});
+    }
+
+    confirm(author: Author) {
+        this.confirmationService.confirm({
+            header: 'Are you confirm delete: ' + author.name + '?',
+            message: 'Please confirm to \n\b proceed.',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
+                try {
+                    await this.authorService.DeleteAuthor(author.id!);
+                    this.authors = this.authors.filter(x => x.id !== author.id);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Sukces',
+                        detail: 'Wydawnictwo zostało usunięte.'
+                    });
+
+                } catch (err: any) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Błąd',
+                        detail: err?.error?.message ?? 'Wystąpił nieoczekiwany błąd.'
+                    });
+                }
+            },
+        });
+    }
+
+    protected readonly HTMLInputElement = HTMLInputElement;
 }

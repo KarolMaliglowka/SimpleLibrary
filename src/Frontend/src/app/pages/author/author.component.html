@@ -51,8 +51,19 @@
                 <td style="min-width: 14rem">{{ author.name }}</td>
                 <td style="min-width: 14rem">{{ author.surname }}</td>
                 <td>
-                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editAuthor(author)" />
-                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteAuthor(author)" />
+                    <p-button
+                        icon="pi pi-pencil"
+                        class="mr-2"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="editAuthor(author)" />
+                    <p-button
+                        icon="pi
+                        pi-trash"
+                        severity="danger"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="confirm(author)" />
                 </td>
             </tr>
         </ng-template>
@@ -63,25 +74,51 @@
         </ng-template>
     </p-table>
 
-    <p-dialog [(visible)]="authorDialog" header="Author details" [modal]="true">
-        <ng-template #content>
-            <div class="flex flex-col gap-6">
+    <p-dialog [(visible)]="authorDialog" header="Author Details" [modal]="true">
+        <form *ngIf="authorForm" [formGroup]="authorForm" (ngSubmit)="saveAuthor()">
+            <div class="flex flex-col gap-4">
                 <div>
-                    <label for="name" class="block font-bold mb-3">Name</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="author.name" required autofocus fluid/>
-                    <small class="text-red-500" *ngIf="submitted && !author.name">Name is required.</small>
+                    <label for="name" class="block font-bold mb-2">Name</label>
+                    <input pInputText id="name" formControlName="name" required autofocus
+                           class="w-full p-inputtext-sm"/>
+                    <small class="text-red-500"
+                           *ngIf="authorForm.get('name')?.invalid && authorForm.get('name')?.touched">
+                        Name is required.
+                    </small>
                 </div>
                 <div>
-                    <label for="surname" class="block font-bold mb-3">Surname</label>
-                    <input type="text" pInputText id="surname" [(ngModel)]="author.surname" required autofocus fluid/>
-                    <small class="text-red-500" *ngIf="submitted && !author.surname">Surname is required.</small>
+                    <label for="surname" class="block font-bold mb-2">Surname</label>
+                    <input pInputText id="surname" formControlName="surname" required autofocus
+                           class="w-full p-inputtext-sm"/>
+                    <small class="text-red-500"
+                           *ngIf="authorForm.get('surname')?.invalid && authorForm.get('surname')?.touched">
+                        Surname is required.
+                    </small>
+                </div>
+            </div>
+        </form>
+        <ng-template #footer>
+            <p-button label="Cancel" icon="pi pi-times" text (onClick)="authorDialog=false"></p-button>
+            <p-button type="submit" label="Save" [disabled]="authorForm.invalid"
+                      (onClick)="saveAuthor()"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmdialog #cd>
+        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+            <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                <div
+                    class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                    <i class="pi pi-question !text-5xl"></i>
+                </div>
+                <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                <p class="mb-0">{{ message.message }}</p>
+                <div class="flex items-center gap-2 mt-6">
+                    <p-button label="Delete" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                    <p-button label="Cancel" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
                 </div>
             </div>
         </ng-template>
+    </p-confirmdialog>
 
-        <ng-template #footer>
-            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
-            <p-button label="Save" icon="pi pi-check" (click)="saveAuthor()"/>
-        </ng-template>
-    </p-dialog>
 </div>

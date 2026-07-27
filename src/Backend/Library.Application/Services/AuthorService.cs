@@ -33,12 +33,17 @@ public interface IAuthorService
     Task<List<AuthorDto>> GetAuthorsAsync();
     Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync();
     Task UpdateAuthorAsync(AuthorDto author);
+    Task DeleteAuthorAsync(Guid id);
 }
 
 /// <summary>
 /// Implementacja serwisu odpowiedzialnego za zarządzanie autorami.
 /// </summary>
-public class AuthorService(IAuthorRepository authorRepository, IAuthorReadRepository authorReadRepository, IUnitOfWork unitOfWork, ILogger<AuthorService> logger)
+public class AuthorService(IAuthorRepository authorRepository,
+    IAuthorReadRepository authorReadRepository,
+    IBookRepository bookRepository,
+    IUnitOfWork unitOfWork,
+    ILogger<AuthorService> logger)
     : IAuthorService
 {
     /// <summary>
@@ -49,15 +54,17 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
     /// <exception cref="AuthorAlreadyExistsException">
     /// Rzucany gdy autor o podanym imieniu i nazwisku już istnieje.
     /// </exception>
-    public async Task<Guid> CreateAuthorAsync(AuthorDto authors)
+    public async Task<Guid> CreateAuthorAsync(AuthorDto author)
     {
-        var existingAuthor = await authorReadRepository.GetAuthorAsync(authors.Surname, authors.Name);
+        ArgumentNullException.ThrowIfNull(author);
+        var existingAuthor = await authorReadRepository.GetAuthorAsync(author.Surname, author.Name);
         if (existingAuthor != null)
         {
+            logger.Log(LogLevel.Error, "{AuthorName} '{Name}' already exists.", "Author", $"{author.Name} {author.Surname}");
             throw new AlreadyExistsException("Author", existingAuthor.FullName);
         }
 
-        var newAuthors = new Author(authors.Name, authors.Surname);
+        var newAuthors = new Author(author.Name, author.Surname);
         await authorRepository.AddAuthorAsync(newAuthors);
         await unitOfWork.SaveChangesAsync();
         return newAuthors.Id;
@@ -91,7 +98,8 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
             {
                 Id = x.Id,
                 Name = x.Name ?? string.Empty,
-                Surname = x.Surname ?? string.Empty
+                Surname = x.Surname ?? string.Empty,
+                IsDelete = !x.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();
@@ -118,8 +126,8 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
             throw new NotFoundException("Author", $" with id: {id}");
         }
 
-        var authorsList = await authorReadRepository.GetAuthorsAsync();
-        var isAuthorForSomeBook = authorsList.Any(x =>
+        var booksList = await bookRepository.GetAllAsync();
+        var isAuthorForSomeBook = booksList.Any(x =>
             (x.Name.Value.ToLower()).Equals(authorExist.Name.Value,
                 StringComparison.CurrentCultureIgnoreCase)); //TODO do poprawy
         if (isAuthorForSomeBook)
@@ -143,9 +151,34 @@ public class AuthorService(IAuthorRepository authorRepository, IAuthorReadReposi
         }
 
         existingAuthor.SetName(author.Name);
-        existingAuthor.SetName(author.Surname);
+        existingAuthor.SetSurname(author.Surname);
 
         await authorRepository.UpdateAuthorAsync(existingAuthor);
         await unitOfWork.SaveChangesAsync();
     }
+    
+    // public async Task DeleteAuthorAsync(Guid id)
+    // {
+    //     var existingAuthor = await authorReadRepository.GetAuthorByIdAsync(id);
+    //     if (existingAuthor == null)
+    //     {
+    //         logger.Log(LogLevel.Error, "Author with id: '{AuthorId}' not found", id);
+    //         throw new NotFoundException("Author", $" with id: {id}");
+    //     }
+    //
+    //     var booksList = await bookRepository.GetAllAsync();
+    //     var isAuthorForSomeBook = booksList.Any(x =>
+    //         (x.Publisher?.Name.Value.ToLower()).Equals(existingAuthor.Name.Value,
+    //             StringComparison.CurrentCultureIgnoreCase));
+    //
+    //     if (isAuthorForSomeBook)
+    //     {
+    //         throw new IsInUseException("Author", existingAuthor.Name);
+    //     }
+    //
+    //     existingAuthor.SetSoftDelete();
+    //     await authorRepository.UpdateAuthorAsync(existingAuthor);
+    //     await unitOfWork.SaveChangesAsync();
+    // }
+    
 }

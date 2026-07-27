@@ -18,15 +18,8 @@ public static class AuthorEndpoints
 
         app.MapPost("/authors/create", async (AuthorDto author, IAuthorService authorService) =>
         {
-            try
-            {
-                var id = await authorService.CreateAuthorAsync(author);
-                return Results.Created($"/author/{id}", new { Id = id });
-            }
-            catch (AlreadyExistsException ex)
-            {
-                return Results.Content(ex.Message);
-            }
+            await authorService.CreateAuthorAsync(author);
+            return Results.Created();
         });
 
         app.MapPost("/authors/createMany", async (List<AuthorDto> authors, IAuthorService authorService) =>
@@ -35,7 +28,7 @@ public static class AuthorEndpoints
             return Results.Created();
         });
 
-        app.MapPut("/authors/update", async (
+        app.MapPatch("/authors/update", async (
             AuthorDto author,
             IAuthorReadRepository authorReadRepository,
             IAuthorService authorService
@@ -52,15 +45,15 @@ public static class AuthorEndpoints
         });
 
         app.MapDelete("/authors/delete/{id:guid}",
-            async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
+            async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorService authorService) =>
             {
-                var author = await authorReadRepository.GetAuthorByIdAsync(id);// przerobić na serwis z warstwy application
+                var author = await authorReadRepository.GetAuthorByIdAsync(id);
                 if (author == null)
                 {
                     return Results.NotFound("Author not found");
                 }
 
-                authorRepository.DeleteAuthor(author); // przerobić na serwis z warstwy application
+                await authorService.DeleteAuthorAsync(id);
                 return Results.Ok("Author deleted");
             });
 
