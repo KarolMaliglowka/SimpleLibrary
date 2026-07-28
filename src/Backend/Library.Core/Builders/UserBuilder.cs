@@ -56,6 +56,8 @@ public sealed class UserBuilder
     public UserBuilder SetPhoneNumber(string phoneNumber)
     {
         ValidateInput(phoneNumber, "PhoneNumber", 9);
+        if (!Regex.IsMatch(phoneNumber, @"^\+?[0-9\s-]{9,20}$"))
+            throw new ArgumentException("Invalid phone number.");
         _user.PhoneNumber = phoneNumber;
         return this;
     }
@@ -93,12 +95,19 @@ public sealed class UserBuilder
         return _user;
     }
 
-    private static void ValidateInput(string input, string fieldName, int minLength = 1)
+    private static void ValidateInput(
+        string input,
+        string fieldName,
+        int minLength,
+        int maxLength = 100)
     {
-        if (string.IsNullOrWhiteSpace(input) || input.Length < minLength)
-        {
-            throw new ArgumentException(
-                $"{fieldName} cannot be empty and must have at least {minLength} characters");
-        }
+        if (string.IsNullOrWhiteSpace(input))
+            throw new ArgumentException($"{fieldName} is required.");
+
+        if (input.Length < minLength)
+            throw new ArgumentException($"{fieldName} must contain at least {minLength} characters.");
+
+        if (input.Length > maxLength)
+            throw new ArgumentException($"{fieldName} cannot exceed {maxLength} characters.");
     }
 }
