@@ -19,7 +19,7 @@ public static class UserFactory
         ArgumentNullException.ThrowIfNull(userDto);
         return currentUser switch
         {
-            null => new UserBuilder()
+            null => new UserBuilder() 
                 .SetName(new Name(userDto.Name))
                 .SetSurname(userDto.Surname)
                 .SetEmail(userDto.Email)

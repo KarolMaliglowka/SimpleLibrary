@@ -45,10 +45,12 @@ export class UsersService {
     }
 
     CreateUser(user: User) {
+        console.log(user);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: user
         };
+        console.log(user);
         return firstValueFrom(this.httpService.post(apiRequest));
     }
 

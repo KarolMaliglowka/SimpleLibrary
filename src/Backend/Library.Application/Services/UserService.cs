@@ -1,7 +1,6 @@
 using Library.Application.DTO;
 using Library.Application.Factories;
 using Library.Core;
-using Library.Core.Entities;
 using Library.Core.Exceptions;
 using Library.Core.Repositories;
 
@@ -15,7 +14,7 @@ public interface IUserService
     Task<UserDto> GetUserByName(string name);
     Task<UserDto> GetUserBySurname(string surname);
     Task<List<UserDto>> GetUsers();
-    Task SetUserActive(Guid userId, bool isActive);
+    Task SetUserActive(Guid? userId, bool isActive);
     Task CreateUsersAsync(List<UserDto> usersDto);
     Task<UserDto> GetUserWithBorrowedBooksById(Guid id);
     Task<List<UserDto>> GetUsersWithBorrowedBooks();
@@ -23,7 +22,8 @@ public interface IUserService
     Task DeleteUserAsync(Guid id);
 }
 
-public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IBorrowRepository borrowRepository) : IUserService
+public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IBorrowRepository borrowRepository)
+    : IUserService
 {
     public async Task<List<UserDto>> GetUsers()
     {
@@ -48,7 +48,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         var user = await userRepository.GetUserByIdAsync(userDto.Id);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User", $" with id: {userDto.Id}");
         }
 
         var updatedUser = UserFactory.BuildUser(userDto, user);
@@ -59,27 +59,27 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
     public async Task<UserDto> GetUserById(Guid id)
     {
         var user = await userRepository.GetUserByIdAsync(id);
-        return user == null ? throw new Exception("User not found") : user.BuildUserDto();
+        return user == null ? throw new NotFoundException("User", $" with id: {id}") : user.BuildUserDto();
     }
 
     public async Task<UserDto> GetUserByName(string name)
     {
         var user = await userRepository.GetUserByNameAsync(name);
-        return user == null ? throw new Exception("User not found") : user.BuildUserDto();
+        return user == null ? throw new NotFoundException("User", name) : user.BuildUserDto();
     }
 
     public async Task<UserDto> GetUserBySurname(string surname)
     {
         var user = await userRepository.GetUserBySurnameAsync(surname);
-        return user == null ? throw new Exception("User not found") : user.BuildUserDto();
+        return user == null ? throw new NotFoundException("User", surname) : user.BuildUserDto();
     }
 
-    public async Task SetUserActive(Guid userId, bool isActive)
+    public async Task SetUserActive(Guid? userId, bool isActive)
     {
         var user = await userRepository.GetUserByIdAsync(userId);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User", $" with id: {userId}");
         }
 
         UserFactory.ActiveUser(isActive, user);
@@ -207,7 +207,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
             })
             .ToList();
     }
-    
+
     public async Task DeleteUserAsync(Guid id)
     {
         var userExist = await userRepository.GetUserByIdAsync(id);
@@ -219,7 +219,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         var borrowsBookList = await borrowRepository.GetBorrowsBookByUserIdAsync(userExist.Id);
         if (borrowsBookList.Count > 0)
         {
-            var usedBooks  = borrowsBookList.Select(x => x.Book.Name).ToList();
+            var usedBooks = borrowsBookList.Select(x => x.Book.Name).ToList();
             throw new Exception("User borrow books: " + string.Join(", ", usedBooks));
         }
 

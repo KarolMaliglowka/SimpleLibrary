@@ -11,7 +11,7 @@ public class UserRepository(LibraryDbContext context) : IUserRepository
             .AsNoTracking()
             .ToListAsync();
 
-    public async Task<User?> GetUserByIdAsync(Guid id) =>
+    public async Task<User?> GetUserByIdAsync(Guid? id) =>
         await context.Users
             .FirstOrDefaultAsync(u => u.Id == id);
 

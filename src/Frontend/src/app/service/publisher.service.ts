@@ -61,6 +61,7 @@ export class PublishersService {
     }
 
     CreatePublisher(publisher: Publisher) {
+        console.log(publisher);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: publisher

@@ -7,8 +7,6 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
-import {SelectModule} from 'primeng/select';
-import {FormsModule} from '@angular/forms';
 import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
@@ -20,6 +18,9 @@ import {TooltipModule} from 'primeng/tooltip'
 import {User} from '../../models/user';
 import {UsersService} from '../../service/user.service';
 import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {SelectModule} from "primeng/select";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     selector: 'user-component',
@@ -27,7 +28,7 @@ import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
+        ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
     ],
     providers: [
         MessageService, ConfirmationService, UsersService
@@ -40,82 +41,74 @@ export class UserComponent implements OnInit {
     userDialog: boolean = false;
     users!: User[];
     user!: User;
-    selectedUsers!: User[] | null;
-    submitted: boolean = false;
-    statuses!: any[];
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
+    editMode = false;
+    userForm!: FormGroup;
+    editingUser?: User;
 
     constructor(
         private userService: UsersService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
+        private fb: FormBuilder
     ) {
     }
 
     async ngOnInit() {
         await this.loadData();
+        this.userForm = this.fb.group({
+            id: [null],
+            name: ['', Validators.required],
+            surname: ['', Validators.required],
+            email: ['', Validators.required],
+            address: ['', Validators.required],
+            phoneNumber: ['', Validators.required],
+            city: ['', Validators.required],
+            country: ['', Validators.required],
+            postalCode: ['', Validators.required]
+        });
     }
 
     openNew() {
-        this.user = {};
-        this.submitted = false;
+        this.editingUser = undefined;
+        this.userForm.reset();
         this.userDialog = true;
+        this.editMode = false;
     }
 
     editUser(user: User) {
-        this.user = {...user};
+        this.editingUser = user;
+        this.userForm.patchValue(user);
         this.userDialog = true;
-    }
-
-    hideDialog() {
-        this.userDialog = false;
-        this.submitted = false;
+        this.editMode = true;
     }
 
     deleteUser(user: User) {
         this.userService.DeleteUser(user.id as string);
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
-    saveUser() {
-        this.submitted = true;
-        if (this.user.name?.trim()) {
-            if (this.user.id) {
-                this.users[this.findIndexById(this.user.id)] = this.user;
-                this.userService.UpdateUser(this.user);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'User updated',
-                    life: 3000
-                });
+    async saveUser() {
+        if (this.userForm.invalid) return;
+        const newUser: User = this.userForm.value;
+        try {
+            if (this.editMode) {
+                await this.userService.UpdateUser(newUser);
+                this.messageInfo('Updated user', 'success');
             } else {
-                this.users.push(this.user);
-                this.userService.CreateUser(this.user);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'User created',
-                    life: 3000
-                });
+                await this.userService.CreateUser(newUser);
+                this.messageInfo('Created new user', 'success');
             }
-
-            this.users = [...this.users];
             this.userDialog = false;
-            this.user;
+        } catch (err) {
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
         }
+        await this.loadData();
     }
 
     async loadData() {
