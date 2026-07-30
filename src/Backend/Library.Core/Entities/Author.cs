@@ -22,7 +22,7 @@ public class Author : BaseClass
 
     public void SetName(string name)
     {
-        if (string.IsNullOrWhiteSpace(name) || name.Length < 1)
+        if (string.IsNullOrWhiteSpace(name) || name.Length < 3)
         {
             throw new ArgumentException("Name cannot be empty. It requires minimum 3 characters.");
         }
@@ -40,3 +40,4 @@ public class Author : BaseClass
         IsDeleted = true;
     }
 }
+

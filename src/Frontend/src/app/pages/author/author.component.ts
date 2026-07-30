@@ -58,8 +58,20 @@ export class AuthorComponent {
         await this.loadData();
         this.authorForm = this.fb.group({
             id: [null],
-            name: ['', Validators.required],
-            surname: ['', Validators.required],
+            name: [
+                '',
+                [
+                    Validators.required,
+                    Validators.minLength(3),
+                    Validators.maxLength(50)
+                ]
+            ],
+            surname: [
+                '',
+                [
+                    Validators.maxLength(50)
+                ]
+            ]
         });
     }
 

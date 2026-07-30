@@ -77,22 +77,59 @@
     <p-dialog [(visible)]="authorDialog" header="Author Details" [modal]="true">
         <form *ngIf="authorForm" [formGroup]="authorForm" (ngSubmit)="saveAuthor()">
             <div class="flex flex-col gap-4">
+
                 <div>
-                    <label for="name" class="block font-bold mb-2">Name</label>
-                    <input pInputText id="name" formControlName="name" required autofocus
-                           class="w-full p-inputtext-sm"/>
-                    <small class="text-red-500"
-                           *ngIf="authorForm.get('name')?.invalid && authorForm.get('name')?.touched">
+                    <label for="name" class="block font-bold mb-2">
+                        Name
+                    </label>
+
+                    <input
+                        pInputText
+                        id="name"
+                        formControlName="name"
+                        class="w-full p-inputtext-sm"
+                    />
+
+                    <small
+                        class="p-error"
+                        *ngIf="authorForm.get('name')?.touched &&
+               authorForm.get('name')?.hasError('required')">
                         Name is required.
                     </small>
+
+                    <small
+                        class="p-error"
+                        *ngIf="authorForm.get('name')?.touched &&
+               authorForm.get('name')?.hasError('minlength')">
+                        Name must contain at least 3 characters.
+                    </small>
+
+                    <small
+                        class="p-error"
+                        *ngIf="authorForm.get('name')?.touched &&
+               authorForm.get('name')?.hasError('maxlength')">
+                        Name cannot contain more than 50 characters.
+                    </small>
                 </div>
+
+
                 <div>
-                    <label for="surname" class="block font-bold mb-2">Surname</label>
-                    <input pInputText id="surname" formControlName="surname" required autofocus
-                           class="w-full p-inputtext-sm"/>
-                    <small class="text-red-500"
-                           *ngIf="authorForm.get('surname')?.invalid && authorForm.get('surname')?.touched">
-                        Surname is required.
+                    <label for="surname" class="block font-bold mb-2">
+                        Surname
+                    </label>
+
+                    <input
+                        pInputText
+                        id="surname"
+                        formControlName="surname"
+                        class="w-full p-inputtext-sm"
+                    />
+
+                    <small
+                        class="p-error"
+                        *ngIf="authorForm.get('surname')?.touched &&
+               authorForm.get('surname')?.hasError('maxlength')">
+                        Surname cannot contain more than 50 characters.
                     </small>
                 </div>
             </div>
