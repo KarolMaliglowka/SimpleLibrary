@@ -210,8 +210,7 @@
         </form>
         <ng-template #footer>
             <p-button label="Cancel" icon="pi pi-times" text (onClick)="userDialog=false"></p-button>
-            <p-button type="submit" label="Save" [disabled]="userForm.invalid"
-                      (onClick)="saveUser()"></p-button>
+            <p-button label="Save" [disabled]="userForm.invalid" (onClick)="saveUser()"></p-button>
         </ng-template>
     </p-dialog>
 

@@ -85,8 +85,7 @@
         </form>
         <ng-template #footer>
             <p-button label="Cancel" icon="pi pi-times" text (onClick)="publisherDialog=false"></p-button>
-            <p-button type="submit" label="Save" [disabled]="publisherForm.invalid"
-                      (onClick)="savePublisher()"></p-button>
+            <p-button label="Save" [disabled]="publisherForm.invalid" (onClick)="savePublisher()"></p-button>
         </ng-template>
     </p-dialog>
     <p-confirmdialog #cd>

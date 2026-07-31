@@ -92,26 +92,22 @@
 
                     <small
                         class="p-error"
-                        *ngIf="authorForm.get('name')?.touched &&
-               authorForm.get('name')?.hasError('required')">
+                        *ngIf="authorForm.get('name')?.touched && authorForm.get('name')?.hasError('required')">
                         Name is required.
                     </small>
 
                     <small
                         class="p-error"
-                        *ngIf="authorForm.get('name')?.touched &&
-               authorForm.get('name')?.hasError('minlength')">
+                        *ngIf="authorForm.get('name')?.touched && authorForm.get('name')?.hasError('minlength')">
                         Name must contain at least 3 characters.
                     </small>
 
                     <small
                         class="p-error"
-                        *ngIf="authorForm.get('name')?.touched &&
-               authorForm.get('name')?.hasError('maxlength')">
+                        *ngIf="authorForm.get('name')?.touched && authorForm.get('name')?.hasError('maxlength')">
                         Name cannot contain more than 50 characters.
                     </small>
                 </div>
-
 
                 <div>
                     <label for="surname" class="block font-bold mb-2">
@@ -127,8 +123,7 @@
 
                     <small
                         class="p-error"
-                        *ngIf="authorForm.get('surname')?.touched &&
-               authorForm.get('surname')?.hasError('maxlength')">
+                        *ngIf="authorForm.get('surname')?.touched && authorForm.get('surname')?.hasError('maxlength')">
                         Surname cannot contain more than 50 characters.
                     </small>
                 </div>
@@ -136,8 +131,7 @@
         </form>
         <ng-template #footer>
             <p-button label="Cancel" icon="pi pi-times" text (onClick)="authorDialog=false"></p-button>
-            <p-button type="submit" label="Save" [disabled]="authorForm.invalid"
-                      (onClick)="saveAuthor()"></p-button>
+            <p-button label="Save" [disabled]="authorForm.invalid" (onClick)="saveAuthor()"></p-button>
         </ng-template>
     </p-dialog>
 
