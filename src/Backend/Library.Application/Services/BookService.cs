@@ -31,7 +31,7 @@ public interface IBookService
     /// <param name="bookId">Unique identifier of the book.</param>
     /// <returns>The book represented as <see cref="BookDto"/>.</returns>
     /// <exception cref="BookNotFoundException">Thrown when the book is not found.</exception>
-    Task<BookDto> GetBookByIdAsync(Guid bookId);
+    Task<BookDto> GetBookByIdAsync(Guid? bookId);
 
     /// <summary>
     /// Retrieves a book by its name.
@@ -212,7 +212,7 @@ public class BookService(
     /// <param name="bookId">Unique identifier of the book.</param>
     /// <returns>The book mapped to <see cref="BookDto"/>.</returns>
     /// <exception cref="BookNotFoundException">Thrown when the book cannot be found.</exception>
-    public async Task<BookDto> GetBookByIdAsync(Guid bookId)
+    public async Task<BookDto> GetBookByIdAsync(Guid? bookId)
     {
         var book = await bookRepository.GetBookByIdAsync(bookId);
         return book is null ? throw new BookNotFoundException(bookId.ToString()) : MapBookToDto(book);
@@ -243,8 +243,9 @@ public class BookService(
             .ToList();
         var categoryExistInSystem = await categoryService.GetCategoriesAsync();
         var categoriesToImport = categoryList
-            .Where(x => !categoryExistInSystem.Any(y =>
-                y.Name!.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
+            .Where(x => !categoryExistInSystem
+                .Any(y =>
+                  y.Name!.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
             .Select(x => new Category(x!))
             .ToList();
         if (categoriesToImport.Count != 0)
@@ -257,11 +258,10 @@ public class BookService(
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var publishersExistInSystem = await publisherRepository.GetPublishersAsync();
+       
         var publishersToImport = publishersList
-            .Where(x => !publishersExistInSystem
-                .Any(y =>
-                    y.Name.Value.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
-            .Select(x => new Publisher(x ))
+            .Where(x => !publishersExistInSystem.Any(y => x?.ToLower() == y.Name.Value.ToLower()))
+            .Select(x => new Publisher(x! ))
             .ToList();
         if (publishersToImport.Count != 0)
         {
@@ -281,7 +281,7 @@ public class BookService(
         {
             authorRepository.AddAuthors(authorsToImport);
         }
-
+        await unitOfWork.SaveChangesAsync();
         var booksListToImport = new List<Book>();
 
         var listOfAllPublishers = await publisherRepository.GetPublishersAsync();

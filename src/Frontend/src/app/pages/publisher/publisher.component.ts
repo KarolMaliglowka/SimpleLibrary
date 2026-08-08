@@ -58,7 +58,7 @@ export class PublisherComponent implements OnInit {
         await this.loadData();
         this.publisherForm = this.fb.group({
             id: [null],
-            name: ['', Validators.required]
+            name: ['', Validators.required, Validators.length > 2]
         });
     }
 

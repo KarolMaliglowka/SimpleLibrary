@@ -18,14 +18,8 @@ public static class BookEndpoints
         });
 
         app.MapPost("/books/create",
-            async (BookDto book,
-                IBookService bookService
-                //[FromServices] IValidator<BookDto> bookValidator,
-                //HttpContext context
-                ) =>
+            async (BookDto book, IBookService bookService) =>
             {
-               // var validateResult = await bookValidator.ValidateCommandAsync(book, context);
-                //if (validateResult != Results.Empty) return validateResult;
                 await bookService.CreateBookAsync(book);
                 return Results.Created();
             });
@@ -44,13 +38,8 @@ public static class BookEndpoints
         });
 
         app.MapPatch("/books/update",
-            async (BookDto book,
-                IBookService bookService,
-                [FromServices] IValidator<BookDto> bookValidator,
-                HttpContext context) =>
+            async (BookDto book, IBookService bookService) =>
             {
-                var validateResult = await bookValidator.ValidateCommandAsync(book, context);
-                if (validateResult != Results.Empty) return validateResult;
                 await bookService.UpdateBook(book);
                 return Results.Ok();
             });
@@ -85,7 +74,6 @@ public static class BookEndpoints
         {
             var books = await bookService.GetBooksDictionaryAsync();
             return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
-            //do zmiany dto
         });
     }
 }

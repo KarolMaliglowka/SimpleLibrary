@@ -19,9 +19,9 @@ public sealed class Publisher : BaseClass
     
     public void SetPublisher(string publisher)
     {
-        if (string.IsNullOrWhiteSpace(publisher) || publisher.Length < 3)
+        if (string.IsNullOrWhiteSpace(publisher) || publisher.Length < 2)
         {
-            throw new ArgumentException("Publisher cannot be empty. It requires minimum 4 characters.");
+            throw new ArgumentException("Publisher cannot be empty. It requires minimum 3 characters.");
         }
 
         Name = publisher;

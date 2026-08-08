@@ -3,6 +3,8 @@ import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
 import {ApiRequestData} from "../../shared/domain/api.request.data";
 import { Book } from '../models/book';
+import { MultiSelectModule } from 'primeng/multiselect';
+
 @Injectable({
     providedIn: 'root'
 })

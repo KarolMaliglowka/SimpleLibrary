@@ -36,7 +36,7 @@ import {HttpErrorResponse} from '@angular/common/http';
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,ReactiveFormsModule,
+        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,ReactiveFormsModule,MultiSelectModule
 
 
     ],

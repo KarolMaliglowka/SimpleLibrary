@@ -164,8 +164,24 @@
                 </p-select>
             </div>
             <div>
+<!--                <label for="name" class="block font-bold mb-3">Authors</label>-->
+<!--                <p-select [options]="authors" formControlName="authors" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">-->
+<!--                    <ng-template #selectedItem let-selectedOption>-->
+<!--                        <div class="flex items-center gap-2">-->
+<!--                            <div>{{ selectedOption.name }}</div>-->
+<!--                        </div>-->
+<!--                    </ng-template>-->
+<!--                    <ng-template let-author #item>-->
+<!--                        <div class="flex items-center gap-2">-->
+<!--                            <div>{{ author.name }}</div>-->
+<!--                        </div>-->
+<!--                    </ng-template>-->
+<!--                </p-select>-->
                 <label for="name" class="block font-bold mb-3">Authors</label>
-                <p-select [options]="authors" formControlName="authors" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">
+                <p-multiSelect
+                    [options]="authors"
+                    formControlName="authors" [filter]="true" appendTo="body" optionLabel="name"
+                    placeholder="Select Authors" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
@@ -176,8 +192,8 @@
                             <div>{{ author.name }}</div>
                         </div>
                     </ng-template>
-                </p-select>
 
+                </p-multiSelect>
 
 
             </div>
