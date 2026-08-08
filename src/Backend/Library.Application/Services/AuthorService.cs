@@ -34,6 +34,7 @@ public interface IAuthorService
     Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync();
     Task UpdateAuthorAsync(AuthorDto author);
     Task DeleteAuthorAsync(Guid id);
+    
 }
 
 /// <summary>
@@ -93,28 +94,32 @@ public class AuthorService(IAuthorRepository authorRepository,
     public async Task<List<AuthorDto>> GetAuthorsAsync()
     {
         var authorsList = await authorReadRepository.GetAuthorsAsync();
-        return authorsList
-            .Select(x => new AuthorDto()
-            {
-                Id = x.Id,
-                Name = x.Name ?? string.Empty,
-                Surname = x.Surname ?? string.Empty,
-                IsDelete = !x.IsDeleted
-            })
-            .OrderBy(x => x.Name)
-            .ToList();
+        return
+        [
+            .. authorsList
+                .Select(x => new AuthorDto()
+                {
+                    Id = x.Id,
+                    Name = x.Name ?? string.Empty,
+                    Surname = x.Surname ?? string.Empty,
+                    IsDelete = !x.IsDeleted
+                })
+                .OrderBy(x => x.Name)
+        ];
     }
 
     public async Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync()
     {
         var authorsList = await authorReadRepository.GetAuthorsAsync();
-        return authorsList
-            .OrderBy(x => x.FullName)
-            .Select(x => new Dictionary<Guid, string>
-            {
-                [x.Id] = x.FullName
-            })
-            .ToList();
+        return
+        [
+            .. authorsList
+                .OrderBy(x => x.FullName)
+                .Select(x => new Dictionary<Guid, string>
+                {
+                    [x.Id] = x.FullName
+                })
+        ];
     }
     
     public async Task DeleteAuthorAsync(Guid id)
@@ -126,7 +131,7 @@ public class AuthorService(IAuthorRepository authorRepository,
             throw new NotFoundException("Author", $" with id: {id}");
         }
 
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         var isAuthorForSomeBook = booksList.Any(x =>
             (x.Name.Value.ToLower()).Equals(authorExist.Name.Value,
                 StringComparison.CurrentCultureIgnoreCase)); //TODO do poprawy
@@ -156,29 +161,4 @@ public class AuthorService(IAuthorRepository authorRepository,
         await authorRepository.UpdateAuthorAsync(existingAuthor);
         await unitOfWork.SaveChangesAsync();
     }
-    
-    // public async Task DeleteAuthorAsync(Guid id)
-    // {
-    //     var existingAuthor = await authorReadRepository.GetAuthorByIdAsync(id);
-    //     if (existingAuthor == null)
-    //     {
-    //         logger.Log(LogLevel.Error, "Author with id: '{AuthorId}' not found", id);
-    //         throw new NotFoundException("Author", $" with id: {id}");
-    //     }
-    //
-    //     var booksList = await bookRepository.GetAllAsync();
-    //     var isAuthorForSomeBook = booksList.Any(x =>
-    //         (x.Publisher?.Name.Value.ToLower()).Equals(existingAuthor.Name.Value,
-    //             StringComparison.CurrentCultureIgnoreCase));
-    //
-    //     if (isAuthorForSomeBook)
-    //     {
-    //         throw new IsInUseException("Author", existingAuthor.Name);
-    //     }
-    //
-    //     existingAuthor.SetSoftDelete();
-    //     await authorRepository.UpdateAuthorAsync(existingAuthor);
-    //     await unitOfWork.SaveChangesAsync();
-    // }
-    
 }

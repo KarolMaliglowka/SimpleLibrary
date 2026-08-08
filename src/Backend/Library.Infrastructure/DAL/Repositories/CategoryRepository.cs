@@ -7,7 +7,8 @@ namespace Library.Infrastructure.DAL.Repositories;
 public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
 {
     public async Task<IEnumerable<Category>> GetCategoriesAsync() =>
-        await context.Categories.AsNoTracking().ToListAsync();
+        await context.Categories
+            .ToListAsync();
 
     public async Task<Category> AddCategoryAsync(Category category)
     {
@@ -17,7 +18,6 @@ public class CategoryRepository(LibraryDbContext context) : ICategoryRepository
 
     public async Task<Category?> GetCategoryByIdAsync(Guid? id) =>
         await context.Categories
-            .AsNoTracking()
             .SingleOrDefaultAsync(c => c.Id == id);
 
     public async Task<Category?> GetCategoryByNameAsync(string name) =>

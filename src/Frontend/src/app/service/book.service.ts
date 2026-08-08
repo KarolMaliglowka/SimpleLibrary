@@ -43,7 +43,7 @@ export class BooksService {
     //     return firstValueFrom(this.httpService.put(apiRequest));
     // }
 
-    UpdateBook(book: any) {
+    UpdateBook(book: Book) {
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/update`,
             RequestBody: book
@@ -51,12 +51,12 @@ export class BooksService {
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    CreateBook(book: any) {
+    CreateBook(book: Book) {
+        console.log("ksiązka: ", book);
         let apiRequest = <ApiRequestData>{
             Url: `${this.url}/create`,
             RequestBody: book
         };
         return firstValueFrom(this.httpService.post(apiRequest));
     }
-
 }

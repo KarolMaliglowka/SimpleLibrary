@@ -2,7 +2,7 @@
 
 public record BookDto
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public string? Name { get; set; }
     public List<AuthorDto>? Authors { get; set; }
     public int PagesCount { get; set; }

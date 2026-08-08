@@ -76,9 +76,16 @@
                     <label for="name" class="block font-bold mb-2">Name</label>
                     <input pInputText id="name" formControlName="name" required autofocus
                            class="w-full p-inputtext-sm"/>
-                    <small class="text-red-500"
-                           *ngIf="publisherForm.get('name')?.invalid && publisherForm.get('name')?.touched">
+                    <small
+                        class="p-error"
+                        *ngIf="publisherForm.get('name')?.touched && publisherForm.get('name')?.hasError('required')">
                         Name is required.
+                    </small>
+
+                    <small
+                        class="p-error"
+                        *ngIf="publisherForm.get('name')?.touched && publisherForm.get('name')?.hasError('minlength')">
+                        Name must contain at least 4 characters.
                     </small>
                 </div>
             </div>

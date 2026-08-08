@@ -117,7 +117,7 @@ public class PublisherService(
             throw new NotFoundException("Publisher", $"{id}");
         }
 
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         var isPublisherForSomeBook = booksList.Any(x =>
             (x.Publisher?.Name.Value.ToLower()).Equals(publisherExist.Name.Value,
                 StringComparison.CurrentCultureIgnoreCase));

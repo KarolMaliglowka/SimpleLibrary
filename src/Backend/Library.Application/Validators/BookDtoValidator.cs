@@ -34,7 +34,7 @@ public class BookDtoValidator : AbstractValidator<BookDto>
         });
     }
 
-    private async Task<bool> NotExists(string bookName, Guid bookId, List<AuthorDto> authors)
+    private async Task<bool> NotExists(string bookName, Guid? bookId, List<AuthorDto> authors)
     {
         var guidsList = authors.Select(x => x.Id!.Value).ToList();
         return !await _bookRepository.ExistsAsync(bookName, guidsList , bookId);

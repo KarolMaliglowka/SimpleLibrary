@@ -15,7 +15,6 @@ public class PublisherRepository : IPublisherRepository
 
     public async Task<List<Publisher>> GetPublishersAsync() => 
         await _context.Publishers
-        .AsNoTracking()
         .ToListAsync();
 
     public async Task<Publisher> AddPublisherAsync(Publisher publisher)

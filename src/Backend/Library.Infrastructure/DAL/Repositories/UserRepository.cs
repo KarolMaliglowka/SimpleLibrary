@@ -8,7 +8,6 @@ public class UserRepository(LibraryDbContext context) : IUserRepository
 {
     public async Task<List<User>> GetUsersAsync() =>
         await context.Users
-            .AsNoTracking()
             .ToListAsync();
 
     public async Task<User?> GetUserByIdAsync(Guid? id) =>

@@ -151,7 +151,16 @@ public class BookService(
 
         authorRepository.AddAuthors(authorsToImport);
 
-        var newBook = new Book(book.Name, authors, publisher, category); 
+        var newBook = new Book(
+            book.Name
+            , authors
+            , publisher
+            , category
+            , book.Isbn
+            , book.Description
+            , book.PagesCount
+            , book.YearOfRelease
+            ); 
             
         await bookRepository
             .AddBookAsync(newBook);
@@ -164,7 +173,7 @@ public class BookService(
     /// <returns>A list of books mapped to <see cref="BookDto"/> objects.</returns>
     public async Task<List<BookDto>> GetAllBooksAsync()
     {
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         return booksList.Select(x => new BookDto()
             {
                 Id = x.Id,
@@ -292,7 +301,7 @@ public class BookService(
 
             var category = await categoryRepository.GetCategoryByNameAsync(book.Category?.Name);
 
-            var newBook = new Book(book.Name, authors, publisher, category);  
+            var newBook = new Book(book.Name, authors, publisher, category, book.Isbn, book.Description, book.PagesCount, book.YearOfRelease);  
 
             booksListToImport.Add(newBook);
         }
@@ -371,7 +380,7 @@ public class BookService(
             throw new NotFoundException("Author", notExistAuthor);
         }
 
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         return booksList
             .Where(x => x.Authors != null && x.Authors.Any(a =>
                 a.Name == author?.Name && a.Surname == author?.Surname))
@@ -394,7 +403,7 @@ public class BookService(
             throw new CategoryNotFoundException(category);
         }
 
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         return booksList
             .Where(x => string.Equals(
                 x.Category?.Name.Value,
@@ -419,7 +428,7 @@ public class BookService(
             throw new NotFoundException("Publisher", publisher);
         }
 
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         return booksList
             .Where(x => string.Equals(x.Publisher.Name, publisherInSystem.Name,
                 StringComparison.CurrentCultureIgnoreCase))
@@ -503,7 +512,7 @@ public class BookService(
     
     public async Task<List<Dictionary<Guid, string>>> GetBooksDictionaryAsync()
     {
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
 
         return booksList
             .OrderBy(x => x.Name.Value)

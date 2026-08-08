@@ -8,7 +8,6 @@ import {InputTextModule} from 'primeng/inputtext';
 import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
 import {SelectModule} from 'primeng/select';
-import {FormsModule} from '@angular/forms';
 import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
@@ -18,11 +17,15 @@ import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
 import {Book} from '../../models/book';
+import {Author} from '../../models/author';
 import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
 import {PublishersService} from '../../service/publisher.service';
 import {CategoriesService} from '../../service/category.service';
 import {AuthorsService} from '../../service/author.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
     selector: 'book-component',
@@ -33,7 +36,9 @@ import {AuthorsService} from '../../service/author.service';
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
+        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,ReactiveFormsModule,
+
+
     ],
     providers: [
         MessageService,
@@ -46,22 +51,24 @@ import {AuthorsService} from '../../service/author.service';
 })
 export class BookComponent implements OnInit {
     bookDialog: boolean = false;
-    books!: Book[];
+    books: Book[] = [];
     book!: Book;
-    selectedBooks!: Book[] | null;
-    submitted: boolean = false;
-    statuses!: any[];
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
 
     publishers: any[] | undefined;
-    selectedPublisher: string | undefined;
+    publisher: string | undefined;
 
     categories: any[] | undefined;
-    selectedCategory: string | undefined;
+    category: string | undefined;
 
-    authors: any[] | undefined;
-    selectedAuthors: string[] | undefined;
+    authors!: Author[] | undefined;
+    author: Author[] | undefined;
+
+    editMode = false;
+    bookForm!: FormGroup;
+    editingBook?: Book;
+
 
     constructor(
         private bookService: BooksService,
@@ -70,16 +77,29 @@ export class BookComponent implements OnInit {
         private cd: ChangeDetectorRef,
         private publisherService: PublishersService,
         private categoriesService: CategoriesService,
-        private authorsService: AuthorsService
+        private authorsService: AuthorsService,
+        private fb: FormBuilder
     ) {
     }
 
-    ngOnInit() {
-        this.loadData();
-        console.log(this.selectedPublisher);
+     ngOnInit() {
+         this.loadData();
+        console.log(this.publisher);
+        this.bookForm = this.fb.group({
+            name: ['', Validators.required],
+            description: [''],
+
+            category: [null, Validators.required],
+            publisher: [null, Validators.required],
+            authors: [[]],
+
+            pagesCount: [0],
+            yearOfRelease: [''],
+            isbn: ['']
+        });
     }
 
-    loadData() {
+     loadData() {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: any) => {
@@ -119,10 +139,10 @@ export class BookComponent implements OnInit {
     }
 
     openNew() {
-        this.selectedPublisher = undefined;
-        this.book = {};
-        this.submitted = false;
+        this.editingBook = undefined;
+        this.bookForm.reset();
         this.bookDialog = true;
+        this.editMode = false;
     }
 
     toolt(book: Book){
@@ -133,10 +153,10 @@ export class BookComponent implements OnInit {
         console.log(book);
         this.book = {...book};
 
-        this.selectedCategory = book.category;
+        this.category = book.category;
         console.log(book.category);
-        this.selectedPublisher = book.publisher as string;
-        console.log(this.selectedPublisher);
+        this.publisher = book.publisher as string;
+        console.log(this.publisher);
         //this.selectedAuthors = book.authors?.filter(x => x.name);
         //console.log(this.selectedAuthors);
         this.bookDialog = true;
@@ -144,7 +164,6 @@ export class BookComponent implements OnInit {
 
     hideDialog() {
         this.bookDialog = false;
-        this.submitted = false;
     }
 
     deleteBook(book: Book) {
@@ -188,37 +207,63 @@ export class BookComponent implements OnInit {
         return index;
     }
 
-    saveBook() {
-        this.submitted = true;
+     saveBook() {
 
-        console.log(this.book);
-        this.book.publisher = this.selectedPublisher;
-
-        if (this.book.name?.trim()) {
-            if (this.book.id) {
-                this.books[this.findIndexById(this.book.id)] = this.book;
-                this.bookService.UpdateBook(this.book);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Book Updated',
-                    life: 3000
-                });
+        // console.log("przy zapisie", this.book);
+        //
+        // this.book.publisher = this.selectedPublisher;
+        // this.book.category = this.selectedCategory;
+        // this.book.authors = this.selectedAuthors;
+        // console.log(JSON.stringify(this.book, null, 2));
+        // if (this.book.name?.trim()) {
+        //     if (this.book.id) {
+        //         this.books[this.findIndexById(this.book.id)] = this.book;
+        //         this.bookService.UpdateBook(this.book);
+        //         this.messageService.add({
+        //             severity: 'success',
+        //             summary: 'Successful',
+        //             detail: 'Book Updated',
+        //             life: 3000
+        //         });
+        //     } else {
+        //         this.books.push(this.book);
+        //         this.bookService.CreateBook(this.book);
+        //         this.messageService.add({
+        //             severity: 'success',
+        //             summary: 'Successful',
+        //             detail: 'Book Created',
+        //             life: 3000
+        //         });
+        //     }
+        //
+        //     this.books = [...this.books];
+        //     this.bookDialog = false;
+        //     this.book;
+        // }
+        if (this.bookForm.invalid) return;
+        const newBook: Book = this.bookForm.value;
+         console.log('newbook: ', newBook);
+        try {
+            if (this.editMode) {
+                this.bookService.UpdateBook(newBook);
+                this.messageInfo('Updated book', 'success');
             } else {
-                this.books.push(this.book);
-                this.bookService.CreateBook(this.book);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Book Created',
-                    life: 3000
-                });
+                this.bookService.CreateBook(newBook);
+                this.messageInfo('Created new book', 'success');
             }
-
-            this.books = [...this.books];
             this.bookDialog = false;
-            this.book;
+        } catch (err) {
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
         }
+        this.loadData();
+    }
+
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000});
     }
 
     protected readonly HTMLInputElement = HTMLInputElement;

@@ -19,10 +19,10 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
     }
 
     public async Task<List<Author>> GetAuthorsWithBooksAsync() => await _context.Authors
-        .Include(a => a.Books).ToListAsync();
+        .Include(a => a.Books)
+        .ToListAsync();
 
     public async Task<List<Author>> GetAuthorsAsync() => await _context.Authors
-        .AsNoTracking()
         .OrderBy(x => x.Name)
         .ToListAsync();
 
@@ -33,12 +33,8 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
 
     public Task<Author?> GetAuthorsBySurnameAndNameAsync(string? surName, string? name = null)
     {
-        if (surName != null)
-        {   
-            return _context.Authors.FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName);        
-        }
-    
-        return null;
+        return surName != null ? _context.Authors
+            .FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName) : null;
     }
     
 

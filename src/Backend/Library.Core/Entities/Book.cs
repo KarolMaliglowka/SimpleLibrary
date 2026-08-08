@@ -22,12 +22,16 @@ public sealed class Book : BaseClass
     {
     }
 
-    public Book(string name, List<Author> authors, Publisher publisher, Category category)
+    public Book(string name, List<Author> authors, Publisher publisher, Category category, string isbn, string description, int pagescount, string yearofrelease)
     {
         SetName(name);
         SetAuthors(authors);
         SetPublisher(publisher);
         SetCategory(category);
+        SetDescription(description);
+        SetIsbn(isbn);
+        SetPagesCount(pagescount);
+        SetYearOfRelease(yearofrelease);
     }
 
     public void SetName(Name name)

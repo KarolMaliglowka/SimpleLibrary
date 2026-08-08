@@ -6,24 +6,19 @@ namespace Library.Infrastructure.DAL.Repositories;
 
 public class BookRepository(LibraryDbContext context) : IBookRepository
 {
-    public async Task<List<Book>> GetAllAsync() => await context.Books
+    public async Task<List<Book>> GetAllBooksAsync() => await context.Books
         .Include(b => b.Authors)
         .Include(c => c.Category)
         .Include(p => p.Publisher)
-        .AsNoTracking()
         .ToListAsync();
 
-    public async Task AddBookAsync(Book book)
-    {
+    public async Task AddBookAsync(Book book) => 
         await context.Books.AddAsync(book);
-    }
 
-    public async Task AddBooksAsync(IEnumerable<Book> books)
-    {
+    public async Task AddBooksAsync(IEnumerable<Book> books) => 
         await context.Books.AddRangeAsync(books);
-    }
 
-    public async Task<Book?> GetBookByIdAsync(Guid id) =>
+    public async Task<Book?> GetBookByIdAsync(Guid? id) =>
         await context.Books
             .Include(b => b.Authors)
             .Include(b => b.Publisher)
@@ -37,10 +32,8 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
             .Include(c => c.Category)
             .FirstOrDefaultAsync(b => b.Name == name);
 
-    public void UpdateBook(Book book)
-    {
+    public void UpdateBook(Book book) => 
         context.Books.Update(book);
-    }
 
     public IQueryable<Book> QueryAsNoTracking() =>
         context.Books.AsNoTracking();
@@ -52,10 +45,7 @@ public class BookRepository(LibraryDbContext context) : IBookRepository
         .AsNoTracking()
         .ToListAsync();
     
-    public async Task<bool> ExistsAsync(
-        string name,
-        List<Guid> authorIds,
-        Guid excludedBookId)
+    public async Task<bool> ExistsAsync(string name, List<Guid> authorIds, Guid? excludedBookId)
     {
         return await context.Books
             .AsNoTracking()

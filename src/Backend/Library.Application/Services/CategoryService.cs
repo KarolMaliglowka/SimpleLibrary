@@ -97,7 +97,7 @@ public class CategoryService(
             throw new CategoryNotFoundException($" with {id} ");
         }
 
-        var booksList = await bookRepository.GetAllAsync();
+        var booksList = await bookRepository.GetAllBooksAsync();
         var isCategoryForSomeBook = booksList.Any(x => x.Category?.Name == categoryExist.Name);
         if (isCategoryForSomeBook)
         {

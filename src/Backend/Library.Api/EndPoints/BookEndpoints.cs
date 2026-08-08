@@ -19,11 +19,13 @@ public static class BookEndpoints
 
         app.MapPost("/books/create",
             async (BookDto book,
-                IBookService bookService,
-                [FromServices] IValidator<BookDto> bookValidator, HttpContext context) =>
+                IBookService bookService
+                //[FromServices] IValidator<BookDto> bookValidator,
+                //HttpContext context
+                ) =>
             {
-                var validateResult = await bookValidator.ValidateCommandAsync(book, context);
-                if (validateResult != Results.Empty) return validateResult;
+               // var validateResult = await bookValidator.ValidateCommandAsync(book, context);
+                //if (validateResult != Results.Empty) return validateResult;
                 await bookService.CreateBookAsync(book);
                 return Results.Created();
             });

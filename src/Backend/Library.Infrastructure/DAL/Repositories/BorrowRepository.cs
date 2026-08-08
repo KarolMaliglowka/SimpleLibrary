@@ -11,7 +11,8 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
         return await context.Borrows
             .Include(x => x.Book)
             .Include(x => x.User)
-            .Where(x => x.UserId == userId).ToListAsync();
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
     }
     
     public async Task<User?> GetUserByBorrowedBookIdAsync(Guid bookId)
