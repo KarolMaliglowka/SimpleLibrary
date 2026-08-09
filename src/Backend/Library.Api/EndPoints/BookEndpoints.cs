@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using Library.Api.Extensions;
-using Library.Application.DTO;
+﻿using Library.Application.DTO;
 using Library.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +12,6 @@ public static class BookEndpoints
         {
             var books = await bookService.GetAllBooksAsync();
             return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
-            //do zmiany dto
         });
 
         app.MapPost("/books/create",

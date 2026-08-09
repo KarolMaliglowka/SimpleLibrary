@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20260725190854_initial")]
+    [Migration("20260809070814_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -109,6 +109,10 @@ namespace Library.Infrastructure.Migrations
 
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");

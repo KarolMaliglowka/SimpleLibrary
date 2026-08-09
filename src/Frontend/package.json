@@ -21,6 +21,7 @@
         "@angular/router": "^19.0.0",
         "@primeng/themes": "^19.1.4",
         "chart.js": "4.4.2",
+        "jsbarcode": "^3.12.3",
         "primeclt": "^0.1.5",
         "primeicons": "^7.0.0",
         "primeng": "^19.1.4",

@@ -1,5 +1,4 @@
 ﻿using Library.Application.DTO;
-using Library.Application.Factories;
 using Library.Core;
 using Library.Core.Entities;
 using Library.Core.Exceptions;
@@ -150,18 +149,20 @@ public class BookService(
         }
 
         authorRepository.AddAuthors(authorsToImport);
+        await unitOfWork.SaveChangesAsync();
 
         var newBook = new Book(
-            book.Name
-            , authors
-            , publisher
-            , category
-            , book.Isbn
-            , book.Description
-            , book.PagesCount
-            , book.YearOfRelease
-            ); 
-            
+            book.Name,
+            authors,
+            publisher,
+            category,
+            book.Isbn,
+            book.Description,
+            book.PagesCount,
+            book.YearOfRelease,
+            CreateBookCode()
+        );
+
         await bookRepository
             .AddBookAsync(newBook);
         await unitOfWork.SaveChangesAsync();
@@ -199,7 +200,8 @@ public class BookService(
                         Id = a.Id
                     }
                 ).ToList(),
-                IsAvailable = x.IsAvailable
+                IsAvailable = x.IsAvailable,
+                Code = x.Code
             })
             .Where(x => !x.IsDelete)
             .OrderBy(x => x.Name)
@@ -245,7 +247,7 @@ public class BookService(
         var categoriesToImport = categoryList
             .Where(x => !categoryExistInSystem
                 .Any(y =>
-                  y.Name!.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
+                    y.Name!.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
             .Select(x => new Category(x!))
             .ToList();
         if (categoriesToImport.Count != 0)
@@ -258,10 +260,10 @@ public class BookService(
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var publishersExistInSystem = await publisherRepository.GetPublishersAsync();
-       
+
         var publishersToImport = publishersList
             .Where(x => !publishersExistInSystem.Any(y => x?.ToLower() == y.Name.Value.ToLower()))
-            .Select(x => new Publisher(x! ))
+            .Select(x => new Publisher(x!))
             .ToList();
         if (publishersToImport.Count != 0)
         {
@@ -281,6 +283,7 @@ public class BookService(
         {
             authorRepository.AddAuthors(authorsToImport);
         }
+
         await unitOfWork.SaveChangesAsync();
         var booksListToImport = new List<Book>();
 
@@ -301,7 +304,16 @@ public class BookService(
 
             var category = await categoryRepository.GetCategoryByNameAsync(book.Category?.Name);
 
-            var newBook = new Book(book.Name, authors, publisher, category, book.Isbn, book.Description, book.PagesCount, book.YearOfRelease);  
+            var newBook = new Book(
+                book.Name,
+                authors,
+                publisher,
+                category,
+                book.Isbn,
+                book.Description,
+                book.PagesCount,
+                book.YearOfRelease,
+                CreateBookCode());
 
             booksListToImport.Add(newBook);
         }
@@ -355,7 +367,7 @@ public class BookService(
 
         var updatedBook = await bookRepository.GetBookByIdAsync(bookDto.Id);
         updatedBook.SetName(bookDto.Name);
-        
+
         bookRepository.UpdateBook(updatedBook);
         await unitOfWork.SaveChangesAsync();
     }
@@ -506,10 +518,11 @@ public class BookService(
                 Name = a.Name ?? "",
                 Surname = a.Surname ?? ""
             }).ToList(),
-            IsAvailable = book.IsAvailable
+            IsAvailable = book.IsAvailable,
+            Code = book.Code
         };
     }
-    
+
     public async Task<List<Dictionary<Guid, string>>> GetBooksDictionaryAsync()
     {
         var booksList = await bookRepository.GetAllBooksAsync();
@@ -521,5 +534,11 @@ public class BookService(
                 [x.Id] = $"{x.Name.Value} - {string.Join(", ", x.Authors!.Select(a => a.FullName))}"
             })
             .ToList();
+    }
+
+    private static string CreateBookCode()
+    {
+        const string chars = "0123456789";
+        return System.Security.Cryptography.RandomNumberGenerator.GetString(chars, 10);
     }
 }

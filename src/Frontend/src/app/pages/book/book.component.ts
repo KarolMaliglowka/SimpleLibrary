@@ -26,6 +26,7 @@ import {AuthorsService} from '../../service/author.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
+import JsBarcode from 'jsbarcode';
 
 @Component({
     selector: 'book-component',
@@ -264,6 +265,93 @@ export class BookComponent implements OnInit {
 
     messageInfo(message: string, kind: string) {
         this.messageService.add({severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000});
+    }
+
+    printBookCode(code: string, name: string): void {
+        const printWindow = window.open('', '_blank', 'width=400,height=300');
+
+        if (!printWindow) {
+            return;
+        }
+
+        printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Kod książki</title>
+
+        <style>
+          @page {
+            size: 50mm 30mm;
+            margin: 0;
+          }
+
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 50mm;
+            height: 30mm;
+          }
+
+          body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .label {
+            width: 48mm;
+            height: 28mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+
+          svg {
+            width: 42mm;
+            height: 15mm;
+          }
+
+          .code {
+            margin-top: 2mm;
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            letter-spacing: 1px;
+          }
+        </style>
+      </head>
+
+      <body>
+        <div class="label">
+          <svg id="barcode"></svg>
+          <div class="code">${code}</div>
+          <div>${name}</div>
+        </div>
+      </body>
+    </html>
+  `);
+
+        printWindow.document.close();
+
+        printWindow.onload = () => {
+            const barcode = printWindow.document.getElementById('barcode');
+
+            if (!barcode) {
+                return;
+            }
+
+            JsBarcode(barcode, code, {
+                format: 'CODE128',
+                displayValue: false,
+                width: 1.5,
+                height: 50,
+                margin: 0
+            });
+
+            printWindow.focus();
+            printWindow.print();
+        };
     }
 
     protected readonly HTMLInputElement = HTMLInputElement;

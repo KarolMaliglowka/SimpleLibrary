@@ -17,12 +17,13 @@ public sealed class Book : BaseClass
     public List<Borrow> Borrows { get; private set; }
     public bool IsAvailable { get; private set; } = true;
     public bool IsDeleted { get; private set; }
+    public string Code { get; set; }
 
     public Book()
     {
     }
 
-    public Book(string name, List<Author> authors, Publisher publisher, Category category, string isbn, string description, int pagescount, string yearofrelease)
+    public Book(string name, List<Author> authors, Publisher publisher, Category category, string isbn, string description, int pagesCount, string yearOfRelease, string code)
     {
         SetName(name);
         SetAuthors(authors);
@@ -30,8 +31,9 @@ public sealed class Book : BaseClass
         SetCategory(category);
         SetDescription(description);
         SetIsbn(isbn);
-        SetPagesCount(pagescount);
-        SetYearOfRelease(yearofrelease);
+        SetPagesCount(pagesCount);
+        SetYearOfRelease(yearOfRelease);
+        SetCode(code);
     }
 
     public void SetName(Name name)
@@ -89,5 +91,9 @@ public sealed class Book : BaseClass
     public void SetSoftDelete()
     {
         IsDeleted = true;
+    }
+    public void SetCode(string code)
+    {
+        Code = code ?? throw new NullReferenceException(nameof(code));
     }
 }

@@ -12,4 +12,5 @@ export interface Book {
     category?: string;
     isAvailable?: boolean;
     isDelete?: boolean;
+    code: string;
 }

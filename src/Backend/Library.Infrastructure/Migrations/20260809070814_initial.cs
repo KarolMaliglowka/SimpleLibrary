@@ -112,6 +112,7 @@ namespace Library.Infrastructure.Migrations
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: true),
                     IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

@@ -13,4 +13,5 @@ public record BookDto
     public CategoryDto? Category { get; set; }
     public bool IsAvailable { get; set; }
     public bool IsDelete { get; set; }
+    public string Code { get; set; }
 }
