@@ -125,19 +125,27 @@ public class AuthorService(IAuthorRepository authorRepository,
     public async Task DeleteAuthorAsync(Guid id)
     {
         var authorExist = await authorReadRepository.GetAuthorByIdAsync(id);
+
         if (authorExist == null)
         {
-            logger.Log(LogLevel.Error, "Author with id: '{AuthorId}' not found", id);
-            throw new NotFoundException("Author", $" with id: {id}");
+            logger.Log(
+                LogLevel.Error,
+                "Author with id: '{AuthorId}' not found",
+                id);
+
+            throw new NotFoundException("Author", $"{id}");
         }
 
         var booksList = await bookRepository.GetAllBooksAsync();
-        var isAuthorForSomeBook = booksList.Any(x =>
-            (x.Name.Value.ToLower()).Equals(authorExist.Name.Value,
-                StringComparison.CurrentCultureIgnoreCase)); //TODO do poprawy
+
+        var isAuthorForSomeBook = booksList.Any(book =>
+            book.Authors.Any(author => author.Id == authorExist.Id));
+
         if (isAuthorForSomeBook)
         {
-            throw new IsInUseException("Author", authorExist.Name);
+            throw new IsInUseException(
+                "Author",
+                $"{authorExist.Name} {authorExist.Surname}");
         }
 
         authorExist.SetSoftDelete();

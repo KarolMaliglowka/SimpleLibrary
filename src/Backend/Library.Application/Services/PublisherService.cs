@@ -117,12 +117,12 @@ public class PublisherService(
             throw new NotFoundException("Publisher", $"{id}");
         }
 
-        var booksList = await bookRepository.GetAllBooksAsync();
-        var isPublisherForSomeBook = booksList.Any(x =>
-            (x.Publisher?.Name.Value.ToLower()).Equals(publisherExist.Name.Value,
-                StringComparison.CurrentCultureIgnoreCase));
+        var isPublisherForSomeBook = bookRepository
+            .QueryAsNoTracking()
+            .Where(x => x.Publisher.Id == publisherExist.Id )
+            .FirstOrDefault();
 
-        if (isPublisherForSomeBook)
+        if (isPublisherForSomeBook is not null)
         {
             throw new IsInUseException("Publisher", publisherExist.Name);
         }

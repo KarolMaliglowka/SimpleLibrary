@@ -132,15 +132,15 @@ export class PublisherComponent implements OnInit {
                     this.publishers = this.publishers.filter(x => x.id !== publisher.id);
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Sukces',
-                        detail: 'Wydawnictwo zostało usunięte.'
+                        summary: 'Success',
+                        detail: 'The publisher has been removed.'
                     });
 
                 } catch (err: any) {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Błąd',
-                        detail: err?.error?.message ?? 'Wystąpił nieoczekiwany błąd.'
+                        summary: 'Error',
+                        detail: err?.error?.message ?? 'An unexpected error occurred.'
                     });
                 }
             },

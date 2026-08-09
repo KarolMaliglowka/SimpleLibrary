@@ -154,14 +154,14 @@ export class AuthorComponent {
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Sukces',
-                        detail: 'Wydawnictwo zostało usunięte.'
+                        detail: 'Author deleted.'
                     });
 
                 } catch (err: any) {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Błąd',
-                        detail: err?.error?.message ?? 'Wystąpił nieoczekiwany błąd.'
+                        summary: 'Error',
+                        detail: err?.error?.message ?? 'Some unexpected error.'
                     });
                 }
             },

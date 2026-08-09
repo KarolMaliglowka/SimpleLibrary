@@ -125,13 +125,23 @@ export class CategoryComponent implements OnInit {
             header: 'Are you confirm delete: ' + category.name + '?',
             message: 'Please confirm to \n\b proceed.',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                var tst = this.deleteCategory(category);
-                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
-                this.categories = this.categories.filter((val) => val.id !== category.id);
-            },
-            reject: () => {
-                this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
+            accept: async () => {
+                try {
+                    await this.categoriesService.DeleteCategory(category.id!);
+                    this.categories = this.categories.filter(x => x.id !== category.id);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'The category has been removed.'
+                    });
+
+                } catch (err: any) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: err?.error?.message ?? 'An unexpected error occurred.'
+                    });
+                }
             },
         });
     }

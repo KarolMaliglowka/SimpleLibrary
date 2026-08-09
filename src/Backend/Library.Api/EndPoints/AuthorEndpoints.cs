@@ -44,18 +44,8 @@ public static class AuthorEndpoints
             return Results.Ok("Author updated");
         });
 
-        app.MapDelete("/authors/delete/{id:guid}",
-            async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorService authorService) =>
-            {
-                var author = await authorReadRepository.GetAuthorByIdAsync(id);
-                if (author == null)
-                {
-                    return Results.NotFound("Author not found");
-                }
-
-                await authorService.DeleteAuthorAsync(id);
-                return Results.Ok("Author deleted");
-            });
+        app.MapDelete("/authors/delete/{id:guid}", async (Guid id, IAuthorService authorService) =>
+                await authorService.DeleteAuthorAsync(id));
 
         app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {
