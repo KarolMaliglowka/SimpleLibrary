@@ -31,7 +31,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         return users.Select(user =>
                 user.BuildUserDto()
             )
-            .Where(x => !x.IsDelete)
+            .Where(x => x.IsDelete)
             .OrderBy(x => x.Surname)
             .ToList();
     }

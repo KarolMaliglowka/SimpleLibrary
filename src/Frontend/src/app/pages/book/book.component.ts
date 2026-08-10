@@ -103,8 +103,8 @@ export class BookComponent implements OnInit {
      loadData() {
         this.loading = true;
         this.bookService.GetAllBooks()
-            .then((data: any) => {
-                this.books = data.filter(x => !x.isDelete);
+            .then((data: Book[]) => {
+                this.books = data.filter(x => x.isDelete);
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {

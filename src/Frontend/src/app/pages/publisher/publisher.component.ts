@@ -67,7 +67,7 @@ export class PublisherComponent implements OnInit {
         this.publisherService
             .GetAllPublishers()
             .then((data) => {
-                this.publishers = data.filter(x => !x.isDelete);
+                this.publishers = data.filter(x => x.isDelete);
                 this.loading = false;
                 this.cd.markForCheck();
             })

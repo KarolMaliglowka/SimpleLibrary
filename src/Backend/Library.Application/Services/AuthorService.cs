@@ -115,7 +115,7 @@ public class AuthorService(IAuthorRepository authorRepository,
         [
             .. authorsList
                 .OrderBy(x => x.FullName)
-                .Where(x => !x.IsDeleted)
+                .Where(x => x.IsDeleted)
                 .Select(x => new Dictionary<Guid, string>
                 {
                     [x.Id] = x.FullName
