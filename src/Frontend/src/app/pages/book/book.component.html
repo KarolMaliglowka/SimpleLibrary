@@ -152,7 +152,7 @@
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Category</label>
-                <p-select [options]="categories" style="font-size: medium;" formControlName="category" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
+                <p-select [options]="categories" formControlName="category" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
@@ -167,7 +167,7 @@
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Publisher</label>
-                <p-select [options]="publishers" style="font-size: medium;" formControlName="publisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
+                <p-select [options]="publishers" formControlName="publisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
@@ -217,7 +217,7 @@
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     <label for="pagesCount" class="block font-bold mb-3">Pages count</label>
-                    <p-inputnumber id="pagesCount" formControlName="pagesCount" fluid style="font-size: medium;"/>
+                    <p-inputnumber id="pagesCount" formControlName="pagesCount" fluid/>
                 </div>
                 <div class="col-span-6">
                     <label for="yearOfRelease" class="block font-bold mb-3">Year of release</label>

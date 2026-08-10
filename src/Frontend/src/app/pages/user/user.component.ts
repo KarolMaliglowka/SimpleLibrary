@@ -79,6 +79,7 @@ export class UserComponent implements OnInit {
     }
 
     editUser(user: User) {
+        console.log(user);
         this.editingUser = user;
         this.userForm.patchValue(user);
         this.userDialog = true;
@@ -91,7 +92,11 @@ export class UserComponent implements OnInit {
 
     async saveUser() {
         if (this.userForm.invalid) return;
-        const newUser: User = this.userForm.value;
+        const newUser: User = {
+            ...this.userForm.value,
+            isActive: this.user?.isActive ?? true
+        };
+
         try {
             if (this.editMode) {
                 await this.userService.UpdateUser(newUser);
