@@ -13,6 +13,7 @@ public sealed class Category : BaseClass
     public Category(Name name)
     {
         SetCategory(name);
+        IsDeleted = false;
     }
     
     public Name Name { get; private set; }

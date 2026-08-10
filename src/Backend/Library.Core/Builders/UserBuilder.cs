@@ -88,6 +88,12 @@ public sealed class UserBuilder
         _user.IsActive = isActive;
         return this;
     }
+    
+    public UserBuilder IsDelete(bool isDelete)
+    {
+        _user.IsDeleted = isDelete;
+        return this;
+    }
 
     public User Build()
     {

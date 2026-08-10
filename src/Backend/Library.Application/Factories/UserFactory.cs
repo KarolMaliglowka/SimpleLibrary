@@ -29,6 +29,7 @@ public static class UserFactory
                 .SetCountry(userDto.Country)
                 .SetPostalCode(userDto.PostalCode)
                 .SetActive(true)
+                .IsDelete(false)
                 .Build(),
             _ => new UserBuilder(currentUser)
                 .SetName(new Name(userDto.Name))

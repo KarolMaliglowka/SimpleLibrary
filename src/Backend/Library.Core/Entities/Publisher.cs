@@ -9,6 +9,7 @@ public sealed class Publisher : BaseClass
     public Publisher(Name name)
     {
         SetPublisher(name);
+        IsDeleted = false;
     }
 
     private readonly List<Book> _books = [];

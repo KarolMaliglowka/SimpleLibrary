@@ -23,7 +23,8 @@ public sealed class Book : BaseClass
     {
     }
 
-    public Book(string name, List<Author> authors, Publisher publisher, Category category, string isbn, string description, int pagesCount, string yearOfRelease, string code)
+    public Book(string name, List<Author> authors, Publisher publisher, Category category, string isbn,
+        string description, int pagesCount, string yearOfRelease, string code)
     {
         SetName(name);
         SetAuthors(authors);
@@ -34,6 +35,7 @@ public sealed class Book : BaseClass
         SetPagesCount(pagesCount);
         SetYearOfRelease(yearOfRelease);
         SetCode(code);
+        SetDeleted(false);
     }
 
     public void SetName(Name name)
@@ -90,10 +92,16 @@ public sealed class Book : BaseClass
     
     public void SetSoftDelete()
     {
-        IsDeleted = true;
+        SetDeleted(true);
     }
     public void SetCode(string code)
     {
         Code = code ?? throw new NullReferenceException(nameof(code));
     }
+
+    public void SetDeleted(bool setDeleted)
+    {
+        IsDeleted = setDeleted;
+    }
+
 }

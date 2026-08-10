@@ -14,6 +14,7 @@ public class Author : BaseClass
     {
         SetName(name!);
         SetSurname(surname!);
+        IsDeleted = false;
     }
 
     public Author()
