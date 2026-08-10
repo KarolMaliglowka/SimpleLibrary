@@ -112,12 +112,15 @@ public class CategoryService(
     public async Task<List<Dictionary<Guid, string>>> GetCategoriesDictionaryAsync()
     {
         var categoriesList = await categoryRepository.GetCategoriesAsync();
-        return categoriesList
-            .OrderBy(x => x.Name.Value)
-            .Select(x => new Dictionary<Guid, string>
-            {
-                [x.Id] = x.Name.Value
-            })
-            .ToList();
+        return
+        [
+            .. categoriesList
+                .OrderBy(x => x.Name.Value)
+                .Where(x => !x.IsDeleted)
+                .Select(x => new Dictionary<Guid, string>
+                {
+                    [x.Id] = x.Name.Value
+                })
+        ];
     }
 }

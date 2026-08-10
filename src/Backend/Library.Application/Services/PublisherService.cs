@@ -99,13 +99,16 @@ public class PublisherService(
     public async Task<List<Dictionary<Guid, string>>> GetPublishersDictionaryAsync()
     {
         var publishersList = await publisherRepository.GetPublishersAsync();
-        return publishersList
-            .OrderBy(x => x.Name.Value)
-            .Select(x => new Dictionary<Guid, string>
-            {
-                [x.Id] = x.Name.Value
-            })
-            .ToList();
+        return
+        [
+            .. publishersList
+                .OrderBy(x => x.Name.Value)
+                .Where(x => !x.IsDeleted)
+                .Select(x => new Dictionary<Guid, string>
+                {
+                    [x.Id] = x.Name.Value
+                })
+        ];
     }
 
     public async Task DeletePublisherAsync(Guid id)

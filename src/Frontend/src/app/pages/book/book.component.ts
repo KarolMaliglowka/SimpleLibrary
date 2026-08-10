@@ -104,7 +104,7 @@ export class BookComponent implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: any) => {
-                this.books = data;
+                this.books = data.filter(x => !x.isDelete);
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {
