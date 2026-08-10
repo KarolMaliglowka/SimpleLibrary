@@ -37,9 +37,8 @@ import JsBarcode from 'jsbarcode';
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,ReactiveFormsModule,MultiSelectModule
-
-
+        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,
+        ReactiveFormsModule,MultiSelectModule
     ],
     providers: [
         MessageService,
@@ -84,8 +83,7 @@ export class BookComponent implements OnInit {
     }
 
      ngOnInit() {
-         this.loadData();
-        console.log(this.publisher);
+        this.loadData();
         this.bookForm = this.fb.group({
             name: ['', Validators.required],
             description: [''],
@@ -103,8 +101,8 @@ export class BookComponent implements OnInit {
      loadData() {
         this.loading = true;
         this.bookService.GetAllBooks()
-            .then((data: Book[]) => {
-                this.books = data.filter(x => x.isDelete);
+            .then((data) => {
+                this.books = data.filter(x => !x.isDelete);
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {

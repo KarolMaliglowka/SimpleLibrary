@@ -115,8 +115,7 @@ export class UserComponent implements OnInit {
         this.loading = true;
         try {
             const data = await this.userService.GetAllUsers();
-            this.users = [...data].filter(x => x.isDelete);
-            console.log(this.users);
+            this.users = [...data].filter(x => !x.isDelete);
         } catch (err) {
             console.error(err);
         } finally {
