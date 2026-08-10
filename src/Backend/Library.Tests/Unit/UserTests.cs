@@ -11,7 +11,7 @@ public class UserTests
     public void Build_ShouldCreateUserWithDefaultValues()
     {
         // Act
-        var user = new UserBuilder().Build();
+        var user = new UserBuilder().Create();
 
         // Assert
         Assert.NotNull(user);
@@ -27,7 +27,7 @@ public class UserTests
 
         // Act
         userBuilder.SetName(Name);
-        var user = userBuilder.Build();
+        var user = userBuilder.Update();
 
         // Assert
         Assert.Equal(Name, user.Name);
@@ -41,7 +41,7 @@ public class UserTests
 
         // Act
         userBuilder.SetSurname(Surname);
-        var user = userBuilder.Build();
+        var user = userBuilder.Update();
 
         // Assert
         Assert.Equal(Surname, user.Surname);

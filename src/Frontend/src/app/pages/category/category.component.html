@@ -74,7 +74,7 @@
                 <div>
                     <label for="name" class="block font-bold mb-2">Name</label>
                     <input pInputText id="name" formControlName="name" required autofocus
-                           class="w-full p-inputtext-sm"/>
+                           class="w-full p-inputtext-sm" style="font-size: medium;"/>
                     <small class="text-red-500"
                            *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
                         Name is required.

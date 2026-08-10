@@ -11,7 +11,7 @@ public static class UserFactory
     {
         return new UserBuilder(currentUser)
             .SetActive(isActive)
-            .Build();
+            .Update();
     }
 
     public static User BuildUser(UserDto userDto, User? currentUser = null)
@@ -30,7 +30,7 @@ public static class UserFactory
                 .SetPostalCode(userDto.PostalCode)
                 .SetActive(true)
                 .IsDelete(false)
-                .Build(),
+                .Create(),
             _ => new UserBuilder(currentUser)
                 .SetName(new Name(userDto.Name))
                 .SetSurname(userDto.Surname)
@@ -41,7 +41,7 @@ public static class UserFactory
                 .SetCountry(userDto.Country)
                 .SetPostalCode(userDto.PostalCode)
                 .SetActive(userDto.IsActive)
-                .Build()
+                .Update()
         };
     }
 }

@@ -28,12 +28,14 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
     public async Task<List<UserDto>> GetUsers()
     {
         var users = await userRepository.GetUsersAsync();
-        return users.Select(user =>
-                user.BuildUserDto()
-            )
-            .Where(x => x.IsDelete)
-            .OrderBy(x => x.Surname)
-            .ToList();
+        return
+        [
+            .. users.Select(user =>
+                    user.BuildUserDto()
+                )
+                .Where(x => !x.IsDelete)
+                .OrderBy(x => x.Surname)
+        ];
     }
 
     public async Task CreateUserAsync(UserDto userDto)

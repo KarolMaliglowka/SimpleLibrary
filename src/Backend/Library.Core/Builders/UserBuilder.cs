@@ -95,7 +95,13 @@ public sealed class UserBuilder
         return this;
     }
 
-    public User Build()
+    public User Create()
+    {
+        _user.CreatedAt = DateTime.UtcNow;
+        return _user;
+    }
+    
+    public User Update()
     {
         _user.UpdatedAt = DateTime.UtcNow;
         return _user;

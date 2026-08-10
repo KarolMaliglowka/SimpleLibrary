@@ -136,7 +136,7 @@
             <div>
                 <label for="name" class="block font-bold mb-3">Name</label>
                 <input type="text" pInputText id="name" formControlName="name"
-                       class="w-full p-inputtext-sm" required autofocus fluid/>
+                       class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
 
                 <small
                     class="p-error"
@@ -148,11 +148,11 @@
                 <label for="description" class="block font-bold mb-3">Description</label>
                 <textarea id="description" pTextarea formControlName="description"
                           class="w-full p-inputtext-sm" required rows="3" cols="20"
-                          fluid></textarea>
+                          fluid style="font-size: medium;"></textarea>
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Category</label>
-                <p-select [options]="categories" formControlName="category" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
+                <p-select [options]="categories" style="font-size: medium;" formControlName="category" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
@@ -167,7 +167,7 @@
             </div>
             <div>
                 <label for="name" class="block font-bold mb-3">Publisher</label>
-                <p-select [options]="publishers" formControlName="publisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
+                <p-select [options]="publishers" style="font-size: medium;" formControlName="publisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
                     <ng-template #selectedItem let-selectedOption>
                         <div class="flex items-center gap-2">
                             <div>{{ selectedOption.name }}</div>
@@ -217,19 +217,19 @@
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     <label for="pagesCount" class="block font-bold mb-3">Pages count</label>
-                    <p-inputnumber id="pagesCount" formControlName="pagesCount" fluid/>
+                    <p-inputnumber id="pagesCount" formControlName="pagesCount" fluid style="font-size: medium;"/>
                 </div>
                 <div class="col-span-6">
                     <label for="yearOfRelease" class="block font-bold mb-3">Year of release</label>
                     <input type="text" pInputText id="yearOfRelease" formControlName="yearOfRelease"
-                           class="w-full p-inputtext-sm" required autofocus fluid/>
+                           class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
                 </div>
             </div>
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-12">
                     <label for="isbn" class="block font-bold mb-3">ISBN</label>
                     <input type="text" pInputText id="isbn" formControlName="isbn"
-                           class="w-full p-inputtext-sm" required autofocus fluid/>
+                           class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
                 </div>
             </div>
         </div>
