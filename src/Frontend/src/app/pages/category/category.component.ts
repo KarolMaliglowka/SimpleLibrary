@@ -14,6 +14,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Category } from '../../models/category';
 import { CategoriesService } from '../../service/category.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import {TooltipModule} from 'primeng/tooltip'
 
 @Component({
     selector: 'app-category',
@@ -31,7 +32,8 @@ import { HttpErrorResponse } from '@angular/common/http';
         ReactiveFormsModule,
         Toast,
         CommonModule,
-        ConfirmDialog
+        ConfirmDialog,
+        TooltipModule
     ],
     providers: [
         MessageService,

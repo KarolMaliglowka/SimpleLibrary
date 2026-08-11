@@ -15,7 +15,7 @@ import {TableModule} from 'primeng/table';
 import {Table} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {PaginatorModule} from "primeng/paginator";
-import {TooltipModule} from 'primeng/tooltip'
+import {TooltipModule} from 'primeng/tooltip';
 import {Book} from '../../models/book';
 import {Author} from '../../models/author';
 import {BooksService} from '../../service/book.service';
@@ -23,7 +23,7 @@ import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
 import {PublishersService} from '../../service/publisher.service';
 import {CategoriesService} from '../../service/category.service';
 import {AuthorsService} from '../../service/author.service';
-import { MultiSelectModule } from 'primeng/multiselect';
+import {MultiSelectModule} from 'primeng/multiselect';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
 import JsBarcode from 'jsbarcode';
@@ -38,7 +38,7 @@ import JsBarcode from 'jsbarcode';
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
         ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,
-        ReactiveFormsModule,MultiSelectModule
+        ReactiveFormsModule, MultiSelectModule
     ],
     providers: [
         MessageService,
@@ -82,7 +82,7 @@ export class BookComponent implements OnInit {
     ) {
     }
 
-     ngOnInit() {
+    ngOnInit() {
         this.loadData();
         this.bookForm = this.fb.group({
             name: ['', Validators.required],
@@ -98,7 +98,7 @@ export class BookComponent implements OnInit {
         });
     }
 
-     loadData() {
+    loadData() {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data) => {
@@ -144,7 +144,7 @@ export class BookComponent implements OnInit {
         this.editMode = false;
     }
 
-    toolt(book: Book){
+    toolt(book: Book) {
         return book.description;
     }
 
@@ -206,7 +206,7 @@ export class BookComponent implements OnInit {
         return index;
     }
 
-     saveBook() {
+    saveBook() {
 
         // console.log("przy zapisie", this.book);
         //
@@ -241,7 +241,7 @@ export class BookComponent implements OnInit {
         // }
         if (this.bookForm.invalid) return;
         const newBook: Book = this.bookForm.value;
-         console.log('newbook: ', newBook);
+        console.log('newbook: ', newBook);
         try {
             if (this.editMode) {
                 this.bookService.UpdateBook(newBook);

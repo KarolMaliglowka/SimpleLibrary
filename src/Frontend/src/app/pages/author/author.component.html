@@ -39,7 +39,7 @@
                         <p-sortIcon field="surname" />
                     </div>
                 </th>
-                <th style="width: 10rem; ">
+                <th style="width: 8rem; ">
                     <div class="flex items-center gap-2">
                         Action
                     </div>
@@ -53,13 +53,16 @@
                 <td>
                     <p-button
                         icon="pi pi-pencil"
+                        pTooltip="Edit"
                         class="mr-2"
+                        tooltipPosition="top"
                         [rounded]="true"
                         [outlined]="true"
                         (click)="editAuthor(author)" />
                     <p-button
-                        icon="pi
-                        pi-trash"
+                        icon="pi pi-trash"
+                        pTooltip="Remove"
+                        tooltipPosition="top"
                         severity="danger"
                         [rounded]="true"
                         [outlined]="true"

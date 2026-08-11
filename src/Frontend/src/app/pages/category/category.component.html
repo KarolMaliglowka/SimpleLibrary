@@ -46,14 +46,18 @@
                 <td>
                     <p-button
                         icon="pi pi-pencil"
+                        pTooltip="Edit"
                         class="mr-2"
+                        tooltipPosition="top"
                         [rounded]="true"
                         [outlined]="true"
                         (click)="editCategory(category)"
                     />
                     <p-button
                         icon="pi pi-trash"
+                        pTooltip="Remove"
                         severity="danger"
+                        tooltipPosition="top"
                         [rounded]="true"
                         [outlined]="true"
                         (click)="confirm(category)"

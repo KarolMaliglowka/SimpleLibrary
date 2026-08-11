@@ -28,6 +28,7 @@ import {HttpErrorResponse} from '@angular/common/http';
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
         FormsModule, InputNumber, IconFieldModule, InputIconModule,
         ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule
+
     ],
     providers: [
         MessageService, ConfirmationService, PublishersService
