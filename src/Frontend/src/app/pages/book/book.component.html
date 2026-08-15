@@ -181,19 +181,6 @@
                 </p-select>
             </div>
             <div>
-<!--                <label for="name" class="block font-bold mb-3">Authors</label>-->
-<!--                <p-select [options]="authors" formControlName="authors" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">-->
-<!--                    <ng-template #selectedItem let-selectedOption>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ selectedOption.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                    <ng-template let-author #item>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ author.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                </p-select>-->
                 <label for="name" class="block font-bold mb-3">Authors</label>
                 <p-multiSelect
                     [options]="authors"
@@ -211,8 +198,6 @@
                     </ng-template>
 
                 </p-multiSelect>
-
-
             </div>
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
@@ -238,91 +223,6 @@
         <p-button label="Cancel" icon="pi pi-times" text (onClick)="bookDialog=false"></p-button>
         <p-button label="Save" [disabled]="bookForm.invalid" (onClick)="saveBook()"></p-button>
     </ng-template>
-
-
-<!--    <ng-template #content>-->
-<!--        <div class="flex flex-col gap-6">-->
-<!--            <div>-->
-<!--                <label for="name" class="block font-bold mb-3">Name</label>-->
-<!--                <input type="text" pInputText id="name" [(ngModel)]="book.name" required autofocus fluid/>-->
-<!--                <small class="text-red-500" *ngIf="submitted && !book.name">Name is required.</small>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <label for="description" class="block font-bold mb-3">Description</label>-->
-<!--                <textarea id="description" pTextarea [(ngModel)]="book.description" required rows="3" cols="20"-->
-<!--                          fluid></textarea>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <label for="name" class="block font-bold mb-3">Category</label>-->
-<!--                <p-select [options]="categories" [(ngModel)]="selectedCategory" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">-->
-<!--                    <ng-template #selectedItem let-selectedOption>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ selectedOption.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                    <ng-template let-category #item>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ category.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                </p-select>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <label for="name" class="block font-bold mb-3">Publisher</label>-->
-<!--                <p-select [options]="publishers" [(ngModel)]="selectedPublisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">-->
-<!--                    <ng-template #selectedItem let-selectedOption>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ selectedOption.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                    <ng-template let-publisher #item>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ publisher.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                </p-select>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <label for="name" class="block font-bold mb-3">Authors</label>-->
-<!--                <p-select [options]="authors" [(ngModel)]="selectedAuthors" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select authors" reqired class="w-full">-->
-<!--                    <ng-template #selectedItem let-selectedOption>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ selectedOption.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                    <ng-template let-author #item>-->
-<!--                        <div class="flex items-center gap-2">-->
-<!--                            <div>{{ author.name }}</div>-->
-<!--                        </div>-->
-<!--                    </ng-template>-->
-<!--                </p-select>-->
-
-
-
-<!--            </div>-->
-<!--            <div class="grid grid-cols-12 gap-4">-->
-<!--                <div class="col-span-6">-->
-<!--                    <label for="book.pagesCount" class="block font-bold mb-3">Pages count</label>-->
-<!--                    <p-inputnumber id="pagesCount" [(ngModel)]="book.pagesCount" fluid/>-->
-<!--                </div>-->
-<!--                <div class="col-span-6">-->
-<!--                    <label for="book.pagesCount" class="block font-bold mb-3">Year of release</label>-->
-<!--                    <p-inputnumber id="pagesCount" [(ngModel)]="book.yearOfRelease" fluid/>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="grid grid-cols-12 gap-4">-->
-<!--                <div class="col-span-12">-->
-<!--                    <label for="book.pagesCount" class="block font-bold mb-3">ISBN</label>-->
-<!--                    <p-inputnumber id="pagesCount" [(ngModel)]="book.isbn" fluid/>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </ng-template>-->
-
-<!--    <ng-template #footer>-->
-<!--        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>-->
-<!--        <p-button label="Save" icon="pi pi-check" (click)="saveBook()"/>-->
-<!--    </ng-template>-->
 </p-dialog>
 
 <p-confirmDialog [style]="{ width: '500px' }"/>

@@ -8,8 +8,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
 import {SelectModule} from 'primeng/select';
-import {FormsModule} from '@angular/forms';
-import {InputNumber} from 'primeng/inputnumber';
+//import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {TableModule} from 'primeng/table';
@@ -21,24 +20,27 @@ import {ToggleSwitch} from 'primeng/toggleswitch';
 import {Book} from '../../models/book';
 import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
+import {Borrow} from '../../models/borrow';
+import {UsersService} from "../../service/user.service";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-books-to-borrow',
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
-        FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ButtonModule, PaginatorModule, TooltipModule, ToggleSwitch,
-        NamesListPipe
+        FormsModule, IconFieldModule, InputIconModule,
+        ButtonModule, PaginatorModule, TooltipModule, NamesListPipe,
+        ReactiveFormsModule, ToggleSwitch
     ],
     providers: [
-        MessageService, ConfirmationService, BooksService
+        MessageService, ConfirmationService, BooksService, UsersService
     ],
     templateUrl: './books-to-borrow.component.html',
     styleUrl: './books-to-borrow.component.scss'
 })
 export class BooksToBorrowComponent implements OnInit {
-    bookDialog: boolean = false;
+    bookToBorrowDialog: boolean = false;
     books!: Book[];
     book!: Book;
     selectedBooks!: Book[] | null;
@@ -47,17 +49,30 @@ export class BooksToBorrowComponent implements OnInit {
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
     checked: boolean = false;
+    borrow!: Borrow;
+
+    editMode = false;
+    borrowForm!: FormGroup;
+    editingBorrow?: Borrow;
+
+    users!: any[] | undefined;
+    user: string | undefined;
 
     constructor(
         private bookService: BooksService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
+        private usersService: UsersService,
+        private fb: FormBuilder
     ) {
     }
 
     ngOnInit() {
         this.loadData(this.checked);
+        this.borrowForm = this.fb.group({
+            user: [null, Validators.required],
+        });
     }
 
     loadData(value: boolean) {
@@ -75,6 +90,14 @@ export class BooksToBorrowComponent implements OnInit {
             }).catch(() => {
             this.loading = false;
         });
+        this.usersService.GetAllUsersDictionary()
+            .then((data : any) => {
+                this.users = data;
+                this.loading = false;
+                this.cd.markForCheck();
+            }).catch(() => {
+            this.loading = false;
+        });
     }
 
     toolt(book: Book) {
@@ -82,7 +105,7 @@ export class BooksToBorrowComponent implements OnInit {
     }
 
     hideDialog() {
-        this.bookDialog = false;
+        this.bookToBorrowDialog = false;
         this.submitted = false;
     }
 
@@ -98,5 +121,19 @@ export class BooksToBorrowComponent implements OnInit {
         return index;
     }
 
+    bookToBorrow(book: Book) {
+        this.borrowForm.reset();
+        this.bookToBorrowDialog = true;
+        this.book = {...book};
+    }
+
+    getAuthorsNames(book?: Book): string {
+        return (book?.authors ?? [])
+            .map(a => `${a.surname} ${a.name}`)
+            .join(', ');
+    }
+    saveBorrow(){}
+
     protected readonly HTMLInputElement = HTMLInputElement;
 }
+

@@ -3,3 +3,8 @@
         max-width: 600px;
     }
 }
+
+:host ::ng-deep .p-dialog {
+    width: 500px !important;
+    max-width: 90% !important; /* aby zachować responsywność */
+}

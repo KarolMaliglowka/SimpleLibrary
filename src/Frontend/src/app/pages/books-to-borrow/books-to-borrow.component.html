@@ -5,7 +5,11 @@
     <p-toolbar class="m-1">
         <ng-template #start>
             <div class="flex justify-left">
-                <p-toggleswitch [(ngModel)]="checked" (onChange)="loadData(checked)"/>
+                <p-toggleswitch
+                    [(ngModel)]="checked"
+                    [ngModelOptions]="{standalone: true}"
+                    (onChange)="loadData(checked)">
+                </p-toggleswitch>
                 <div style="padding-left: 5px; padding-top: 2px;"> Show with not available</div>
             </div>
         </ng-template>
@@ -90,7 +94,7 @@
                     class="mr-2"
                     [rounded]="true"
                     [outlined]="true"
-                    (click)="hideDialog()"
+                    (click)="bookToBorrow(book)"
                 />
                 <p-button
                     #buttonBorrow
@@ -119,55 +123,44 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="bookDialog" header="Book Details" [modal]="true">
-    <ng-template #content>
-        <div class="flex flex-col gap-6">
-            <div>
-                <label for="name" class="block font-bold mb-3">Name</label>
-                <input type="text" pInputText id="name" [(ngModel)]="book.name" required autofocus fluid/>
-                <small class="text-red-500" *ngIf="submitted && !book.name">Name is required.</small>
-            </div>
-            <div>
-                <label for="description" class="block font-bold mb-3">Description</label>
-                <textarea id="description" pTextarea [(ngModel)]="book.description" required rows="3" cols="20"
-                          fluid></textarea>
-            </div>
+<p-dialog [(visible)]="bookToBorrowDialog" [modal]="true">
+    <form *ngIf="borrowForm" [formGroup]="borrowForm" (ngSubmit)="saveBorrow()">
+        <label class="block font-bold" style="font-size: xx-large">
+            {{ book?.name }}
+        </label>
+        <label class="block mt-3" style="font-size: large">
+            {{ book?.authors?.length === 1 ? 'Author' : 'Authors' }}:
+            <span class="font-bold">{{ getAuthorsNames(book) }}</span>
+        </label>
+        <label class="block mt-3" style="font-size: large">
+            Code: <span class="font-bold">{{ book?.code }}</span>
+        </label>
+        <div>
+            <label for="name" class="block font-bold mt-3">User</label>
+            <p-select
+                [options]="users"
+                formControlName="user"
+                [filter]="true"
+                appendTo="body"
+                optionLabel="name"
+                filterBy="name"
+                [showClear]="true"
+                placeholder="Select user"
+                class="w-full">
+                <ng-template #selectedItem let-selectedOption>
+                    <div class="flex items-center gap-2">
+                        <div>{{ selectedOption.name }}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-user #item>
+                    <div class="flex items-center gap-2">
+                        <div>{{ user.name }}</div>
+                    </div>
+                </ng-template>
+            </p-select>
 
-            <!--            <div>-->
-            <!--                <span class="block font-bold mb-4">Category</span>-->
-            <!--                <div class="grid grid-cols-12 gap-4">-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category1">Accessories</label>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category2">Clothing</label>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category3">Electronics</label>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex items-center gap-2 col-span-6">-->
-            <!--                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />-->
-            <!--                        <label for="category4">Fitness</label>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-6">
-                    <label for="book.pagesCount" class="block font-bold mb-3">Pages count</label>
-                    <p-inputnumber id="pagesCount" [(ngModel)]="book.pagesCount" fluid/>
-                </div>
-                <!--                <div class="col-span-6">-->
-                <!--                    <label for="book.yearOfRelease" class="block font-bold mb-3">Year od release</label>-->
-                <!--                    <p-datePicker id="yearOfRelease" [(ngModel)]="book.yearOfRelease" dateFormat="dd.mm.yy" fluid />-->
-                <!--                </div>-->
-            </div>
         </div>
-    </ng-template>
-
+    </form>
     <ng-template #footer>
         <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
         <p-button label="Save" icon="pi pi-check" (click)="hideDialog()"/>

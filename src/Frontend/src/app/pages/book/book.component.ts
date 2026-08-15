@@ -149,15 +149,9 @@ export class BookComponent implements OnInit {
     }
 
     editBook(book: Book) {
-        console.log(book);
         this.book = {...book};
-
         this.category = book.category;
-        console.log(book.category);
         this.publisher = book.publisher as string;
-        console.log(this.publisher);
-        //this.selectedAuthors = book.authors?.filter(x => x.name);
-        //console.log(this.selectedAuthors);
         this.bookDialog = true;
     }
 

@@ -203,6 +203,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         var usersList = await userRepository.GetUsersAsync();
         return usersList
             .OrderBy(x => x.FullName)
+            .Where(x => !x.IsDeleted)
             .Select(x => new Dictionary<Guid, string>
             {
                 [x.Id] = x.FullName
