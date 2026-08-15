@@ -527,13 +527,15 @@ public class BookService(
     {
         var booksList = await bookRepository.GetAllBooksAsync();
 
-        return booksList
-            .OrderBy(x => x.Name.Value)
-            .Select(x => new Dictionary<Guid, string>
-            {
-                [x.Id] = $"{x.Name.Value} - {string.Join(", ", x.Authors!.Select(a => a.FullName))}"
-            })
-            .ToList();
+        return
+        [
+            .. booksList
+                .OrderBy(x => x.Name.Value)
+                .Select(x => new Dictionary<Guid, string>
+                {
+                    [x.Id] = $"{x.Name.Value} - {string.Join(", ", x.Authors!.Select(a => a.FullName))}"
+                })
+        ];
     }
 
     private static string CreateBookCode()

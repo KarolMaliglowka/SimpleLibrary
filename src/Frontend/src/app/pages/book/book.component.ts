@@ -82,8 +82,8 @@ export class BookComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.loadData();
+    async ngOnInit() {
+        await this.loadData();
         this.bookForm = this.fb.group({
             name: ['', Validators.required],
             description: [''],
@@ -97,44 +97,33 @@ export class BookComponent implements OnInit {
             isbn: ['']
         });
     }
-
-    loadData() {
+    async loadData() {
         this.loading = true;
-        this.bookService.GetAllBooks()
-            .then((data) => {
-                this.books = data.filter(x => !x.isDelete);
-                this.loading = false;
-                this.cd.markForCheck();
-            }).catch(() => {
-            this.loading = false;
-        });
-
-        this.publisherService.GetAllPublishersDictionary()
-            .then((data: any) => {
-                this.publishers = data;
-                this.loading = false;
-                this.cd.markForCheck();
-            }).catch(() => {
-            this.loading = false;
-        });
-
-        this.categoriesService.GetAllCategoriesDictionary()
-            .then((data: any) => {
-                this.categories = data;
-                this.loading = false;
-                this.cd.markForCheck();
-            }).catch(() => {
-            this.loading = false;
-        });
-
         this.authorsService.GetAllAuthorsDictionary()
-            .then((data: any) => {
-                this.authors = data;
-                this.loading = false;
-                this.cd.markForCheck();
-            }).catch(() => {
+                 .then((data: any) => {
+                     this.authors = data;
+                     this.loading = false;
+                     this.cd.markForCheck();
+                 }).catch(() => {
+                 this.loading = false;
+             });
+        try {
+            const [books, publishers, categories, authors] = await Promise.all([
+                this.bookService.GetAllBooks(),
+                this.publisherService.GetAllPublishersDictionary(),
+                this.categoriesService.GetAllCategoriesDictionary(),
+                this.authorsService.GetAllAuthorsDictionary()
+            ]);
+            this.books = books.filter(x => !x.isDelete);
+            this.publishers = publishers;
+            this.categories = categories;
+            this.authors = authors;
+            this.cd.markForCheck();
+        } catch (error) {
+            console.error(error);
+        } finally {
             this.loading = false;
-        });
+        }
     }
 
     openNew() {
@@ -149,10 +138,29 @@ export class BookComponent implements OnInit {
     }
 
     editBook(book: Book) {
-        this.book = {...book};
-        this.category = book.category;
-        this.publisher = book.publisher as string;
+        this.editingBook = book;
+        const category = this.categories?.find(
+            x => x.id === book.category?.id
+        );
+        const publisher = this.publishers?.find(
+            x => x.id === book.publisher?.id
+        );
+        const authors = this.authors?.filter(
+            x => book.authors?.some(a => a.id === x.id)
+        );
+        this.bookForm.patchValue({
+            name: book.name,
+            description: book.description,
+            category: category,
+            publisher: publisher,
+            authors: authors,
+            pagesCount: book.pagesCount,
+            yearOfRelease: book.yearOfRelease,
+            isbn: book.isbn
+        });
+
         this.bookDialog = true;
+        this.editMode = true;
     }
 
     hideDialog() {

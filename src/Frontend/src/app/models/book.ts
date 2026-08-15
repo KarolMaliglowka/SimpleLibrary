@@ -1,4 +1,6 @@
 ﻿import {Author} from './author';
+import {Category} from './category';
+import {Publisher} from './publisher';
 
 export interface Book {
     id?: string;
@@ -6,10 +8,10 @@ export interface Book {
     description?: string;
     pagesCount?: number;
     authors?: Author[];
-    publisher?: string;
+    publisher?: Publisher;
     isbn?: string;
     yearOfRelease?: string;
-    category?: string;
+    category?: Category;
     isAvailable?: boolean;
     isDelete?: boolean;
     code: string;
