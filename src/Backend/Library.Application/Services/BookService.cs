@@ -332,41 +332,47 @@ public class BookService(
         var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
         if (publisher == null)
         {
-            publisher = new Publisher(
-                bookDto.Publisher.Name
-            );
-            await publisherRepository.AddPublisherAsync(publisher);
+            logger.LogError("Publisher {name} not found", publisher);
+            throw new NotFoundException("Publisher", publisher.Name);
         }
 
         var category = await categoryRepository.GetCategoryByNameAsync(bookDto.Category!.Name);
         if (category is null)
         {
-            category = new Category(bookDto.Category.Name);
-            await categoryRepository.AddCategoryAsync(category);
+            logger.LogError("Category {name} not found", category);
+            throw new CategoryNotFoundException(category.Name);
         }
 
         var authors = new List<Author>();
         foreach (var authorName in bookDto.Authors)
         {
-            var author = await authorReadRepository.GetAuthorAsync(authorName.Surname, authorName.Name);
+            var author = await authorReadRepository.GetAuthorByIdAsync(authorName.Id);
             if (author is null)
             {
-                author = new Author(authorName.Name, authorName.Surname);
-                await authorRepository.AddAuthorAsync(author);
+                logger.LogError("Author {author} not found", author.FullName);
+                throw new NotFoundException("Author", author.FullName);
             }
 
             authors.Add(author);
         }
 
-        var book = await bookRepository.GetBookByIdAsync(bookDto.Id);
-        if (book is null)
+        var updatedBook = await bookRepository.GetBookByIdAsync(bookDto.Id);
+        if (updatedBook is null)
         {
             logger.LogError("Book id: {book} not found", bookDto.Id);
             throw new BookNotFoundException(bookDto.Id.ToString());
         }
 
-        var updatedBook = await bookRepository.GetBookByIdAsync(bookDto.Id);
         updatedBook.SetName(bookDto.Name);
+        updatedBook.SetAuthors(authors);
+        updatedBook.SetCategory(category);
+        updatedBook.SetDescription(bookDto.Description);
+        updatedBook.SetPagesCount(updatedBook.PagesCount);
+        updatedBook.SetPublisher(publisher);
+        updatedBook.SetCode(bookDto.Code);
+        updatedBook.SetYearOfRelease(updatedBook.YearOfRelease);
+        updatedBook.SetIsbn(bookDto.Isbn);
+        updatedBook.SetPagesCount(bookDto.PagesCount);
 
         bookRepository.UpdateBook(updatedBook);
         await unitOfWork.SaveChangesAsync();

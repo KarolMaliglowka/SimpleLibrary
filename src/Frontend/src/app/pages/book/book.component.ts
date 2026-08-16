@@ -85,6 +85,7 @@ export class BookComponent implements OnInit {
     async ngOnInit() {
         await this.loadData();
         this.bookForm = this.fb.group({
+            id: [null],
             name: ['', Validators.required],
             description: [''],
 
@@ -94,19 +95,12 @@ export class BookComponent implements OnInit {
 
             pagesCount: [0],
             yearOfRelease: [''],
-            isbn: ['']
+            isbn: [''],
+            code:['']
         });
     }
     async loadData() {
         this.loading = true;
-        this.authorsService.GetAllAuthorsDictionary()
-                 .then((data: any) => {
-                     this.authors = data;
-                     this.loading = false;
-                     this.cd.markForCheck();
-                 }).catch(() => {
-                 this.loading = false;
-             });
         try {
             const [books, publishers, categories, authors] = await Promise.all([
                 this.bookService.GetAllBooks(),
@@ -149,6 +143,7 @@ export class BookComponent implements OnInit {
             x => book.authors?.some(a => a.id === x.id)
         );
         this.bookForm.patchValue({
+            id: book.id,
             name: book.name,
             description: book.description,
             category: category,
@@ -156,9 +151,9 @@ export class BookComponent implements OnInit {
             authors: authors,
             pagesCount: book.pagesCount,
             yearOfRelease: book.yearOfRelease,
-            isbn: book.isbn
+            isbn: book.isbn,
+            code: book.code
         });
-
         this.bookDialog = true;
         this.editMode = true;
     }
@@ -182,9 +177,8 @@ export class BookComponent implements OnInit {
                 label: 'Yes'
             },
             accept: () => {
-                this.books = this.books.filter((val) => val.id !== book.id);
-                //przesłac do servisu http i wykasować
-
+                this.books = this.books
+                    .filter((val) => val.id !== book.id);
                 this.book;
                 this.messageService.add({
                     severity: 'success',
@@ -208,48 +202,15 @@ export class BookComponent implements OnInit {
         return index;
     }
 
-    saveBook() {
-
-        // console.log("przy zapisie", this.book);
-        //
-        // this.book.publisher = this.selectedPublisher;
-        // this.book.category = this.selectedCategory;
-        // this.book.authors = this.selectedAuthors;
-        // console.log(JSON.stringify(this.book, null, 2));
-        // if (this.book.name?.trim()) {
-        //     if (this.book.id) {
-        //         this.books[this.findIndexById(this.book.id)] = this.book;
-        //         this.bookService.UpdateBook(this.book);
-        //         this.messageService.add({
-        //             severity: 'success',
-        //             summary: 'Successful',
-        //             detail: 'Book Updated',
-        //             life: 3000
-        //         });
-        //     } else {
-        //         this.books.push(this.book);
-        //         this.bookService.CreateBook(this.book);
-        //         this.messageService.add({
-        //             severity: 'success',
-        //             summary: 'Successful',
-        //             detail: 'Book Created',
-        //             life: 3000
-        //         });
-        //     }
-        //
-        //     this.books = [...this.books];
-        //     this.bookDialog = false;
-        //     this.book;
-        // }
+    async saveBook() {
         if (this.bookForm.invalid) return;
         const newBook: Book = this.bookForm.value;
-        console.log('newbook: ', newBook);
         try {
             if (this.editMode) {
-                this.bookService.UpdateBook(newBook);
+                await this.bookService.UpdateBook(newBook);
                 this.messageInfo('Updated book', 'success');
             } else {
-                this.bookService.CreateBook(newBook);
+                await this.bookService.CreateBook(newBook);
                 this.messageInfo('Created new book', 'success');
             }
             this.bookDialog = false;
@@ -260,7 +221,7 @@ export class BookComponent implements OnInit {
                 this.messageInfo('Unexpected error', 'error');
             }
         }
-        this.loadData();
+        await this.loadData();
     }
 
     messageInfo(message: string, kind: string) {
