@@ -1,229 +1,249 @@
 <div class="card">
     <p-toast/>
     <h2>Books</h2>
-<p-toolbar class="m-1">
-    <ng-template #start>
-        <p-button label="New" icon="pi pi-plus" class="mr-2" pTooltip="New book" tooltipPosition="top" (onClick)="openNew()"/>
-    </ng-template>
-</p-toolbar>
+    <p-toolbar class="m-1">
+        <ng-template #start>
+            <p-button label="New" icon="pi pi-plus" class="mr-2" pTooltip="New book" tooltipPosition="top"
+                      (onClick)="openNew()"/>
+        </ng-template>
+    </p-toolbar>
 
-<p-table
-    #dt
-    [value]="books"
-    [loading]="loading"
-    [paginator]="true"
-    [rows]="10"
-    [globalFilterFields]="['name', 'description', 'code']"
-    [responsiveLayout]="'scroll'"
-    dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    showGridlines="true"
->
-    <ng-template #caption>
-        <div class="flex items-center justify-between">
-            <h5 class="m-0">Manage books</h5>
-            <p-iconfield>
-                <p-inputicon class="pi pi-search"/>
-                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                       placeholder="Search..."/>
-            </p-iconfield>
-        </div>
-    </ng-template>
-    <ng-template #header>
-        <tr>
-            <th pSortableColumn="name" style="width:30rem">
-                <div class="flex items-center gap-2">
-                    Name
-                    <p-sortIcon field="name"/>
-                </div>
-            </th>
-            <th pSortableColumn="pagesCount" style="width:5rem">
-                <div class="flex items-center gap-2">
-                    Pages count
-                    <p-sortIcon field="pagesCount"/>
-                </div>
-            </th>
-            <th pSortableColumn="authors.surname" style="min-width: 12rem">
-                <div class="flex items-center gap-2">
-                    Authors
-                    <p-sortIcon field="authors"/>
-                </div>
-            </th>
-            <th pSortableColumn="category.name" style="min-width: 12rem">
-                <div class="flex items-center gap-2">
-                    Category
-                    <p-sortIcon field="category.name"/>
-                </div>
-            </th>
-            <th pSortableColumn="publisher.name" style="min-width: 12rem">
-                <div class="flex items-center gap-2">
-                    Publisher
-                    <p-sortIcon field="publisher"/>
-                </div>
-            </th>
-            <th style="width:5rem">
-                <div class="flex items-center gap-2">
-                    Code
-                </div>
-            </th>
-            <th style="width: 5rem">
-                <div class="flex items-center gap-2">
-                    Available
-                </div>
-            </th>
-            <th style="width: 11rem">
-                <div class="flex items-center gap-2">
-                    Action
-                </div>
-            </th>
-        </tr>
-    </ng-template>
-    <ng-template #body let-book>
-        <tr>
-            <td style="min-width: 14rem; font-weight: bold" pTooltip="{{book.description}}">{{ book.name }}</td>
-            <td style="min-width: 5rem">{{ book.pagesCount }}</td>
-            <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
-            <td style="min-width: 5rem">{{ book.category?.name }}</td>
-            <td style="min-width: 5rem">{{ book.publisher?.name }}</td>
-            <td style="min-width: 5rem">{{ book.code }}</td>
-            <td style="width: 5rem; text-align: center;">
-                <i *ngIf="book.isAvailable" class="pi pi-check text-green-500"></i>
-                <i *ngIf="!book.isAvailable" class="pi pi-times text-red-500"></i>
-            </td>
-            <td>
-                <p-button
-                    icon="pi pi-pencil"
-                    pTooltip="Edit"
-                    class="mr-2"
-                    tooltipPosition="top"
-                    [rounded]="true"
-                    [outlined]="true"
-                    (click)="editBook(book)"
-                />
-                <p-button
-                    icon="pi pi-trash"
-                    pTooltip="Remove"
-                    severity="danger"
-                    class="mr-2"
-                    tooltipPosition="top"
-                    [rounded]="true"
-                    [outlined]="true"
-                    (click)="deleteBook(book)"
-                />
-                <p-button
-                    icon="pi pi-print"
-                    pTooltip="Print book code"
-                    severity="info"
-                    tooltipPosition="top"
-                    [rounded]="true"
-                    [outlined]="true"
-                    (click)="printBookCode(book.code, book.name)"
-                />
+    <p-table
+        #dt
+        [value]="books"
+        [loading]="loading"
+        [paginator]="true"
+        [rows]="10"
+        [globalFilterFields]="['name', 'description', 'code']"
+        [responsiveLayout]="'scroll'"
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        showGridlines="true"
+    >
+        <ng-template #caption>
+            <div class="flex items-center justify-between">
+                <h5 class="m-0">Manage books</h5>
+                <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                           placeholder="Search..."/>
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="name" style="width:30rem">
+                    <div class="flex items-center gap-2">
+                        Name
+                        <p-sortIcon field="name"/>
+                    </div>
+                </th>
+                <th pSortableColumn="pagesCount" style="width:5rem">
+                    <div class="flex items-center gap-2">
+                        Pages count
+                        <p-sortIcon field="pagesCount"/>
+                    </div>
+                </th>
+                <th pSortableColumn="authors.surname" style="min-width: 12rem">
+                    <div class="flex items-center gap-2">
+                        Authors
+                        <p-sortIcon field="authors"/>
+                    </div>
+                </th>
+                <th pSortableColumn="category.name" style="min-width: 12rem">
+                    <div class="flex items-center gap-2">
+                        Category
+                        <p-sortIcon field="category.name"/>
+                    </div>
+                </th>
+                <th pSortableColumn="publisher.name" style="min-width: 12rem">
+                    <div class="flex items-center gap-2">
+                        Publisher
+                        <p-sortIcon field="publisher"/>
+                    </div>
+                </th>
+                <th style="width:5rem">
+                    <div class="flex items-center gap-2">
+                        Code
+                    </div>
+                </th>
+                <th style="width: 5rem">
+                    <div class="flex items-center gap-2">
+                        Available
+                    </div>
+                </th>
+                <th style="width: 11rem">
+                    <div class="flex items-center gap-2">
+                        Action
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-book>
+            <tr>
+                <td style="min-width: 14rem; font-weight: bold" pTooltip="{{book.description}}">{{ book.name }}</td>
+                <td style="min-width: 5rem">{{ book.pagesCount }}</td>
+                <td style="min-width: 5rem">{{ book.authors | namesList }}</td>
+                <td style="min-width: 5rem">{{ book.category?.name }}</td>
+                <td style="min-width: 5rem">{{ book.publisher?.name }}</td>
+                <td style="min-width: 5rem">{{ book.code }}</td>
+                <td style="width: 5rem; text-align: center;">
+                    <i *ngIf="book.isAvailable" class="pi pi-check text-green-500"></i>
+                    <i *ngIf="!book.isAvailable" class="pi pi-times text-red-500"></i>
+                </td>
+                <td>
+                    <p-button
+                        icon="pi pi-pencil"
+                        pTooltip="Edit"
+                        class="mr-2"
+                        tooltipPosition="top"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="editBook(book)"
+                    />
+                    <p-button
+                        icon="pi pi-trash"
+                        pTooltip="Remove"
+                        severity="danger"
+                        class="mr-2"
+                        tooltipPosition="top"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="confirm(book)"
+                    />
+                    <p-button
+                        icon="pi pi-print"
+                        pTooltip="Print book code"
+                        severity="info"
+                        tooltipPosition="top"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="printBookCode(book.code, book.name)"
+                    />
 
-            </td>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-        <tr>
-            <td colspan="7">No books to show</td>
-        </tr>
-    </ng-template>
-</p-table>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No books to show</td>
+            </tr>
+        </ng-template>
+    </p-table>
 
-<p-dialog [(visible)]="bookDialog" header="Book Details" [modal]="true">
-    <form *ngIf="bookForm" [formGroup]="bookForm" (ngSubmit)="saveBook()">
-        <div class="flex flex-col gap-6">
-            <div>
-                <label for="name" class="block font-bold mb-3">Name</label>
-                <input type="text" pInputText id="name" formControlName="name"
-                       class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
-
-                <small
-                    class="p-error"
-                    *ngIf="bookForm.get('name')?.touched && bookForm.get('name')?.hasError('required')">
-                    Name is required.
-                </small>
-            </div>
-            <div>
-                <label for="description" class="block font-bold mb-3">Description</label>
-                <textarea id="description" pTextarea formControlName="description"
-                          class="w-full p-inputtext-sm" required rows="3" cols="20"
-                          fluid style="font-size: medium;"></textarea>
-            </div>
-            <div>
-                <label for="name" class="block font-bold mb-3">Category</label>
-                <p-select [options]="categories" formControlName="category" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category" reqired class="w-full">
-                    <ng-template #selectedItem let-selectedOption>
-                        <div class="flex items-center gap-2">
-                            <div>{{ selectedOption.name }}</div>
-                        </div>
-                    </ng-template>
-                    <ng-template let-category #item>
-                        <div class="flex items-center gap-2">
-                            <div>{{ category.name }}</div>
-                        </div>
-                    </ng-template>
-                </p-select>
-            </div>
-            <div>
-                <label for="name" class="block font-bold mb-3">Publisher</label>
-                <p-select [options]="publishers" formControlName="publisher" [filter]="true" appendTo="body" optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher" reqired class="w-full">
-                    <ng-template #selectedItem let-selectedOption>
-                        <div class="flex items-center gap-2">
-                            <div>{{ selectedOption.name }}</div>
-                        </div>
-                    </ng-template>
-                    <ng-template let-publisher #item>
-                        <div class="flex items-center gap-2">
-                            <div>{{ publisher.name }}</div>
-                        </div>
-                    </ng-template>
-                </p-select>
-            </div>
-            <div>
-                <label for="name" class="block font-bold mb-3">Authors</label>
-                <p-multiSelect
-                    [options]="authors"
-                    formControlName="authors" [filter]="true" appendTo="body" optionLabel="name"
-                    placeholder="Select Authors" reqired class="w-full">
-                    <ng-template #selectedItem let-selectedOption>
-                        <div class="flex items-center gap-2">
-                            <div>{{ selectedOption.name }}</div>
-                        </div>
-                    </ng-template>
-                    <ng-template let-author #item>
-                        <div class="flex items-center gap-2">
-                            <div>{{ author.name }}</div>
-                        </div>
-                    </ng-template>
-
-                </p-multiSelect>
-            </div>
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-6">
-                    <label for="pagesCount" class="block font-bold mb-3">Pages count</label>
-                    <p-inputnumber id="pagesCount" formControlName="pagesCount" fluid/>
-                </div>
-                <div class="col-span-6">
-                    <label for="yearOfRelease" class="block font-bold mb-3">Year of release</label>
-                    <input type="text" pInputText id="yearOfRelease" formControlName="yearOfRelease"
+    <p-dialog [(visible)]="bookDialog" header="Book Details" [modal]="true">
+        <form *ngIf="bookForm" [formGroup]="bookForm" (ngSubmit)="saveBook()">
+            <div class="flex flex-col gap-6">
+                <div>
+                    <label for="name" class="block font-bold mb-3">Name</label>
+                    <input type="text" pInputText id="name" formControlName="name"
                            class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
-                </div>
-            </div>
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-12">
-                    <label for="isbn" class="block font-bold mb-3">ISBN</label>
-                    <input type="text" pInputText id="isbn" formControlName="isbn"
-                           class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
-                </div>
-            </div>
-        </div>
-    </form>
-    <ng-template #footer>
-        <p-button label="Cancel" icon="pi pi-times" text (onClick)="bookDialog=false"></p-button>
-        <p-button label="Save" [disabled]="bookForm.invalid" (onClick)="saveBook()"></p-button>
-    </ng-template>
-</p-dialog>
 
-<p-confirmDialog [style]="{ width: '500px' }"/>
+                    <small
+                        class="p-error"
+                        *ngIf="bookForm.get('name')?.touched && bookForm.get('name')?.hasError('required')">
+                        Name is required.
+                    </small>
+                </div>
+                <div>
+                    <label for="description" class="block font-bold mb-3">Description</label>
+                    <textarea id="description" pTextarea formControlName="description"
+                              class="w-full p-inputtext-sm" required rows="3" cols="20"
+                              fluid style="font-size: medium;"></textarea>
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-3">Category</label>
+                    <p-select [options]="categories" formControlName="category" [filter]="true" appendTo="body"
+                              optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select category"
+                              reqired class="w-full">
+                        <ng-template #selectedItem let-selectedOption>
+                            <div class="flex items-center gap-2">
+                                <div>{{ selectedOption.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-category #item>
+                            <div class="flex items-center gap-2">
+                                <div>{{ category.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-3">Publisher</label>
+                    <p-select [options]="publishers" formControlName="publisher" [filter]="true" appendTo="body"
+                              optionLabel="name" filterBy="name" [showClear]="true" placeholder="Select publisher"
+                              reqired class="w-full">
+                        <ng-template #selectedItem let-selectedOption>
+                            <div class="flex items-center gap-2">
+                                <div>{{ selectedOption.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-publisher #item>
+                            <div class="flex items-center gap-2">
+                                <div>{{ publisher.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-3">Authors</label>
+                    <p-multiSelect
+                        [options]="authors"
+                        formControlName="authors" [filter]="true" appendTo="body" optionLabel="name"
+                        placeholder="Select Authors" reqired class="w-full">
+                        <ng-template #selectedItem let-selectedOption>
+                            <div class="flex items-center gap-2">
+                                <div>{{ selectedOption.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-author #item>
+                            <div class="flex items-center gap-2">
+                                <div>{{ author.name }}</div>
+                            </div>
+                        </ng-template>
+
+                    </p-multiSelect>
+                </div>
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-6">
+                        <label for="pagesCount" class="block font-bold mb-3">Pages count</label>
+                        <p-inputnumber id="pagesCount" formControlName="pagesCount" fluid/>
+                    </div>
+                    <div class="col-span-6">
+                        <label for="yearOfRelease" class="block font-bold mb-3">Year of release</label>
+                        <input type="text" pInputText id="yearOfRelease" formControlName="yearOfRelease"
+                               class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
+                    </div>
+                </div>
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12">
+                        <label for="isbn" class="block font-bold mb-3">ISBN</label>
+                        <input type="text" pInputText id="isbn" formControlName="isbn"
+                               class="w-full p-inputtext-sm" required autofocus fluid style="font-size: medium;"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <ng-template #footer>
+            <p-button label="Cancel" icon="pi pi-times" text (onClick)="bookDialog=false"></p-button>
+            <p-button label="Save" [disabled]="bookForm.invalid" (onClick)="saveBook()"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmdialog #cd>
+        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+            <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                <div
+                    class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                    <i class="pi pi-question !text-5xl"></i>
+                </div>
+                <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                <p class="mb-0">{{ message.message }}</p>
+                <div class="flex items-center gap-2 mt-6">
+                    <p-button label="Delete" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                    <p-button label="Cancel" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-confirmdialog>
 </div>

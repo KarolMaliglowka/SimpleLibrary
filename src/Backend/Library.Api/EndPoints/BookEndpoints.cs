@@ -72,5 +72,7 @@ public static class BookEndpoints
             var books = await bookService.GetBooksDictionaryAsync();
             return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
         });
+        app.MapDelete("/books/delete/{id:guid}", async (Guid id, IBookService bookService) =>
+            await bookService.DeleteBookAsync(id));
     }
 }

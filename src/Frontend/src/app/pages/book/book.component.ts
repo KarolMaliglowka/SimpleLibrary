@@ -96,9 +96,10 @@ export class BookComponent implements OnInit {
             pagesCount: [0],
             yearOfRelease: [''],
             isbn: [''],
-            code:['']
+            code: ['']
         });
     }
+
     async loadData() {
         this.loading = true;
         try {
@@ -160,34 +161,6 @@ export class BookComponent implements OnInit {
 
     hideDialog() {
         this.bookDialog = false;
-    }
-
-    deleteBook(book: Book) {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + book.name + '?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            rejectButtonProps: {
-                label: 'No',
-                severity: 'secondary',
-                variant: 'text'
-            },
-            acceptButtonProps: {
-                severity: 'danger',
-                label: 'Yes'
-            },
-            accept: () => {
-                this.books = this.books
-                    .filter((val) => val.id !== book.id);
-                this.book;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Book Deleted',
-                    life: 3000
-                });
-            }
-        });
     }
 
     findIndexById(id: string): number {
@@ -313,6 +286,36 @@ export class BookComponent implements OnInit {
             printWindow.focus();
             printWindow.print();
         };
+    }
+
+    confirm(book: Book) {
+        this.confirmationService.confirm({
+            header: 'Are you confirm delete: ' + book.name + '?',
+            message: 'Please confirm to \n\b proceed.',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
+                try {
+                    await this.bookService.DeleteBook(book.id!);
+                    this.books = this.books.filter(x => x.id !== book.id);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'The book has been removed.'
+                    });
+
+                } catch (err: any) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: err?.error?.message ?? 'An unexpected error occurred.'
+                    });
+                }
+            },
+        });
+    }
+
+    deleteBook(book: Book) {
+        this.bookService.DeleteBook(book.id as string);
     }
 
     protected readonly HTMLInputElement = HTMLInputElement;

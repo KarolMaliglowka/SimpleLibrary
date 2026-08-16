@@ -88,6 +88,7 @@ public interface IBookService
     Task<List<BorrowDto>> GetBorrowingBooksWithUsers();
 
     Task<List<Dictionary<Guid, string>>> GetBooksDictionaryAsync();
+    Task DeleteBookAsync(Guid id);
 }
 
 public class BookService(
@@ -203,7 +204,6 @@ public class BookService(
                 IsAvailable = x.IsAvailable,
                 Code = x.Code
             })
-            .Where(x => !x.IsDelete)
             .OrderBy(x => x.Name)
             .ToList();
     }
@@ -543,6 +543,33 @@ public class BookService(
                 })
         ];
     }
+    
+    public async Task DeleteBookAsync(Guid id)
+    {
+        var bookExist = await bookRepository.GetBookByIdAsync(id);
+
+        if (bookExist == null)
+        {
+            logger.Log(
+                LogLevel.Error,
+                "Book with id: '{BookId}' not found",
+                id);
+
+            throw new NotFoundException("Book", $"{id}");
+        }
+
+        if (!bookExist.IsAvailable)
+        {
+            throw new IsInUseException(
+                "Book",
+                $"{bookExist.Name}");
+        }
+
+        bookExist.SetSoftDelete();
+        bookRepository.UpdateBook(bookExist);
+        await unitOfWork.SaveChangesAsync();
+    }
+    
 
     private static string CreateBookCode()
     {
