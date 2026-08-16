@@ -12,7 +12,7 @@ public record UserDto
     public string? Country { get; set; }
     public string? PostalCode { get; set; }
     public bool IsActive { get; set; }
-    public bool IsDelete { get; set; }
+    public bool IsDeleted { get; set; }
     public string? FullName { get; set; }
     public List<BookDto> Books { get; set; }
 }

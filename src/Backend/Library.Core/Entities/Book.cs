@@ -99,9 +99,8 @@ public sealed class Book : BaseClass
         Code = code ?? throw new NullReferenceException(nameof(code));
     }
 
-    public void SetDeleted(bool setDeleted)
+    private void SetDeleted(bool setDeleted)
     {
         IsDeleted = setDeleted;
     }
-
 }

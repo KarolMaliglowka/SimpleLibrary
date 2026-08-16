@@ -109,7 +109,7 @@ export class BookComponent implements OnInit {
                 this.categoriesService.GetAllCategoriesDictionary(),
                 this.authorsService.GetAllAuthorsDictionary()
             ]);
-            this.books = books.filter(x => !x.isDelete);
+            this.books = books.filter(x => !x.isDeleted);
             this.publishers = publishers;
             this.categories = categories;
             this.authors = authors;

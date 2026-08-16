@@ -13,6 +13,6 @@ export interface Book {
     yearOfRelease?: string;
     category?: Category;
     isAvailable?: boolean;
-    isDelete?: boolean;
+    isDeleted?: boolean;
     code: string;
 }

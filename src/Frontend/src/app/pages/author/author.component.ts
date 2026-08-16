@@ -79,7 +79,7 @@ export class AuthorComponent {
         this.loading = true;
         this.authorService.GetAllAuthors()
             .then((data) => {
-                this.authors = data.filter(x => !x.isDelete);
+                this.authors = data.filter(x => !x.isDeleted);
                 this.loading = false;
                 this.cd.markForCheck();
             }).catch(() => {

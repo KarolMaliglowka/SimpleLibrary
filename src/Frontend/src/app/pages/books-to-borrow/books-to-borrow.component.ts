@@ -79,11 +79,10 @@ export class BooksToBorrowComponent implements OnInit {
         this.loading = true;
         this.bookService.GetAllBooks()
             .then((data: Book[]) => {
-                // filtruj w zależności od stanu przełącznika
                 if (!value) {
-                    this.books = data.filter(x => x.isAvailable);
+                    this.books = data.filter(x => x.isAvailable && !x.isDeleted);
                 } else {
-                    this.books = data;
+                    this.books = data.filter(x => !x.isDeleted);
                 }
                 this.loading = false;
                 this.cd.markForCheck();

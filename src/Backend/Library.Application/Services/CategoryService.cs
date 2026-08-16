@@ -30,7 +30,7 @@ public class CategoryService(
             {
                 Id = c.Id,
                 Name = c.Name,
-                IsDelete = c.IsDeleted
+                IsDeleted = c.IsDeleted
             })
             .OrderBy(x => x.Name)
             .ToList();

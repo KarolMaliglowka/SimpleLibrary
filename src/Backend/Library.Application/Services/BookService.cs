@@ -176,36 +176,39 @@ public class BookService(
     public async Task<List<BookDto>> GetAllBooksAsync()
     {
         var booksList = await bookRepository.GetAllBooksAsync();
-        return booksList.Select(x => new BookDto()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                PagesCount = x.PagesCount,
-                Description = x.Description,
-                Publisher = new PublisherDto
+        return
+        [
+            .. booksList.Select(x => new BookDto()
                 {
-                    Name = x.Publisher.Name,
-                    Id = x.Publisher.Id
-                },
-                Isbn = x.ISBN,
-                YearOfRelease = x.YearOfRelease,
-                Category = new CategoryDto
-                {
-                    Name = x.Category.Name,
-                    Id = x.Category.Id
-                },
-                Authors = x.Authors?.Select(a => new AuthorDto
+                    Id = x.Id,
+                    Name = x.Name,
+                    PagesCount = x.PagesCount,
+                    Description = x.Description,
+                    Publisher = new PublisherDto
                     {
-                        Name = a.Name ?? "",
-                        Surname = a.Surname ?? "",
-                        Id = a.Id
-                    }
-                ).ToList(),
-                IsAvailable = x.IsAvailable,
-                Code = x.Code
-            })
-            .OrderBy(x => x.Name)
-            .ToList();
+                        Name = x.Publisher.Name,
+                        Id = x.Publisher.Id
+                    },
+                    Isbn = x.ISBN,
+                    YearOfRelease = x.YearOfRelease,
+                    Category = new CategoryDto
+                    {
+                        Name = x.Category.Name,
+                        Id = x.Category.Id
+                    },
+                    Authors = x.Authors?.Select(a => new AuthorDto
+                        {
+                            Name = a.Name ?? "",
+                            Surname = a.Surname ?? "",
+                            Id = a.Id
+                        }
+                    ).ToList(),
+                    IsAvailable = x.IsAvailable,
+                    Code = x.Code,
+                    IsDeleted = x.IsDeleted
+                })
+                .OrderBy(x => x.Name)
+        ];
     }
 
     /// <summary>
@@ -399,11 +402,13 @@ public class BookService(
         }
 
         var booksList = await bookRepository.GetAllBooksAsync();
-        return booksList
-            .Where(x => x.Authors != null && x.Authors.Any(a =>
-                a.Name == author?.Name && a.Surname == author?.Surname))
-            .Select(MapBookToDto)
-            .ToList();
+        return
+        [
+            .. booksList
+                .Where(x => x.Authors != null && x.Authors.Any(a =>
+                    a.Name == author?.Name && a.Surname == author?.Surname))
+                .Select(MapBookToDto)
+        ];
     }
 
     /// <summary>
@@ -422,13 +427,15 @@ public class BookService(
         }
 
         var booksList = await bookRepository.GetAllBooksAsync();
-        return booksList
-            .Where(x => string.Equals(
-                x.Category?.Name.Value,
-                categoryInSystem.Name.Value,
-                StringComparison.CurrentCultureIgnoreCase))
-            .Select(MapBookToDto)
-            .ToList();
+        return
+        [
+            .. booksList
+                .Where(x => string.Equals(
+                    x.Category?.Name.Value,
+                    categoryInSystem.Name.Value,
+                    StringComparison.CurrentCultureIgnoreCase))
+                .Select(MapBookToDto)
+        ];
     }
 
     /// <summary>
@@ -447,11 +454,13 @@ public class BookService(
         }
 
         var booksList = await bookRepository.GetAllBooksAsync();
-        return booksList
-            .Where(x => string.Equals(x.Publisher.Name, publisherInSystem.Name,
-                StringComparison.CurrentCultureIgnoreCase))
-            .Select(MapBookToDto)
-            .ToList();
+        return
+        [
+            .. booksList
+                .Where(x => string.Equals(x.Publisher.Name, publisherInSystem.Name,
+                    StringComparison.CurrentCultureIgnoreCase))
+                .Select(MapBookToDto)
+        ];
     }
 
     /// <summary>
@@ -525,7 +534,8 @@ public class BookService(
                 Surname = a.Surname ?? ""
             }).ToList(),
             IsAvailable = book.IsAvailable,
-            Code = book.Code
+            Code = book.Code,
+            IsDeleted = book.IsDeleted
         };
     }
 

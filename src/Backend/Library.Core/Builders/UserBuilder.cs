@@ -89,9 +89,9 @@ public sealed class UserBuilder
         return this;
     }
     
-    public UserBuilder IsDelete(bool isDelete)
+    public UserBuilder IsDeleted(bool isDeleted)
     {
-        _user.IsDeleted = isDelete;
+        _user.IsDeleted = isDeleted;
         return this;
     }
 

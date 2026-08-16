@@ -102,7 +102,7 @@ public class AuthorService(IAuthorRepository authorRepository,
                     Id = x.Id,
                     Name = x.Name ?? string.Empty,
                     Surname = x.Surname ?? string.Empty,
-                    IsDelete = x.IsDeleted
+                    IsDeleted = x.IsDeleted
                 })
                 .OrderBy(x => x.Name)
         ];
