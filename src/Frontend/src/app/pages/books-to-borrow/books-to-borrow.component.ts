@@ -8,7 +8,6 @@ import {InputTextModule} from 'primeng/inputtext';
 import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
 import {SelectModule} from 'primeng/select';
-//import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {TableModule} from 'primeng/table';
@@ -145,9 +144,7 @@ export class BooksToBorrowComponent implements OnInit {
             userId: this.borrowForm.value.user as string,
         };
 
-        console.log('borrowRequest:', borrowRequest);
         try {
-            console.log('srodek try');
             this.borrowService.CreateBorrow(borrowRequest);
             this.messageInfo('Book borrowed', 'success');
             this.bookToBorrowDialog = false;

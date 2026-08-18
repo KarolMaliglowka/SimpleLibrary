@@ -19,6 +19,7 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {Borrow} from '../../models/borrow';
 import {BorrowsService} from '../../service/borrow.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-borrow',
@@ -49,15 +50,10 @@ export class BorrowComponent implements OnInit {
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.loadData();
-        if(this.loadData() == null) {
-            console.log("Loading...");
-            //return "brak ksiązek";
-        }
     }
 
     loadData() {
@@ -79,16 +75,18 @@ export class BorrowComponent implements OnInit {
     }
 
     returnBook(borrow: Borrow) {
-        const borrow1: Borrow = {
-            id: borrow.id,
-            bookId: borrow.bookId,
-            bookName: borrow.bookName,
-            bookAuthors: borrow.bookAuthors,
-            userId: borrow.userId,
-            userFullName: borrow.userFullName,
-            borrowDate: new Date().toISOString()
-        };
-        this.borrowService.DeleteBorrow(borrow1.id);
+        try {
+            this.borrowService.DeleteBorrow(borrow.id);
+            this.messageInfo('Book was returned', 'success');
+            this.borrowDialog = false;
+        } catch (err) {
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
+        }
+        this.loadData();
     }
 
     hideDialog() {
@@ -96,17 +94,17 @@ export class BorrowComponent implements OnInit {
         this.submitted = false;
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.borrows.length; i++) {
-            if (this.borrows[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
+    // findIndexById(id: string): number {
+    //     let index = -1;
+    //     for (let i = 0; i < this.borrows.length; i++) {
+    //         if (this.borrows[i].id === id) {
+    //             index = i;
+    //             break;
+    //         }
+    //     }
+    //
+    //     return index;
+    // }
 
     confirm(borrow: Borrow) {
         this.confirmationService.confirm({
@@ -114,7 +112,6 @@ export class BorrowComponent implements OnInit {
             message: 'Please confirm to \n\b proceed.',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
                 this.borrows = this.borrows.filter((val) => val.id !== borrow.id);
                 this.returnBook(borrow);
             },
@@ -122,6 +119,10 @@ export class BorrowComponent implements OnInit {
                 this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
             },
         });
+    }
+
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
     }
 
     protected readonly HTMLInputElement = HTMLInputElement;
