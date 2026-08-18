@@ -10,3 +10,9 @@ public class BorrowDto
     public string? UserFullName { get; set; }
     public DateTime BorrowDate { get; set; }
 }
+
+public class BorrowRequestDto
+{
+    public Guid BookId { get; set; }
+    public Guid UserId { get; set; }
+}

@@ -88,7 +88,7 @@ export class BorrowComponent implements OnInit {
             userFullName: borrow.userFullName,
             borrowDate: new Date().toISOString()
         };
-        this.borrowService.DeleteBorrow(borrow1);
+        this.borrowService.DeleteBorrow(borrow1.id);
     }
 
     hideDialog() {

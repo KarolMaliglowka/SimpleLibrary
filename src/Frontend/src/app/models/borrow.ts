@@ -8,3 +8,7 @@ export interface Borrow {
     userFullName?: string;
     borrowDate?: string;
 }
+export interface CreateBorrowRequest {
+    bookId: string;
+    userId: string;
+}

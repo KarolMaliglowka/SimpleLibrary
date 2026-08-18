@@ -20,9 +20,11 @@ import {ToggleSwitch} from 'primeng/toggleswitch';
 import {Book} from '../../models/book';
 import {BooksService} from '../../service/book.service';
 import {NamesListPipe} from '../../../shared/extensions/NamesListPipe';
-import {Borrow} from '../../models/borrow';
+import {Borrow, CreateBorrowRequest} from '../../models/borrow';
 import {UsersService} from "../../service/user.service";
+import {BorrowsService} from "../../service/borrow.service";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     selector: 'app-books-to-borrow',
@@ -34,7 +36,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
         ReactiveFormsModule, ToggleSwitch
     ],
     providers: [
-        MessageService, ConfirmationService, BooksService, UsersService
+        MessageService, ConfirmationService, BooksService, UsersService, BorrowsService
     ],
     templateUrl: './books-to-borrow.component.html',
     styleUrl: './books-to-borrow.component.scss'
@@ -49,17 +51,18 @@ export class BooksToBorrowComponent implements OnInit {
     @ViewChild('dt') dt!: Table;
     loading: boolean = false;
     checked: boolean = false;
-    borrow!: Borrow;
+    borrow!: CreateBorrowRequest;
 
     editMode = false;
     borrowForm!: FormGroup;
-    editingBorrow?: Borrow;
+    editingBorrow?: CreateBorrowRequest;
 
     users!: any[] | undefined;
     user: string | undefined;
 
     constructor(
         private bookService: BooksService,
+        private borrowService: BorrowsService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private cd: ChangeDetectorRef,
@@ -67,7 +70,6 @@ export class BooksToBorrowComponent implements OnInit {
         private fb: FormBuilder
     ) {
     }
-
     ngOnInit() {
         this.loadData(this.checked);
         this.borrowForm = this.fb.group({
@@ -90,7 +92,7 @@ export class BooksToBorrowComponent implements OnInit {
             this.loading = false;
         });
         this.usersService.GetAllUsersDictionary()
-            .then((data : any) => {
+            .then((data: any) => {
                 this.users = data;
                 this.loading = false;
                 this.cd.markForCheck();
@@ -131,8 +133,36 @@ export class BooksToBorrowComponent implements OnInit {
             .map(a => `${a.surname} ${a.name}`)
             .join(', ');
     }
-    saveBorrow(){}
 
+    saveBorrow() {
+        if (this.borrowForm.invalid) {
+            this.borrowForm.markAllAsTouched();
+            return;
+        }
+
+        const borrowRequest = {
+            bookId: this.book.id as string,
+            userId: this.borrowForm.value.user as string,
+        };
+
+        console.log('borrowRequest:', borrowRequest);
+        try {
+            console.log('srodek try');
+            this.borrowService.CreateBorrow(borrowRequest);
+            this.messageInfo('Book borrowed', 'success');
+            this.bookToBorrowDialog = false;
+        } catch (err) {
+            if (err instanceof HttpErrorResponse) {
+                this.messageInfo(err.error.message, 'error');
+            } else {
+                this.messageInfo('Unexpected error', 'error');
+            }
+        }
+        this.loadData(this.checked);
+    }
+    messageInfo(message: string, kind: string) {
+        this.messageService.add({ severity: kind, summary: kind.toUpperCase(), detail: message, life: 3000 });
+    }
     protected readonly HTMLInputElement = HTMLInputElement;
 }
 

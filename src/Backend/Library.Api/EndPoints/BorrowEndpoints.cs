@@ -8,7 +8,7 @@ public static class BorrowEndpoints
 {
     public static void MapBorrowEndpoints(this WebApplication app)
     {
-        app.MapPost("/borrows/create", async ([FromBody]BorrowDto borrowDto, IBorrowService borrowService ) =>
+        app.MapPost("/borrows/create", async ([FromBody]BorrowRequestDto borrowDto, IBorrowService borrowService ) =>
         {
             await borrowService.CreateBorrow(borrowDto);
             return Results.Created();

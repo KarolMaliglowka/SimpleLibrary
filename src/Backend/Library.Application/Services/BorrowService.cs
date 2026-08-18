@@ -10,7 +10,7 @@ namespace Library.Application.Services;
 
 public interface IBorrowService
 {
-    Task CreateBorrow(BorrowDto borrowDto);
+    Task CreateBorrow(BorrowRequestDto borrowDto);
     Task DeleteBorrow(Guid id);
 }
 
@@ -23,20 +23,20 @@ public class BorrowService(
     ILogger<BorrowService> logger)
     : IBorrowService
 {
-    public async Task CreateBorrow(BorrowDto borrowDto)
+    public async Task CreateBorrow(BorrowRequestDto borrowDto)
     {
         var user = await userRepository.GetUserByIdAsync(borrowDto.UserId);
         
         if (user == null)
         {
-            throw new NotFoundException("User", $"{borrowDto.UserFullName} with id: {borrowDto.UserId}");
+            throw new NotFoundException("User", $" with id: {borrowDto.UserId}");
         }
         
         var book = await bookRepository.GetBookByIdAsync(borrowDto.BookId);
         
         if (book == null)
         {
-            throw new NotFoundException("Book",$"{borrowDto.BookName} with id: {borrowDto.BookId}");
+            throw new NotFoundException("Book",$" with id: {borrowDto.BookId}");
         }
         
         var newBorrow = new Borrow(user, book, DateTime.UtcNow);

@@ -143,6 +143,7 @@
                 [filter]="true"
                 appendTo="body"
                 optionLabel="name"
+                optionValue="id"
                 filterBy="name"
                 [showClear]="true"
                 placeholder="Select user"
@@ -163,7 +164,7 @@
     </form>
     <ng-template #footer>
         <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
-        <p-button label="Save" icon="pi pi-check" (click)="hideDialog()"/>
+        <p-button label="Save" icon="pi pi-check" (click)="saveBorrow()"/>
     </ng-template>
 </p-dialog>
 
