@@ -1,9 +1,6 @@
 ﻿using Library.Application.DTO;
 using Library.Application.Services;
-using Library.Core.Entities;
-using Library.Core.Exceptions;
 using Library.Core.Repositories;
-
 
 namespace Library.Api.EndPoints;
 
@@ -45,14 +42,14 @@ public static class AuthorEndpoints
         });
 
         app.MapDelete("/authors/delete/{id:guid}", async (Guid id, IAuthorService authorService) =>
-                await authorService.DeleteAuthorAsync(id));
+            await authorService.DeleteAuthorAsync(id));
 
         app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
         {
-            var author = await authorReadRepository.GetAuthorByIdAsync(id);// przerobić na serwis z warstwy application
+            var author = await authorReadRepository.GetAuthorByIdAsync(id); // przerobić na serwis z warstwy application
             return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
         });
-        
+
         app.MapGet("/authors/getAuthors", async (IAuthorService authorService) =>
             await authorService.GetAuthorsDictionaryAsync() is { } author
                 ? Results.Ok(author)

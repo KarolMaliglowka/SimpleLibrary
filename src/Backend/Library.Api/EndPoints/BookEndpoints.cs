@@ -65,8 +65,8 @@ public static class BookEndpoints
                 is { } book
                 ? Results.Ok(book)
                 : Results.NotFound("Book not found"));
-        
-        
+
+
         app.MapGet("/books/getbooks", async (IBookService bookService) =>
         {
             var books = await bookService.GetBooksDictionaryAsync();

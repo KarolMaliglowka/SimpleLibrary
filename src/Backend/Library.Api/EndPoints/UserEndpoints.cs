@@ -67,7 +67,6 @@ public static class UserEndpoints
             return Results.Ok(authors);
         });
 
-
         app.MapGet("/users/getUsers", async (IUserService userService) =>
             await userService.GetUsersDictionaryAsync() is { } users
                 ? Results.Ok(users)
