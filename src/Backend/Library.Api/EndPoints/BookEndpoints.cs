@@ -11,7 +11,7 @@ public static class BookEndpoints
         app.MapGet("/books", async (IBookService bookService) =>
         {
             var books = await bookService.GetAllBooksAsync();
-            return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
+            return Results.Ok(books);
         });
 
         app.MapPost("/books/create",

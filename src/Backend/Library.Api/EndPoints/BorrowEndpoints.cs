@@ -23,7 +23,7 @@ public static class BorrowEndpoints
         app.MapGet("/borrows", async (IBookService bookService) =>
         {
             var borrowingBooks = await bookService.GetBorrowingBooksWithUsers();
-            return borrowingBooks.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(borrowingBooks);
+            return Results.Ok(borrowingBooks);
         });
     }
 }
