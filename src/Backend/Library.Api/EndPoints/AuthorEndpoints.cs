@@ -13,11 +13,10 @@ public static class AuthorEndpoints
                 ? Results.Ok(author)
                 : Results.NotFound());
         
-        app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
+        app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorService authorService) =>
         {
-            // TODO: przerobić na serwis z warstwy application
-            var author = await authorReadRepository.GetAuthorByIdAsync(id);
-            return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
+            var author = await authorService.GetAuthorsByIdAsync(id);
+            return Results.Ok(author);
         });
 
         app.MapGet("/authors/getAuthors", async (IAuthorService authorService) =>
@@ -43,13 +42,6 @@ public static class AuthorEndpoints
             IAuthorService authorService
         ) =>
         {
-            // TODO: przerobić na serwis z warstwy application
-            var authorInDb = await authorReadRepository.GetAuthorByIdAsync(author.Id);
-            if (authorInDb == null)
-            {
-                return Results.NotFound("Author not found :/");
-            }
-
             await authorService.UpdateAuthorAsync(author);
             return Results.Ok("Author updated");
         });

@@ -7,7 +7,6 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
-import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {TableModule} from 'primeng/table';
@@ -17,7 +16,6 @@ import {PaginatorModule} from "primeng/paginator";
 import {TooltipModule} from 'primeng/tooltip'
 import {User} from '../../models/user';
 import {UsersService} from '../../service/user.service';
-import {NamesListPipe,} from '../../../shared/extensions/NamesListPipe';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {SelectModule} from "primeng/select";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -27,8 +25,8 @@ import {HttpErrorResponse} from "@angular/common/http";
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
-        FormsModule, InputNumber, IconFieldModule, InputIconModule,
-        ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
+        FormsModule, IconFieldModule, InputIconModule,
+        ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule
     ],
     providers: [
         MessageService, ConfirmationService, UsersService

@@ -4,7 +4,7 @@ import {Publisher} from './publisher';
 
 export interface Book {
     id?: string;
-    name?: string;
+    name: string;
     description?: string;
     pagesCount?: number;
     authors?: Author[];

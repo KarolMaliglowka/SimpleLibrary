@@ -43,7 +43,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class BooksToBorrowComponent implements OnInit {
     bookToBorrowDialog: boolean = false;
     books!: Book[];
-    book!: Book;
+    book: Book | null = null;
     selectedBooks!: Book[] | null;
     submitted: boolean = false;
     statuses!: any[];
@@ -111,8 +111,8 @@ export class BooksToBorrowComponent implements OnInit {
 
     bookToBorrow(book: Book) {
         this.borrowForm.reset();
-        this.bookToBorrowDialog = true;
         this.book = {...book};
+        this.bookToBorrowDialog = true;
     }
 
     getAuthorsNames(book?: Book): string {
@@ -128,7 +128,7 @@ export class BooksToBorrowComponent implements OnInit {
         }
 
         const borrowRequest = {
-            bookId: this.book.id as string,
+            bookId: this.book?.id as string,
             userId: this.borrowForm.value.user as string,
         };
 

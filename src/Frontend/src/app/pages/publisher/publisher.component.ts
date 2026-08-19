@@ -9,7 +9,6 @@ import {TextareaModule} from 'primeng/textarea';
 import {CommonModule} from '@angular/common';
 import {SelectModule} from 'primeng/select';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {InputNumber} from 'primeng/inputnumber';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {TableModule} from 'primeng/table';
@@ -26,7 +25,7 @@ import {HttpErrorResponse} from '@angular/common/http';
     imports: [
         TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
         ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
-        FormsModule, InputNumber, IconFieldModule, InputIconModule,
+        FormsModule, IconFieldModule, InputIconModule,
         ReactiveFormsModule, ButtonModule, PaginatorModule, TooltipModule
 
     ],

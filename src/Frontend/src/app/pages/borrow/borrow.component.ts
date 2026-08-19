@@ -1,6 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {Table, TableModule} from "primeng/table";
-import {Dialog} from "primeng/dialog";
 import {SelectModule} from "primeng/select";
 import {ToastModule} from "primeng/toast";
 import {ToolbarModule} from "primeng/toolbar";
@@ -9,7 +8,6 @@ import {InputTextModule} from "primeng/inputtext";
 import {TextareaModule} from "primeng/textarea";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {InputNumber} from "primeng/inputnumber";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {ButtonModule} from "primeng/button";
@@ -24,9 +22,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 @Component({
   selector: 'app-borrow',
   imports: [
-      TableModule, Dialog, SelectModule, ToastModule, ToolbarModule,
+      TableModule, SelectModule, ToastModule, ToolbarModule,
       ConfirmDialog, InputTextModule, TextareaModule, CommonModule,
-      FormsModule, InputNumber, IconFieldModule, InputIconModule,
+      FormsModule, IconFieldModule, InputIconModule,
       ButtonModule, PaginatorModule, TooltipModule, NamesListPipe
   ],
     providers: [

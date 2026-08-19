@@ -34,7 +34,8 @@ public interface IAuthorService
     Task<List<Dictionary<Guid, string>>> GetAuthorsDictionaryAsync();
     Task UpdateAuthorAsync(AuthorDto author);
     Task DeleteAuthorAsync(Guid id);
-    
+    Task<AuthorDto> GetAuthorsByIdAsync(Guid id);
+
 }
 
 /// <summary>
@@ -169,5 +170,20 @@ public class AuthorService(IAuthorRepository authorRepository,
 
         await authorRepository.UpdateAuthorAsync(existingAuthor);
         await unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task<AuthorDto> GetAuthorsByIdAsync(Guid id)
+    {
+        var existingAuthor = await authorReadRepository.GetAuthorByIdAsync(id);
+        if (existingAuthor != null)
+            return new AuthorDto()
+            {
+                Id = existingAuthor.Id,
+                Name = existingAuthor.Name ?? string.Empty,
+                Surname = existingAuthor.Surname ?? string.Empty,
+                IsDeleted = existingAuthor.IsDeleted
+            };
+        logger.Log(LogLevel.Error, "Author with id: '{AuthorId}' not found", existingAuthor!.Id);
+        throw new NotFoundException("Author", $" with id: {existingAuthor.Id}");
     }
 }
