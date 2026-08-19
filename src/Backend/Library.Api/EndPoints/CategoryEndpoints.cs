@@ -12,8 +12,27 @@ public static class CategoryEndpoints
             await categoryService.GetCategoriesAsync() is { } category
                 ? Results.Ok(category)
                 : Results.NotFound("No categories found."));
+        
+        app.MapGet("/categories/{id:guid}",
+            async (Guid id, ICategoryService categoryService) =>
+                await categoryService.GetCategoryByIdAsync(id)
+                    is { } category
+                    ? Results.Ok(category)
+                    : Results.NotFound());
 
-        app.MapPost("/categories/create",
+        app.MapGet("/categories/{name}",
+            async ([Required] string name, ICategoryService categoryService) =>
+            await categoryService.GetCategoryByNameAsync(name)
+                is { } category
+                ? Results.Ok(category)
+                : Results.NotFound());
+
+        app.MapGet("/categories/getCategories", async (ICategoryService categoryService) =>
+            await categoryService.GetCategoriesDictionaryAsync() is { } category
+                ? Results.Ok(category)
+                : Results.NotFound("No categories found."));
+        
+        app.MapPost("/categories",
             async (CategoryDto category, ICategoryService categoryService) =>
             {
                 await categoryService.AddCategoryAsync(category);
@@ -27,33 +46,14 @@ public static class CategoryEndpoints
                 return Results.Created();
             });
 
-        app.MapPatch("/categories/update",
+        app.MapPatch("/categories",
             async (CategoryDto category, ICategoryService categoryService) =>
             {
                 await categoryService.UpdateCategoryAsync(category);
                 return Results.NoContent();
             });
 
-        app.MapGet("/categories/{id:guid}",
-            async (Guid id, ICategoryService categoryService) =>
-                await categoryService.GetCategoryByIdAsync(id)
-                    is { } category
-                    ? Results.Ok(category)
-                    : Results.NotFound());
-
-        app.MapGet("/categories/{name}",
-            async ([Required] string name, ICategoryService categoryService) =>
-            await categoryService.GetCategoryByNameAsync(name)
-            is { } category
-            ? Results.Ok(category)
-            : Results.NotFound());
-
-        app.MapDelete("/categories/delete/{id:guid}", async (Guid id, ICategoryService categoryService) =>
+        app.MapDelete("/categories/{id:guid}", async (Guid id, ICategoryService categoryService) =>
             await categoryService.DeleteCategoryAsync(id));
-        
-        app.MapGet("/categories/getCategories", async (ICategoryService categoryService) =>
-            await categoryService.GetCategoriesDictionaryAsync() is { } category
-                ? Results.Ok(category)
-                : Results.NotFound("No categories found."));
     }
 }

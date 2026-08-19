@@ -2,8 +2,8 @@
 import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
 import {ApiRequestData} from "../../shared/domain/api.request.data";
-import { Book } from '../models/book';
-import { MultiSelectModule } from 'primeng/multiselect';
+import {Book} from '../models/book';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +19,6 @@ export class BooksService {
             Url: `${this.url}`
         };
         return firstValueFrom(this.httpService.get<Book[]>(apiRequest));
-
     }
 
     GetAllBooksDictionary() {
@@ -37,26 +36,25 @@ export class BooksService {
         return firstValueFrom(this.httpService.get<Book>(apiRequest));
     }
 
-     DeleteBook(id: string) {
-         let apiRequest = <ApiRequestData>{
-             Url: `${this.url}/delete/${id}`,
-             RequestBody: id
-         };
-         return firstValueFrom(this.httpService.delete(apiRequest));
-     }
+    DeleteBook(id: string) {
+        let apiRequest = <ApiRequestData>{
+            Url: `${this.url}/${id}`,
+            RequestBody: id
+        };
+        return firstValueFrom(this.httpService.delete(apiRequest));
+    }
 
     UpdateBook(book: Book) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/update`,
+            Url: `${this.url}`,
             RequestBody: book
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
     CreateBook(book: Book) {
-        console.log("ksiązka: ", book);
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create`,
+            Url: `${this.url}`,
             RequestBody: book
         };
         return firstValueFrom(this.httpService.post(apiRequest));

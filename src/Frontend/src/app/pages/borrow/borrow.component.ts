@@ -52,20 +52,22 @@ export class BorrowComponent implements OnInit {
         private cd: ChangeDetectorRef,
     ) {}
 
-    ngOnInit() {
-        this.loadData();
+    async ngOnInit() {
+        await this.loadData();
     }
 
-    loadData() {
+    async loadData() {
         this.loading = true;
-        this.borrowService.GetAllBorrows()
-            .then((data: any) => {
-                this.borrows = data;
-                this.loading = false;
-                this.cd.markForCheck();
-            }).catch(() => {
+
+        try {
+            const data: Borrow[] = await this.borrowService.GetAllBorrows();
+            this.borrows = data;
+        } catch (err) {
+            console.error(err);
+        } finally {
             this.loading = false;
-        });
+            this.cd.markForCheck();
+        }
     }
 
     openNew() {
@@ -74,19 +76,21 @@ export class BorrowComponent implements OnInit {
         this.borrowDialog = true;
     }
 
-    returnBook(borrow: Borrow) {
+    async returnBook(borrow: Borrow) {
         try {
-            this.borrowService.DeleteBorrow(borrow.id);
+            await this.borrowService.DeleteBorrow(borrow.id);
             this.messageInfo('Book was returned', 'success');
-            this.borrowDialog = false;
+            await this.loadData();
         } catch (err) {
             if (err instanceof HttpErrorResponse) {
-                this.messageInfo(err.error.message, 'error');
+                this.messageInfo(
+                    err.error?.message ?? 'Error returning book',
+                    'error'
+                );
             } else {
                 this.messageInfo('Unexpected error', 'error');
             }
         }
-        this.loadData();
     }
 
     hideDialog() {
@@ -94,29 +98,20 @@ export class BorrowComponent implements OnInit {
         this.submitted = false;
     }
 
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.borrows.length; i++) {
-    //         if (this.borrows[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-    //
-    //     return index;
-    // }
-
     confirm(borrow: Borrow) {
         this.confirmationService.confirm({
             header: 'Are you confirm return: ' + borrow.bookName + '?',
-            message: 'Please confirm to \n\b proceed.',
+            message: 'Please confirm to proceed.',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.borrows = this.borrows.filter((val) => val.id !== borrow.id);
-                this.returnBook(borrow);
+            accept: async () => {
+                await this.returnBook(borrow);
             },
             reject: () => {
-                this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have rejected' });
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Rejected',
+                    detail: 'You have rejected'
+                });
             },
         });
     }

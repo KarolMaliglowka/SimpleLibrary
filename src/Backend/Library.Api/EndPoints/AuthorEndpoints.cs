@@ -12,8 +12,20 @@ public static class AuthorEndpoints
             await authorService.GetAuthorsAsync() is { } author
                 ? Results.Ok(author)
                 : Results.NotFound());
+        
+        app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
+        {
+            // TODO: przerobić na serwis z warstwy application
+            var author = await authorReadRepository.GetAuthorByIdAsync(id);
+            return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
+        });
 
-        app.MapPost("/authors/create", async (AuthorDto author, IAuthorService authorService) =>
+        app.MapGet("/authors/getAuthors", async (IAuthorService authorService) =>
+            await authorService.GetAuthorsDictionaryAsync() is { } author
+                ? Results.Ok(author)
+                : Results.NotFound());
+
+        app.MapPost("/authors", async (AuthorDto author, IAuthorService authorService) =>
         {
             await authorService.CreateAuthorAsync(author);
             return Results.Created();
@@ -25,12 +37,13 @@ public static class AuthorEndpoints
             return Results.Created();
         });
 
-        app.MapPatch("/authors/update", async (
+        app.MapPatch("/authors", async (
             AuthorDto author,
             IAuthorReadRepository authorReadRepository,
             IAuthorService authorService
         ) =>
         {
+            // TODO: przerobić na serwis z warstwy application
             var authorInDb = await authorReadRepository.GetAuthorByIdAsync(author.Id);
             if (authorInDb == null)
             {
@@ -41,18 +54,7 @@ public static class AuthorEndpoints
             return Results.Ok("Author updated");
         });
 
-        app.MapDelete("/authors/delete/{id:guid}", async (Guid id, IAuthorService authorService) =>
+        app.MapDelete("/authors/{id:guid}", async (Guid id, IAuthorService authorService) =>
             await authorService.DeleteAuthorAsync(id));
-
-        app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
-        {
-            var author = await authorReadRepository.GetAuthorByIdAsync(id); // przerobić na serwis z warstwy application
-            return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
-        });
-
-        app.MapGet("/authors/getAuthors", async (IAuthorService authorService) =>
-            await authorService.GetAuthorsDictionaryAsync() is { } author
-                ? Results.Ok(author)
-                : Results.NotFound());
     }
 }

@@ -30,7 +30,7 @@ export class CategoriesService {
 
     DeleteCategory(id: string) {
          let apiRequest = <ApiRequestData>{
-             Url: `${this.url}/delete/${id}`,
+             Url: `${this.url}/${id}`,
              RequestBody: id
          };
          return firstValueFrom(this.httpService.delete(apiRequest));
@@ -38,7 +38,7 @@ export class CategoriesService {
 
     UpdateCategory(category: Category) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/update`,
+            Url: `${this.url}`,
             RequestBody: category
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
@@ -46,7 +46,7 @@ export class CategoriesService {
 
     CreateCategory(category: Category) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create`,
+            Url: `${this.url}`,
             RequestBody: category
         };
         return firstValueFrom(this.httpService.post(apiRequest));

@@ -24,37 +24,7 @@ public static class UserEndpoints
             var authors = await userService.GetUsers();
             return Results.Ok(authors);
         });
-
-        app.MapPost("/users/create", async (UserDto userDto, IUserService userService) =>
-        {
-            await userService.CreateUserAsync(userDto);
-            return Results.Created();
-        });
-
-        app.MapPost("/users/createMany", async (List<UserDto> usersDto, IUserService userService) =>
-        {
-            await userService.CreateUsersAsync(usersDto);
-            return Results.Created();
-        });
-
-        app.MapPatch("/users/update", async (UserDto userDto, IUserService userService) =>
-        {
-            await userService.UpdateUser(userDto);
-            return Results.Ok();
-        });
-
-        app.MapPatch("/users/activate", async (UserDto userDto, IUserService userService) =>
-        {
-            await userService.SetUserActive(userDto.Id, true);
-            return Results.Ok();
-        });
-
-        app.MapPatch("/users/deactivate", async (UserDto userDto, IUserService userService) =>
-        {
-            await userService.SetUserActive(userDto.Id, false);
-            return Results.Ok();
-        });
-
+        
         app.MapGet("/users/withbooks/{id:guid}", async (Guid id, IUserService userService) =>
         {
             var authors = await userService.GetUserWithBorrowedBooksById(id);
@@ -66,13 +36,43 @@ public static class UserEndpoints
             var authors = await userService.GetUsersWithBorrowedBooks();
             return Results.Ok(authors);
         });
-
+        
         app.MapGet("/users/getUsers", async (IUserService userService) =>
             await userService.GetUsersDictionaryAsync() is { } users
                 ? Results.Ok(users)
                 : Results.NotFound("No publishers found"));
         
-        app.MapDelete("/users/delete/{id:guid}", async (Guid id, IUserService userService) =>
+        app.MapPost("/users", async (UserDto userDto, IUserService userService) =>
+        {
+            await userService.CreateUserAsync(userDto);
+            return Results.Created();
+        });
+
+        app.MapPost("/users/createMany", async (List<UserDto> usersDto, IUserService userService) =>
+        {
+            await userService.CreateUsersAsync(usersDto);
+            return Results.Created();
+        });
+
+        app.MapPatch("/users", async (UserDto userDto, IUserService userService) =>
+        {
+            await userService.UpdateUser(userDto);
+            return Results.Ok();
+        });
+
+        app.MapPatch("/users/activate/{id:guid}", async (Guid id, IUserService userService) =>
+        {
+            await userService.SetUserActive(id, true);
+            return Results.Ok();
+        });
+
+        app.MapPatch("/users/deactivate/{id:guid}", async (Guid id, IUserService userService) =>
+        {
+            await userService.SetUserActive(id, false);
+            return Results.Ok();
+        });
+        
+        app.MapDelete("/users/{id:guid}", async (Guid id, IUserService userService) =>
             await userService.DeleteUserAsync(id));
     }
 }

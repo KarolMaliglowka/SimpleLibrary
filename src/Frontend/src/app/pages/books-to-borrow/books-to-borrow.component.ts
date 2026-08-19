@@ -109,18 +109,6 @@ export class BooksToBorrowComponent implements OnInit {
         this.submitted = false;
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.books.length; i++) {
-            if (this.books[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
     bookToBorrow(book: Book) {
         this.borrowForm.reset();
         this.bookToBorrowDialog = true;

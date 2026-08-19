@@ -20,7 +20,7 @@ export class BorrowsService {
     }
     DeleteBorrow(borrow: any) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/delete/${borrow}`,
+            Url: `${this.url}/${borrow}`,
             RequestBody: borrow
         };
         return firstValueFrom(this.httpService.delete(apiRequest));
@@ -28,7 +28,7 @@ export class BorrowsService {
 
     CreateBorrow(createBorrowRequest: CreateBorrowRequest) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create`,
+            Url: `${this.url}`,
             RequestBody: createBorrowRequest
         };
         return firstValueFrom(this.httpService.post(apiRequest));

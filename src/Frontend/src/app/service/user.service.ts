@@ -30,7 +30,7 @@ export class UsersService {
 
      DeleteUser(id: string) {
          let apiRequest = <ApiRequestData>{
-             Url: `${this.url}/delete/${id}`,
+             Url: `${this.url}/${id}`,
              RequestBody: id
          };
          return firstValueFrom(this.httpService.delete(apiRequest));
@@ -38,34 +38,32 @@ export class UsersService {
 
     UpdateUser(user: any) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/update`,
+            Url: `${this.url}`,
             RequestBody: user
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
     CreateUser(user: User) {
-        console.log(user);
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create`,
+            Url: `${this.url}`,
             RequestBody: user
         };
-        console.log(user);
         return firstValueFrom(this.httpService.post(apiRequest));
     }
 
-    SetNotActive(user: User) {
+    SetNotActive(id: string) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/deactivate`,
-            RequestBody: user
+            Url: `${this.url}/deactivate/${id}`,
+            RequestBody: id
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }
 
-    SetActive(user: User) {
+    SetActive(id: string) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/activate`,
-            RequestBody: user
+            Url: `${this.url}/activate/${id}`,
+            RequestBody: id
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
     }

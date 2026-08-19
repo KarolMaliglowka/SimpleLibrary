@@ -10,7 +10,6 @@ import { AuthorComponent} from './author/author.component'
 import { BooksToBorrowComponent} from './books-to-borrow/books-to-borrow.component'
 
 export default [
-    // { path: 'empty', component: Empty },
     { path: 'book', component: BookComponent },
     { path: 'books-to-borrow', component: BooksToBorrowComponent },
     { path: 'user', component: UserComponent },

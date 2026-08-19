@@ -46,7 +46,7 @@ export class PublishersService {
 
      DeletePublisher(id: string) {
          let apiRequest = <ApiRequestData>{
-             Url: `${this.url}/delete/${id}`,
+             Url: `${this.url}/${id}`,
              RequestBody: id
          };
          return firstValueFrom(this.httpService.delete(apiRequest));
@@ -54,7 +54,7 @@ export class PublishersService {
 
     UpdatePublisher(publisher: Publisher) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/update`,
+            Url: `${this.url}`,
             RequestBody: publisher
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
@@ -63,7 +63,7 @@ export class PublishersService {
     CreatePublisher(publisher: Publisher) {
         console.log(publisher);
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create`,
+            Url: `${this.url}`,
             RequestBody: publisher
         };
         return firstValueFrom(this.httpService.post(apiRequest));

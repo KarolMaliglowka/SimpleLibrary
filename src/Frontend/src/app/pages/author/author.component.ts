@@ -105,17 +105,6 @@ export class AuthorComponent {
         this.authorService.DeleteAuthor(author.id as string);
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.authors.length; i++) {
-            if (this.authors[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
     async saveAuthor() {
         if (this.authorForm.invalid) return;
         const newAuthor: Author = this.authorForm.value;

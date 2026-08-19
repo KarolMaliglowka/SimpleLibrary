@@ -8,13 +8,13 @@ public static class BorrowEndpoints
 {
     public static void MapBorrowEndpoints(this WebApplication app)
     {
-        app.MapPost("/borrows/create", async ([FromBody]BorrowRequestDto borrowDto, IBorrowService borrowService ) =>
+        app.MapPost("/borrows", async ([FromBody]BorrowRequestDto borrowDto, IBorrowService borrowService ) =>
         {
             await borrowService.CreateBorrow(borrowDto);
             return Results.Created();
         });
         
-        app.MapDelete("/borrows/delete/{id:guid}", async (Guid id, IBorrowService borrowService ) =>
+        app.MapDelete("/borrows/{id:guid}", async (Guid id, IBorrowService borrowService ) =>
         {
             await borrowService.DeleteBorrow(id);
             return Results.Ok();

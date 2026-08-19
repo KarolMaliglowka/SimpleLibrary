@@ -2,7 +2,8 @@
 import {ApiService} from '../../shared/services/http.service';
 import {firstValueFrom} from 'rxjs';
 import {ApiRequestData} from "../../shared/domain/api.request.data";
-import { Author } from '../models/author';
+import {Author} from '../models/author';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -17,7 +18,6 @@ export class AuthorsService {
             Url: `${this.url}`
         };
         return firstValueFrom(this.httpService.get<Author[]>(apiRequest));
-
     }
 
     GetAuthorById(id: string) {
@@ -30,7 +30,7 @@ export class AuthorsService {
 
     DeleteAuthor(id: string) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/delete/${id}`,
+            Url: `${this.url}/${id}`,
             RequestBody: id
         };
         return firstValueFrom(this.httpService.delete(apiRequest));
@@ -38,7 +38,7 @@ export class AuthorsService {
 
     UpdateAuthor(author: Author) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/update`,
+            Url: `${this.url}`,
             RequestBody: author
         };
         return firstValueFrom(this.httpService.patch(apiRequest));
@@ -46,7 +46,7 @@ export class AuthorsService {
 
     CreateAuthor(author: Author) {
         let apiRequest = <ApiRequestData>{
-            Url: `${this.url}/create`,
+            Url: `${this.url}`,
             RequestBody: author
         };
         return firstValueFrom(this.httpService.post(apiRequest));

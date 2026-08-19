@@ -163,18 +163,6 @@ export class BookComponent implements OnInit {
         this.bookDialog = false;
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.books.length; i++) {
-            if (this.books[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
     async saveBook() {
         if (this.bookForm.invalid) return;
         const newBook: Book = this.bookForm.value;

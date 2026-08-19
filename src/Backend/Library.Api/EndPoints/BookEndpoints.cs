@@ -14,7 +14,13 @@ public static class BookEndpoints
             return Results.Ok(books);
         });
 
-        app.MapPost("/books/create",
+        app.MapGet("/books/{id:guid}", async (Guid id, IBookService bookService) =>
+        {
+            var book = await bookService.GetBookByIdAsync(id);
+            return Results.Ok(book);
+        });
+        
+        app.MapPost("/books",
             async (BookDto book, IBookService bookService) =>
             {
                 await bookService.CreateBookAsync(book);
@@ -28,13 +34,7 @@ public static class BookEndpoints
                 return Results.Created();
             });
 
-        app.MapGet("/books/{id:guid}", async (Guid id, IBookService bookService) =>
-        {
-            var book = await bookService.GetBookByIdAsync(id);
-            return Results.Ok(book);
-        });
-
-        app.MapPatch("/books/update",
+        app.MapPatch("/books",
             async (BookDto book, IBookService bookService) =>
             {
                 await bookService.UpdateBook(book);
@@ -72,7 +72,7 @@ public static class BookEndpoints
             var books = await bookService.GetBooksDictionaryAsync();
             return books.Count == 0 ? Results.NotFound("No books found.") : Results.Ok(books);
         });
-        app.MapDelete("/books/delete/{id:guid}", async (Guid id, IBookService bookService) =>
+        app.MapDelete("/books/{id:guid}", async (Guid id, IBookService bookService) =>
             await bookService.DeleteBookAsync(id));
     }
 }

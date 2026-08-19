@@ -79,7 +79,6 @@ export class UserComponent implements OnInit {
     }
 
     editUser(user: User) {
-        console.log(user);
         this.editingUser = user;
         this.userForm.patchValue(user);
         this.userDialog = true;
@@ -137,7 +136,7 @@ export class UserComponent implements OnInit {
             acceptButtonProps: { severity: 'danger', label: 'Yes' },
             rejectButtonProps: { label: 'No', severity: 'secondary', variant: 'text' },
             accept: async () => {
-                await this.userService.SetNotActive(user);
+                await this.userService.SetNotActive(user.id as string);
                 this.messageInfo(`User ${user.fullName} is deactivate`, 'warn');
                 await this.loadData();
             }
@@ -152,7 +151,7 @@ export class UserComponent implements OnInit {
             acceptButtonProps: { severity: 'danger', label: 'Yes' },
             rejectButtonProps: { label: 'No', severity: 'secondary', variant: 'text' },
             accept: async () => {
-                await this.userService.SetActive(user);
+                await this.userService.SetActive(user.id as string);
                 this.messageInfo(`User ${user.fullName} is activate`, 'success');
                 await this.loadData();
             }
@@ -169,7 +168,7 @@ export class UserComponent implements OnInit {
             message: 'Please confirm to \n\b proceed.',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                var tst = this.deleteUser(user);
+                this.deleteUser(user);
                 this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
                 this.users = this.users.filter((val) => val.id !== user.id);
             },
