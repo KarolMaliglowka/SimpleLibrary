@@ -59,6 +59,7 @@ app.MapCategoriesEndpoints();
 app.MapUserEndpoints();
 app.MapPublisherEndpoints();
 app.MapBorrowEndpoints();
+app.MapDashboardEndpoints();
 
 app.Run();
 

@@ -25,7 +25,7 @@ import { MenuModule } from 'primeng/menu';
                     <div class="bg-surface-300 dark:bg-surface-500 rounded-border overflow-hidden w-40 lg:w-24" style="height: 8px">
                         <div class="bg-orange-500 h-full" style="width: 50%"></div>
                     </div>
-                    <span class="text-orange-500 ml-4 font-medium">%50</span>
+                    <span class="text-orange-500 ml-4 font-medium">%3223232320</span>
                 </div>
             </li>
             <li class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
