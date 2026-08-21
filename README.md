@@ -14,13 +14,12 @@ SimpleLibrary jest kompletnym przykładowym projektem aplikacji webowej przeznac
 
 Projekt został przygotowany nie tylko jako gotowy system biblioteczny, ale również jako **uniwersalny szablon do budowy własnych aplikacji biznesowych**.
 
-Frontend zawiera wiele gotowych przykładów interfejsów i sposobów budowania stron: dashboard, tabele danych, formularze, okna dialogowe, filtrowanie, sortowanie, paginację, komunikaty, formularze z walidacją, strony typu landing page oraz widoki administracyjne.
+Frontend zawiera wiele gotowych przykładów interfejsów i sposobów budowania stron: dashboard, tabele danych, formularze, okna dialogowe, filtrowanie, sortowanie, paginację, komunikaty, formularze z walidacją.
 
 Dzięki temu projekt można łatwo dostosować do własnych potrzeb i wykorzystać jako bazę np. dla:
 
 - systemu magazynowego,
 - systemu CRM,
-- panelu administracyjnego,
 - systemu rezerwacji,
 - systemu zarządzania produktami,
 - systemu zarządzania użytkownikami,
@@ -831,13 +830,12 @@ SimpleLibrary is a complete example of a modern web application for library mana
 
 The project is designed not only as a ready-to-use library system, but also as a **reusable starter/template for building custom business applications**.
 
-The frontend contains many examples of how different types of pages and UI components can be built: dashboards, data tables, forms, dialogs, filtering, sorting, pagination, notifications, validation, landing pages and administration views.
+The frontend contains many examples of how different types of pages and UI components can be built: dashboards, data tables, forms, dialogs, filtering, sorting, pagination, notifications, validation.
 
 Because of this, the project can be adapted to many different use cases, for example:
 
 - inventory management,
 - CRM systems,
-- administration panels,
 - booking systems,
 - product management,
 - user management,
