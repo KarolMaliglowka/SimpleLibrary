@@ -11,16 +11,26 @@ public sealed class ArchiveBuilder
 
     public ArchiveBuilder SetBookId(Guid bookId)
     {
-        _archive.Id = bookId;
+        _archive.BookId = bookId;
         return this;
     }
 
+    /// <summary>
+    /// Archive builder
+    /// </summary>
+    /// <param name="bookName"></param>
+    /// <returns>object</returns>
     public ArchiveBuilder SetBookName(string bookName)
     {
         _archive.BookName = bookName;
         return this;
     }
 
+    /// <summary>
+    /// Archive builder
+    /// </summary>
+    /// <param name="bookAuthors"></param>
+    /// <returns>object</returns>
     public ArchiveBuilder SetAuthors(string bookAuthors)
     {
         _archive.BookAuthors = bookAuthors;
@@ -53,6 +63,12 @@ public sealed class ArchiveBuilder
 
     public Archive Build()
     {
+        if (_archive.BookId == Guid.Empty)
+            throw new InvalidOperationException("BookId is required");
+
+        if (_archive.UserId == Guid.Empty)
+            throw new InvalidOperationException("UserId is required");
+
         return _archive;
     }
 }

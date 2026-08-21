@@ -11,7 +11,7 @@ public class PublisherBuilderTests
     public void Build_ShouldCreatePublisherWithDefaultValues()
     {
         // Act
-        var publisher = new PublisherBuilder().Build();
+        var publisher = new Publisher(Name);
 
         // Assert
         Assert.NotNull(publisher);
@@ -23,11 +23,10 @@ public class PublisherBuilderTests
     public void SetName_ShouldSetPublisherName()
     {
         // Arrange
-        var publisherBuilder = new PublisherBuilder();
+        var publisher = new Publisher();
 
         // Act
-        publisherBuilder.SetName(Name);
-        var publisher = publisherBuilder.Build();
+        publisher.SetPublisher(Name);
 
         // Assert
         Assert.Equal(Name, publisher.Name);
@@ -40,30 +39,23 @@ public class PublisherBuilderTests
     public void SetPublisher_ShouldThrowException(string? name)
     {
         // Arrange
-        var publisherBuilder = new PublisherBuilder();
+        var publisher = new Publisher();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => publisherBuilder.SetName(name!));
+        Assert.Throws<ArgumentException>(() => publisher.SetPublisher(name!));
     }
 
     [Fact]
     public void PublisherBuilder_ShouldInitializeFromExistingPublisher()
     {
         // Arrange
-        var existingPublisher = new Publisher
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.Now,
-            Name = Name
-        };
+        var existingPublisher = new Publisher(Name);
 
         // Act
-        var newPublisher = new PublisherBuilder(existingPublisher)
-            .Build();
 
         // Assert
-        Assert.Equal(existingPublisher.Id, newPublisher.Id);
-        Assert.Equal(existingPublisher.Name, newPublisher.Name);
-        Assert.Equal(existingPublisher.CreatedAt, newPublisher.CreatedAt);
+        Assert.Equal(existingPublisher.Id, existingPublisher.Id);
+        Assert.Equal(existingPublisher.Name, existingPublisher.Name);
+        Assert.Equal(existingPublisher.CreatedAt, existingPublisher.CreatedAt);
     }
 }

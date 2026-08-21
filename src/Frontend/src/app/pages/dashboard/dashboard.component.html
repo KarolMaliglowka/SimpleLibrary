@@ -1,0 +1,30 @@
+﻿
+<div class="dashboard-cards">
+
+    @for (item of dashboardItems; track item.title) {
+
+        <p-card
+            [header]="item.title"
+            class="dashboard-card">
+
+            <div class="card-content">
+
+                <i
+                    [class]="item.icon"
+                    class="card-icon">
+                </i>
+
+                <span class="card-value">
+                    {{ item.value }}
+                </span>
+
+            </div>
+
+        </p-card>
+
+    }
+
+</div>
+
+
+

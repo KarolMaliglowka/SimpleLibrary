@@ -1,3 +1,3 @@
- dotnet ef migrations add Init --project ..\Library.Infrastructure.csproj --context LibraryDbContext --startup-project ..\..\Library.Api\Library.Api.csproj
+dotnet ef migrations add Init --project ..\Library.Infrastructure.csproj --context LibraryDbContext --startup-project ..\..\Library.Api\Library.Api.csproj
  
- dotnet ef database update --project ..\Library.Infrastructure.csproj --context LibraryDbContext --startup-project ..\..\Library.Api\Library.Api.csproj
+dotnet ef database update --project ..\Library.Infrastructure.csproj --context LibraryDbContext --startup-project ..\..\Library.Api\Library.Api.csproj

@@ -1,20 +1,24 @@
 @hostname=localhost:5280
 
-GET {{hostname}}/book/
+GET {{hostname}}/books/
 Accept: application/json
 
 ###
-GET {{hostname}}/author
+GET {{hostname}}/authors
+Accept: application/json 
+
+###
+GET {{hostname}}/publishers
 Accept: application/json
 
 ###
-GET {{hostname}}/publisher
+GET {{hostname}}/categories
 Accept: application/json
 
 ###
-GET {{hostname}}/category
+GET {{hostname}}/borrows
 Accept: application/json
 
 ###
-GET {{hostname}}/borrow
+GET {{hostname}}/users
 Accept: application/json

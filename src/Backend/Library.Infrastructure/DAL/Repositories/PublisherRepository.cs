@@ -15,23 +15,22 @@ public class PublisherRepository : IPublisherRepository
 
     public async Task<List<Publisher>> GetPublishersAsync() => 
         await _context.Publishers
-        .AsNoTracking()
         .ToListAsync();
 
     public async Task<Publisher> AddPublisherAsync(Publisher publisher)
     {
         await _context.Publishers.AddAsync(publisher);
-        await _context.SaveChangesAsync();
         return publisher;
     }
 
-    public async Task<Publisher?> GetPublisherByIdAsync(Guid id) => 
+    public async Task<Publisher?> GetPublisherByIdAsync(Guid? id) => 
         await _context.Publishers
+            .Where(p => !p.IsDeleted)
             .SingleOrDefaultAsync(p => p.Id == id);
     
     public async Task<Publisher?> GetPublisherByNameAsync(string name) => 
         await _context.Publishers
-            .SingleOrDefaultAsync(p => p.Name.Value.ToLower() == name.ToLower());
+            .SingleOrDefaultAsync(p => p.Name == name);
     
     public async Task<bool> ExistAuthorAsync(Publisher publisher) =>
         await _context.Publishers
@@ -40,12 +39,10 @@ public class PublisherRepository : IPublisherRepository
     public async Task AddPublishersAsync(List<Publisher> publishers)
     {
         await _context.Publishers.AddRangeAsync(publishers);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task UpdatePublisherAsync(Publisher publisher)
+    public void UpdatePublisher(Publisher publisher)
     {
         _context.Publishers.Update(publisher);
-        await _context.SaveChangesAsync();
     }
 }

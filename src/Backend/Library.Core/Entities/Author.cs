@@ -4,34 +4,41 @@ namespace Library.Core.Entities;
 
 public class Author : BaseClass
 {
-    public Name? Name { get; set; }
-    public string? Surname { get; set; }
+    public Name? Name { get; private set; }
+    public string? Surname { get; private set; }
     public ICollection<Book> Books { get; set; }
     public string FullName => $"{Name} {Surname}";
+    public bool IsDeleted { get; private set; }
 
-    public Author(Name? name, string? surname = null)
+    public Author(string? name, string? surname = null)
     {
-        Id = Guid.NewGuid();
         SetName(name!);
         SetSurname(surname!);
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
+        IsDeleted = false;
+    }
+
+    public Author()
+    {
     }
 
     public void SetName(string name)
     {
-        if (string.IsNullOrWhiteSpace(name) || name.Length < 1)
+        if (string.IsNullOrWhiteSpace(name) || name.Length < 3)
         {
             throw new ArgumentException("Name cannot be empty. It requires minimum 3 characters.");
         }
 
         Name = name;
-        UpdatedAt = DateTime.UtcNow;
     }
 
     public void SetSurname(string surname)
     {
         Surname = surname;
-        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
     }
 }
+

@@ -11,7 +11,8 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
         return await context.Borrows
             .Include(x => x.Book)
             .Include(x => x.User)
-            .Where(x => x.UserId == userId).ToListAsync();
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
     }
     
     public async Task<User?> GetUserByBorrowedBookIdAsync(Guid bookId)
@@ -26,13 +27,11 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
     public async Task AddBorrowAsync(Borrow borrow)
     {
         await context.Borrows.AddAsync(borrow);
-        await context.SaveChangesAsync();
     }
 
-    public async Task RemoveBorrowAsync(Borrow borrow)
+    public void RemoveBorrow(Borrow borrow)
     {
         context.Borrows.Remove(borrow);
-        await context.SaveChangesAsync();
     }
 
     public async Task<Borrow?> GetBorrowByUserIdAndBookIdAsync(Guid userId, Guid bookId)
@@ -48,4 +47,11 @@ public class BorrowRepository(LibraryDbContext context) : IBorrowRepository
             .AnyAsync(x =>
                 x.BookId == bookId
             );
+    
+    public async Task<Borrow?> GetBorrowByIdAsync(Guid id)
+    {
+        return await context.Borrows
+            .FirstOrDefaultAsync(x => 
+                x.Id == id);
+    }
 }

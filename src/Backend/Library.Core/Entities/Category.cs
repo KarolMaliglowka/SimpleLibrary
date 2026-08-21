@@ -12,12 +12,12 @@ public sealed class Category : BaseClass
     
     public Category(Name name)
     {
-        Id = Guid.NewGuid();
         SetCategory(name);
-        CreatedAt = DateTime.UtcNow;
+        IsDeleted = false;
     }
     
-    public Name Name { get; set; }
+    public Name Name { get; private set; }
+    public bool IsDeleted { get; private set; }
     public ICollection<Book> Books => _books.AsReadOnly();
 
     public void SetCategory(string category)
@@ -28,6 +28,10 @@ public sealed class Category : BaseClass
         }
 
         Name = category;
-        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public void SetSoftDelete()
+    {
+        IsDeleted = true;
     }
 }

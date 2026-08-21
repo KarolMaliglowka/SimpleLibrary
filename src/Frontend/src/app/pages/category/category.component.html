@@ -1,0 +1,110 @@
+<div class="card">
+    <p-toast/>
+    <h2>Categories</h2>
+    <p-toolbar class="m-1">
+        <ng-template #start>
+            <p-button label="New" icon="pi pi-plus" class="mr-2" pTooltip="New category" tooltipPosition="top" (onClick)="openNew()"></p-button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt
+             [value]="categories"
+             [paginator]="true"
+             [rows]="10"
+             showGridlines="true"
+             [globalFilterFields]="['name']">
+        <ng-template #caption>
+            <div class="flex items-center justify-between">
+                <h5 class="m-0">Manage categories</h5>
+                <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input pInputText type="text"
+                           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                           placeholder="Search..."/>
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="name" style="min-width:14rem">
+                    <div class="flex items-center gap-2">
+                        Name
+                        <p-sortIcon field="name"/>
+                    </div>
+                </th>
+                <th style="width: 8rem">
+                    <div class="flex items-center gap-2">
+                        Action
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template #body let-category>
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>
+                    <p-button
+                        icon="pi pi-pencil"
+                        pTooltip="Edit"
+                        class="mr-2"
+                        tooltipPosition="top"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="editCategory(category)"
+                    />
+                    <p-button
+                        icon="pi pi-trash"
+                        pTooltip="Remove"
+                        severity="danger"
+                        tooltipPosition="top"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (click)="confirm(category)"
+                    />
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No categories to show</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="categoryDialog" header="Category details" [modal]="true">
+        <form *ngIf="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+            <div class="flex flex-col gap-4">
+                <div>
+                    <label for="name" class="block font-bold mb-2">Name</label>
+                    <input pInputText id="name" formControlName="name" required autofocus
+                           class="w-full p-inputtext-sm" style="font-size: medium;"/>
+                    <small class="text-red-500"
+                           *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+                        Name is required.
+                    </small>
+                </div>
+            </div>
+        </form>
+        <ng-template #footer>
+            <p-button label="Cancel" icon="pi pi-times" text (onClick)="categoryDialog=false"></p-button>
+            <p-button label="Save" [disabled]="categoryForm.invalid" (onClick)="saveCategory()"></p-button>
+        </ng-template>
+    </p-dialog>
+    <p-confirmdialog #cd>
+        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+            <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                <div
+                    class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                    <i class="pi pi-question !text-5xl"></i>
+                </div>
+                <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                <p class="mb-0">{{ message.message }}</p>
+                <div class="flex items-center gap-2 mt-6">
+                    <p-button label="Delete" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                    <p-button label="Cancel" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-confirmdialog>
+</div>

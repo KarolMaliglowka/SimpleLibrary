@@ -1,4 +1,5 @@
-﻿using Library.Core.Entities;
+﻿using Library.Application.DTO;
+using Library.Application.Services;
 using Library.Core.Repositories;
 
 namespace Library.Api.EndPoints;
@@ -7,57 +8,45 @@ public static class AuthorEndpoints
 {
     public static void MapAuthorEndpoints(this WebApplication app)
     {
-        app.MapGet("/author", async (IAuthorReadRepository authorReadRepository) =>
+        app.MapGet("/authors", async (IAuthorService authorService) =>
+            await authorService.GetAuthorsAsync() is { } author
+                ? Results.Ok(author)
+                : Results.NotFound());
+        
+        app.MapGet("/authors/{id:guid}", async (Guid id, IAuthorService authorService) =>
         {
-            var authors = await authorReadRepository.GetAuthorsAsync();
-            return Results.Ok(authors);
+            var author = await authorService.GetAuthorsByIdAsync(id);
+            return Results.Ok(author);
         });
 
-        app.MapPost("/author/create", async (Author author, IAuthorRepository authorRepository) =>
-        {
-            await authorRepository.AddAuthorAsync(author);
-            return Results.Created($"/author/{author.Id}", author);
-        });
+        app.MapGet("/authors/getAuthors", async (IAuthorService authorService) =>
+            await authorService.GetAuthorsDictionaryAsync() is { } author
+                ? Results.Ok(author)
+                : Results.NotFound());
 
-        app.MapPost("/author/createMany", async (List<Author> authors, IAuthorRepository authorRepository) =>
+        app.MapPost("/authors", async (AuthorDto author, IAuthorService authorService) =>
         {
-            await authorRepository.AddAuthorsAsync(authors);
+            await authorService.CreateAuthorAsync(author);
             return Results.Created();
         });
 
-        app.MapPut("/author/update", async (
-            Author author,
+        app.MapPost("/authors/createMany", async (List<AuthorDto> authors, IAuthorService authorService) =>
+        {
+            await authorService.CreateAuthorsAsync(authors);
+            return Results.Created();
+        });
+
+        app.MapPatch("/authors", async (
+            AuthorDto author,
             IAuthorReadRepository authorReadRepository,
-            IAuthorRepository authorRepository
+            IAuthorService authorService
         ) =>
         {
-            var authorInDb = await authorReadRepository.GetAuthorByIdAsync(author.Id);
-            if (authorInDb == null)
-            {
-                return Results.NotFound("Author not found :/");
-            }
-
-            await authorRepository.UpdateAuthorAsync(author);
+            await authorService.UpdateAuthorAsync(author);
             return Results.Ok("Author updated");
         });
 
-        app.MapDelete("/author/delete/{id:guid}",
-            async (Guid id, IAuthorReadRepository authorReadRepository, IAuthorRepository authorRepository) =>
-            {
-                var author = await authorReadRepository.GetAuthorByIdAsync(id);
-                if (author == null)
-                {
-                    return Results.NotFound("Author not found");
-                }
-
-                await authorRepository.DeleteAuthorAsync(author);
-                return Results.Ok("Author deleted");
-            });
-
-        app.MapGet("/author/{id:guid}", async (Guid id, IAuthorReadRepository authorReadRepository) =>
-        {
-            var author = await authorReadRepository.GetAuthorByIdAsync(id);
-            return author != null ? Results.Ok(author) : Results.NotFound("Author not found");
-        });
+        app.MapDelete("/authors/{id:guid}", async (Guid id, IAuthorService authorService) =>
+            await authorService.DeleteAuthorAsync(id));
     }
 }

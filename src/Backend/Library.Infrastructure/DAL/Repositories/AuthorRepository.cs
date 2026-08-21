@@ -18,10 +18,11 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
     }
 
     public async Task<List<Author>> GetAuthorsWithBooksAsync() => await _context.Authors
-        .Include(a => a.Books).ToListAsync();
+        .Include(a => a.Books)
+        .ToListAsync();
 
     public async Task<List<Author>> GetAuthorsAsync() => await _context.Authors
-        .AsNoTracking()
+        .OrderBy(x => x.Name)
         .ToListAsync();
 
     public Task<List<Author>> GetAuthorBySurnameAsync(string surname) =>
@@ -29,16 +30,21 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
             a.Surname.ToLower() == surname.ToLower()
         ).ToListAsync();
 
-    public Task<Author?> GetAuthorByNameAsync(string name) =>
-        _context.Authors.SingleOrDefaultAsync(a => a.Name == name);
+    public Task<Author?> GetAuthorsBySurnameAndNameAsync(string? surName, string? name = null)
+    {
+        return surName != null ? _context.Authors
+            .FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName) : null;
+    }
+    
 
-    public Task<Author?> GetAuthorByIdAsync(Guid id) =>
-        _context.Authors.SingleOrDefaultAsync(a => a.Id == id);
+    public async Task<Author?> GetAuthorByIdAsync(Guid? id) =>
+        await _context.Authors
+            .Where(p => !p.IsDeleted)
+            .SingleOrDefaultAsync(a => a.Id == id);
 
     public async Task AddAuthorAsync(Author author)
     {
         await _context.Authors.AddAsync(author);
-        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAuthorAsync(Author author)
@@ -50,7 +56,6 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
         }
 
         _context.Authors.Update(author);
-        await _context.SaveChangesAsync();
     }
 
     public async Task<bool> ExistAuthorAsync(Author author)
@@ -60,7 +65,7 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
             .AnyAsync(a => a.Name == author.Name && a.Surname == author.Surname);
     }
 
-    public async Task DeleteAuthorAsync(Author author)
+    public async Task DeleteAuthor(Author author)
     {
         var existingAuthor = await GetAuthorByIdAsync(author.Id);
         if (existingAuthor == null)
@@ -69,16 +74,14 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
         }
 
         _context.Authors.Remove(author);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task AddAuthorsAsync(List<Author> authors)
+    public void AddAuthors(List<Author> authors)
     {
         _context.Authors.AddRange(authors);
-        await _context.SaveChangesAsync();
     }
 
-    public Task<Author?> GetAuthorAsync(string surname, string? name = null) =>
+    public Task<Author?> GetAuthorAsync(string? surname, string? name = null) =>
         _context.Authors.SingleOrDefaultAsync(a =>
             a.Surname == surname &&
             (name == null || (a.Name != null && a.Name == name))
@@ -91,4 +94,9 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
                 x.Name == name &&
                 x.Surname == surname
             );
+
+    public async Task<List<Author>> GetAuthorsListBySurnameAndName(string? surName, string? name = null) => 
+     await _context.Authors
+         .Where(x => x.Surname == surName && name != null && x.Name == name)
+         .ToListAsync();
 }
