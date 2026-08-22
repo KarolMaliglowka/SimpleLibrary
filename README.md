@@ -378,7 +378,7 @@ Przykład:
 
 ```bash
 git clone <URL_REPOSITORY>
-cd SimpleLibrary-develop
+cd SimpleLibrary
 ```
 
 ---
@@ -1153,7 +1153,7 @@ This can be placed in an appropriate `appsettings` file or provided through envi
 
 ```bash
 git clone <REPOSITORY_URL>
-cd SimpleLibrary-develop
+cd SimpleLibrary
 ```
 
 ---
