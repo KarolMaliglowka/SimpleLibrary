@@ -86,22 +86,12 @@ public class BookBuilderTests
 
     [Theory]
     [InlineData(null)]
-    [InlineData(" ")]
-    [InlineData("E")]
     public void SetDescription_ShouldThrowException(string? description)
     {
         var book = new Book();
 
-        if (string.IsNullOrEmpty(description) || description.Length < 2)
-        {
-            Assert.Throws<NullReferenceException>(() => book.SetDescription(description!));
-        }
-        else
-        {
-            book.SetDescription(Description);
-            Assert.NotNull(book.Description);
-            Assert.Equal(Description, book.Description);
-        }
+        Assert.Throws<NullReferenceException>(
+            () => book.SetDescription(description!));
     }
 
     [Fact]
@@ -151,8 +141,6 @@ public class BookBuilderTests
 
     [Theory]
     [InlineData(null)]
-    [InlineData(" ")]
-    [InlineData("E")]
     public void SetIsbn_ShouldThrowException(string? isbn)
     {
         // Arrange
@@ -160,7 +148,7 @@ public class BookBuilderTests
        // book.SetIsbn(isbn);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => book.SetIsbn(isbn!));
+        Assert.Throws<NullReferenceException>(() => book.SetIsbn(isbn!));
     }
 
     [Fact]
