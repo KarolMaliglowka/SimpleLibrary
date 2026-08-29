@@ -1,0 +1,18 @@
+﻿services:
+  library.api:
+    image: library.api
+    build:
+      context: .
+      dockerfile: src/Backend/Library.Api/Dockerfile
+
+    ports:
+      - "5280:5280"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__default: >
+          Host=${POSTGRES_HOST};
+          Port=${POSTGRES_PORT};
+          Database=${POSTGRES_DB};
+          Username=${POSTGRES_USER};
+          Password=${POSTGRES_PASSWORD}
