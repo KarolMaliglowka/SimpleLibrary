@@ -1,0 +1,94 @@
+﻿using Library.Application.DTO;
+using Library.Core;
+using Library.Core.Builders;
+using Library.Core.Entities;
+using Library.Core.Exceptions;
+using Library.Core.Repositories;
+using Microsoft.Extensions.Logging;
+
+namespace Library.Application.Services;
+
+public interface IBorrowService
+{
+    Task CreateBorrow(BorrowRequestDto borrowDto);
+    Task DeleteBorrow(Guid id);
+}
+
+public class BorrowService(
+    IBorrowRepository borrowRepository,
+    IUserRepository userRepository,
+    IBookRepository bookRepository,
+    IArchiveRepository archiveRepository,
+    IUnitOfWork unitOfWork,
+    ILogger<BorrowService> logger)
+    : IBorrowService
+{
+    public async Task CreateBorrow(BorrowRequestDto borrowDto)
+    {
+        var user = await userRepository.GetUserByIdAsync(borrowDto.UserId);
+        
+        if (user == null)
+        {
+            throw new NotFoundException("User", $" with id: {borrowDto.UserId}");
+        }
+        
+        var book = await bookRepository.GetBookByIdAsync(borrowDto.BookId);
+        
+        if (book == null)
+        {
+            throw new NotFoundException("Book",$" with id: {borrowDto.BookId}");
+        }
+        
+        var newBorrow = new Borrow(user, book, DateTime.UtcNow);
+        await borrowRepository.AddBorrowAsync(newBorrow);
+        
+        book.SetAvailable(false);
+        bookRepository.UpdateBook(book);
+        
+        await unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task DeleteBorrow(Guid id)
+    {
+        var borrowToRemove = await borrowRepository.GetBorrowByIdAsync(id);
+        
+        if (borrowToRemove == null)
+        {
+            throw new NotFoundException("Borrow", $" with id: {id}");
+        }
+        
+        borrowRepository.RemoveBorrow(borrowToRemove);
+        
+        var book = await bookRepository.GetBookByIdAsync(borrowToRemove.BookId);
+        
+        if (book == null)
+        {
+            logger.LogError("Book id: {id} not found", borrowToRemove.BookId);
+            throw new NotFoundException("Book", $" with id: {borrowToRemove.BookId}");
+        }
+
+        book.SetAvailable(true);
+        bookRepository.UpdateBook(book);
+      
+        var user = await userRepository.GetUserByIdAsync(borrowToRemove.UserId)
+                   ?? throw new NotFoundException("User", $"with id: {borrowToRemove.UserId}");
+
+        var authors = book.Authors == null
+            ? string.Empty
+            : string.Join(", ", book.Authors.Select(a => $"{a.Name} {a.Surname}"));
+        
+        var archive = new ArchiveBuilder()
+            .SetBookId(book.Id)
+            .SetBookName(book.Name ?? string.Empty)
+            .SetAuthors(authors)
+            .SetUserId(user.Id)
+            .SetUserFullName(user.FullName)
+            .SetBorrowDate(borrowToRemove.BorrowDate)
+            .SetReturnDate(DateTime.UtcNow)
+            .Build();
+
+        await archiveRepository.AddArchive(archive);
+       
+        await unitOfWork.SaveChangesAsync();
+    }
+}
