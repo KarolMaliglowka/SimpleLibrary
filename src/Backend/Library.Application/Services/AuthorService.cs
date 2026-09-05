@@ -8,22 +8,21 @@ using Microsoft.Extensions.Logging;
 namespace Library.Application.Services;
 
 /// <summary>
-/// Interfejs serwisu odpowiedzialnego za operacje związane z autorami.
+/// Interface of the service responsible for operations related to authors.
 /// </summary>
 public interface IAuthorService
 {
     /// <summary>
-    /// Tworzy nowego autora w systemie.
+    /// Create a new author in the system.
     /// </summary>
-    /// <param name="author">Dane autora w postaci DTO.</param>
-    /// <returns>Id utworzonego autora.</returns>
+    /// <param name="author">Author data in the form of DTO.</param>
+    /// <returns>Created author id.</returns>
     Task<Guid> CreateAuthorAsync(AuthorDto author);
 
     /// <summary>
-    /// Tworzy wielu autorów na podstawie przekazanej listy.
+    /// Create multiple authors based on the list provided.
     /// </summary>
-    /// <param name="author">Lista autorów do zapisania.</param>
-    /// <returns>Operacja asynchroniczna.</returns>
+    /// <param name="author">List of authors to save.</param>
     Task CreateAuthorsAsync(List<AuthorDto> author);
 
     /// <summary>
@@ -39,7 +38,7 @@ public interface IAuthorService
 }
 
 /// <summary>
-/// Implementacja serwisu odpowiedzialnego za zarządzanie autorami.
+/// Implementation of a service responsible for managing authors.
 /// </summary>
 public class AuthorService(IAuthorRepository authorRepository,
     IAuthorReadRepository authorReadRepository,
@@ -49,12 +48,12 @@ public class AuthorService(IAuthorRepository authorRepository,
     : IAuthorService
 {
     /// <summary>
-    /// Tworzy nowego autora w bazie danych.
+    /// Creates a new author in the database.
     /// </summary>
-    /// <param name="authors">Dane autora.</param>
-    /// <returns>Id nowo utworzonego autora.</returns>
+    /// <param name="authors">Authors data.</param>
+    /// <returns>id of the newly created author</returns>
     /// <exception cref="AuthorAlreadyExistsException">
-    /// Rzucany gdy autor o podanym imieniu i nazwisku już istnieje.
+    /// Thrown when an author with the given name and surname already exists.
     /// </exception>
     public async Task<Guid> CreateAuthorAsync(AuthorDto author)
     {
@@ -73,10 +72,9 @@ public class AuthorService(IAuthorRepository authorRepository,
     }
 
     /// <summary>
-    /// Dodaje wielu autorów do bazy danych.
+    /// Adds multiple authors to the database.
     /// </summary>
-    /// <param name="authors">Lista autorów w postaci DTO.</param>
-    /// <returns>Operacja asynchroniczna zapisu autorów.</returns>
+    /// <param name="authors">List of authors in the form of DTO.</param>
     public async Task CreateAuthorsAsync(List<AuthorDto> authors)
     {
         var newAuthors = authors
@@ -88,10 +86,10 @@ public class AuthorService(IAuthorRepository authorRepository,
     }
 
     /// <summary>
-    /// Pobiera autorów z repozytorium odczytowego,
-    /// mapuje encje na DTO oraz sortuje wynik po imieniu.
+    /// Gets authors from the reading repository,
+    /// maps entities to DTOs and sorts the result by name.
     /// </summary>
-    /// <returns>Lista autorów w postaci AuthorDto.</returns>
+    /// <returns>Author list in the form of AuthorDto.</returns>
     public async Task<List<AuthorDto>> GetAuthorsAsync()
     {
         var authorsList = await authorReadRepository.GetAuthorsAsync();
