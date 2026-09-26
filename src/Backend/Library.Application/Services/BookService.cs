@@ -29,7 +29,7 @@ public interface IBookService
     /// </summary>
     /// <param name="bookId">Unique identifier of the book.</param>
     /// <returns>The book represented as <see cref="BookDto"/>.</returns>
-    /// <exception cref="BookNotFoundException">Thrown when the book is not found.</exception>
+    /// <exception cref="NotFoundException">Thrown when the book is not found.</exception>
     Task<BookDto> GetBookByIdAsync(Guid? bookId);
 
     /// <summary>
@@ -37,7 +37,7 @@ public interface IBookService
     /// </summary>
     /// <param name="name">Name of the book.</param>
     /// <returns>The book represented as <see cref="BookDto"/>.</returns>
-    /// <exception cref="BookNotFoundException">Thrown when the book is not found.</exception>
+    /// <exception cref="NotFoundException">Thrown when the book is not found.</exception>
     Task<BookDto> GetBookByNameAsync(string name);
 
     /// <summary>
@@ -216,11 +216,11 @@ public class BookService(
     /// </summary>
     /// <param name="bookId">Unique identifier of the book.</param>
     /// <returns>The book mapped to <see cref="BookDto"/>.</returns>
-    /// <exception cref="BookNotFoundException">Thrown when the book cannot be found.</exception>
+    /// <exception cref="NotFoundException">Thrown when the book cannot be found.</exception>
     public async Task<BookDto> GetBookByIdAsync(Guid? bookId)
     {
         var book = await bookRepository.GetBookByIdAsync(bookId);
-        return book is null ? throw new BookNotFoundException(bookId.ToString()) : MapBookToDto(book);
+        return book is null ? throw new NotFoundException("Book", bookId.ToString()) : MapBookToDto(book);
     }
 
     /// <summary>
@@ -228,11 +228,11 @@ public class BookService(
     /// </summary>
     /// <param name="name">Name of the book.</param>
     /// <returns>The book mapped to <see cref="BookDto"/>.</returns>
-    /// <exception cref="BookNotFoundException">Thrown when the book cannot be found.</exception>
+    /// <exception cref="NotFoundException">Thrown when the book cannot be found.</exception>
     public async Task<BookDto> GetBookByNameAsync(string name)
     {
         var book = await bookRepository.GetBookByNameAsync(name);
-        return book is null ? throw new BookNotFoundException(name) : MapBookToDto(book);
+        return book is null ? throw new NotFoundException("Book", name) : MapBookToDto(book);
     }
 
     /// <summary>
@@ -329,7 +329,7 @@ public class BookService(
     /// Updates an existing book and its related entities.
     /// </summary>
     /// <param name="bookDto">Updated book data.</param>
-    /// <exception cref="BookNotFoundException">Thrown when the book does not exist.</exception>
+    /// <exception cref="NotFoundException">Thrown when the book does not exist.</exception>
     public async Task UpdateBook(BookDto bookDto)
     {
         var publisher = await publisherRepository.GetPublisherByIdAsync(bookDto.Publisher.Id);
@@ -343,7 +343,7 @@ public class BookService(
         if (category is null)
         {
             logger.LogError("Category {name} not found", category);
-            throw new CategoryNotFoundException(category.Name);
+            throw new NotFoundException("Category", category.Name);
         }
 
         var authors = new List<Author>();
@@ -363,7 +363,7 @@ public class BookService(
         if (updatedBook is null)
         {
             logger.LogError("Book id: {book} not found", bookDto.Id);
-            throw new BookNotFoundException(bookDto.Id.ToString());
+            throw new NotFoundException("Book", bookDto.Id.ToString());
         }
 
         updatedBook.SetName(bookDto.Name);
@@ -387,7 +387,7 @@ public class BookService(
     /// <param name="authorSurname">Author's surname.</param>
     /// <param name="authorName">Optional author's first name.</param>
     /// <returns>List of books written by the author.</returns>
-    /// <exception cref="AuthorNotFoundException">Thrown when the author does not exist.</exception>
+    /// <exception cref="NotFoundException">Thrown when the author does not exist.</exception>
     public async Task<List<BookDto>> GetBooksByAuthorAsync(string authorSurname, string? authorName = null)
     {
         var author = await authorReadRepository.GetAuthorAsync(authorSurname, authorName);
@@ -416,14 +416,14 @@ public class BookService(
     /// </summary>
     /// <param name="category">Category name.</param>
     /// <returns>List of books in the category.</returns>
-    /// <exception cref="CategoryNotFoundException">Thrown when the category does not exist.</exception>
+    /// <exception cref="NotFoundException">Thrown when the category does not exist.</exception>
     public async Task<List<BookDto>> GetBooksByCategoryAsync(string category)
     {
         var categoryInSystem = await categoryRepository.GetCategoryByNameAsync(category);
         if (categoryInSystem is null)
         {
             logger.LogError("Category {name} not found", category);
-            throw new CategoryNotFoundException(category);
+            throw new NotFoundException("Category", category);
         }
 
         var booksList = await bookRepository.GetAllBooksAsync();
@@ -468,14 +468,14 @@ public class BookService(
     /// </summary>
     /// <param name="bookId">Unique identifier of the book.</param>
     /// <param name="isAvailable">Indicates whether the book is available.</param>
-    /// <exception cref="BookNotFoundException">Thrown when the book does not exist.</exception>
+    /// <exception cref="NotFoundException">Thrown when the book does not exist.</exception>
     public async Task SetBookAsBorrowed(Guid bookId, bool isAvailable)
     {
         var book = await bookRepository.GetBookByIdAsync(bookId);
         if (book == null)
         {
             logger.LogError("Book id: {id} not found", bookId);
-            throw new BookNotFoundException(bookId.ToString());
+            throw new NotFoundException("Book", bookId.ToString());
         }
 
         book.SetAvailable(isAvailable);
@@ -553,7 +553,7 @@ public class BookService(
                 })
         ];
     }
-    
+
     public async Task DeleteBookAsync(Guid id)
     {
         var bookExist = await bookRepository.GetBookByIdAsync(id);
@@ -579,7 +579,7 @@ public class BookService(
         bookRepository.UpdateBook(bookExist);
         await unitOfWork.SaveChangesAsync();
     }
-    
+
 
     private static string CreateBookCode()
     {

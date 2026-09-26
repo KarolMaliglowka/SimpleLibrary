@@ -18,13 +18,11 @@ public interface IAuthorService
     /// <param name="author">Author data in the form of DTO.</param>
     /// <returns>Created author id.</returns>
     Task<Guid> CreateAuthorAsync(AuthorDto author);
-
     /// <summary>
     /// Create multiple authors based on the list provided.
     /// </summary>
     /// <param name="author">List of authors to save.</param>
     Task CreateAuthorsAsync(List<AuthorDto> author);
-
     /// <summary>
     /// Pobiera listę wszystkich autorów.
     /// </summary>
@@ -34,13 +32,13 @@ public interface IAuthorService
     Task UpdateAuthorAsync(AuthorDto author);
     Task DeleteAuthorAsync(Guid id);
     Task<AuthorDto> GetAuthorsByIdAsync(Guid id);
-
 }
 
 /// <summary>
 /// Implementation of a service responsible for managing authors.
 /// </summary>
-public class AuthorService(IAuthorRepository authorRepository,
+public class AuthorService(
+    IAuthorRepository authorRepository,
     IAuthorReadRepository authorReadRepository,
     IBookRepository bookRepository,
     IUnitOfWork unitOfWork,
@@ -61,7 +59,8 @@ public class AuthorService(IAuthorRepository authorRepository,
         var existingAuthor = await authorReadRepository.GetAuthorAsync(author.Surname, author.Name);
         if (existingAuthor != null)
         {
-            logger.Log(LogLevel.Error, "{AuthorName} '{Name}' already exists.", "Author", $"{author.Name} {author.Surname}");
+            logger.Log(LogLevel.Error, "{AuthorName} '{Name}' already exists.", "Author",
+                $"{author.Name} {author.Surname}");
             throw new AlreadyExistsException("Author", existingAuthor.FullName);
         }
 
@@ -121,7 +120,7 @@ public class AuthorService(IAuthorRepository authorRepository,
                 })
         ];
     }
-    
+
     public async Task DeleteAuthorAsync(Guid id)
     {
         var authorExist = await authorReadRepository.GetAuthorByIdAsync(id);
@@ -152,7 +151,7 @@ public class AuthorService(IAuthorRepository authorRepository,
         await authorRepository.UpdateAuthorAsync(authorExist);
         await unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task UpdateAuthorAsync(AuthorDto author)
     {
         ArgumentNullException.ThrowIfNull(author);
@@ -169,7 +168,7 @@ public class AuthorService(IAuthorRepository authorRepository,
         await authorRepository.UpdateAuthorAsync(existingAuthor);
         await unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task<AuthorDto> GetAuthorsByIdAsync(Guid id)
     {
         var existingAuthor = await authorReadRepository.GetAuthorByIdAsync(id);
