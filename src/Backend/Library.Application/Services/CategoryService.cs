@@ -54,7 +54,7 @@ public class CategoryService(
         var existingCategory = await categoryRepository.GetCategoryByIdAsync(category.Id);
         if (existingCategory == null)
         {
-            throw new CategoryNotFoundException($" with {category.Id} ");
+            throw new NotFoundException("Category", $" with {category.Id} ");
         }
 
         existingCategory.SetCategory(category.Name);
@@ -65,13 +65,13 @@ public class CategoryService(
     public async Task<Category?> GetCategoryByIdAsync(Guid id)
     {
         var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
-        return categoryExist ?? throw new CategoryNotFoundException($" with {id} ");
+        return categoryExist ?? throw new NotFoundException("Category", $" with {id} ");
     }
 
     public async Task<Category?> GetCategoryByNameAsync(string name)
     {
         var categoryExist = await categoryRepository.GetCategoryByNameAsync(name);
-        return categoryExist ?? throw new CategoryNotFoundException(name);
+        return categoryExist ?? throw new NotFoundException("Category", name);
     }
 
     public async Task AddCategoriesAsync(List<CategoryDto> categoryDto)
@@ -94,7 +94,7 @@ public class CategoryService(
         var categoryExist = await categoryRepository.GetCategoryByIdAsync(id);
         if (categoryExist == null)
         {
-            throw new CategoryNotFoundException($" with {id} ");
+            throw new NotFoundException("Category", $" with {id} ");
         }
 
         var booksList = await bookRepository.GetAllBooksAsync();
