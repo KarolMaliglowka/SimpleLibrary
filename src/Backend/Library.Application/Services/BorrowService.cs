@@ -79,7 +79,7 @@ public class BorrowService(
         
         var archive = new ArchiveBuilder()
             .SetBookId(book.Id)
-            .SetBookName(book.Name ?? string.Empty)
+            .SetBookName(book.Name)
             .SetAuthors(authors)
             .SetUserId(user.Id)
             .SetUserFullName(user.FullName)

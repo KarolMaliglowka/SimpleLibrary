@@ -38,7 +38,8 @@ builder.Services.AddCors(options =>
                     return false;
 
                 return uri.Host == "localhost"
-                       || uri.Host.StartsWith("192.168.77.");
+                       //|| uri.Host.StartsWith("192.168.77.")
+                       ;
             })
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -51,7 +52,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 app.UseExceptionHandler();
-//app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 app.MapAuthorEndpoints();
 app.MapBookEndpoint();

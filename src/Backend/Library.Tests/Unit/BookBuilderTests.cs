@@ -6,7 +6,6 @@ namespace Library.Tests.Unit;
 
 public class BookBuilderTests
 {
-    private const string Description = "Advanced C# concepts";
     private const string Isbn = "978-1-23456-789-0";
     private const string YearOfRelease = "2023";
     private const int PagesCount = 500;

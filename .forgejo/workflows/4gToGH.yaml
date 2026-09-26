@@ -1,0 +1,28 @@
+  name: Sync to GitHub
+  
+  on:
+    push:
+      branches:
+        - master
+  
+  jobs:
+    sync:
+      runs-on: docker
+      
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v6
+          with:
+            fetch-depth: 0
+
+        - name: Push to GitHub develop
+          env:
+            GITHUB_TOKEN: ${{ secrets.LIBRARYTOKENFORGEJO }}
+          run: |
+            git config user.name "Forgejo"
+            git config user.email "forgejo@localhost"
+            
+            git remote add github \
+              https://x-access-token:${LIBRARYTOKENFORGEJO}@github.com/KarolMaliglowka/SimpleLibrary.git
+            
+            git push github HEAD:develop --force
