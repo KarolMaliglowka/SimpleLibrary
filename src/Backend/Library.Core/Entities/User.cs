@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Library.Core.ValueObjects;
 
 namespace Library.Core.Entities;
