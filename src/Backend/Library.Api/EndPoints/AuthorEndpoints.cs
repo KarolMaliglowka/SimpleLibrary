@@ -38,7 +38,6 @@ public static class AuthorEndpoints
 
         app.MapPatch("/authors", async (
             AuthorDto author,
-            IAuthorReadRepository authorReadRepository,
             IAuthorService authorService
         ) =>
         {
