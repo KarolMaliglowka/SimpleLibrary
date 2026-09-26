@@ -122,7 +122,7 @@ public class PublisherService(
 
         var isPublisherForSomeBook = bookRepository
             .QueryAsNoTracking()
-            .Where(x => x.Publisher.Id == publisherExist.Id )
+            .Where(x => x.Publisher.Id == publisherExist.Id)
             .FirstOrDefault();
 
         if (isPublisherForSomeBook is not null)

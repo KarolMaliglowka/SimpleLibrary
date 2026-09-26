@@ -1,4 +1,5 @@
 ﻿using Library.Core.Entities;
+using Library.Core.Exceptions;
 using Library.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,10 +31,16 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
             a.Surname.ToLower() == surname.ToLower()
         ).ToListAsync();
 
-    public Task<Author?> GetAuthorsBySurnameAndNameAsync(string? surName, string? name = null)
+    public Task<Author?> GetAuthorsBySurnameAndNameAsync(string? surname, string? name = null)
     {
-        return surName != null ? _context.Authors
-            .FirstOrDefaultAsync(a => a.Name == name &&  a.Surname == surName) : null;
+        var query = _context.Authors.Where(a => a.Surname == surname);
+
+        if (name != null)
+        {
+            query = query.Where(a => a.Name == name);
+        }
+
+        return query.FirstOrDefaultAsync();
     }
     
 
@@ -70,7 +77,7 @@ public class AuthorRepository : IAuthorRepository, IAuthorReadRepository
         var existingAuthor = await GetAuthorByIdAsync(author.Id);
         if (existingAuthor == null)
         {
-            throw new Exception("Author not found");
+            throw new NotFoundException("Author", author.FullName);
         }
 
         _context.Authors.Remove(author);

@@ -1,6 +1,5 @@
 ﻿using Library.Application.DTO;
 using Library.Application.Services;
-using Library.Core.Repositories;
 
 namespace Library.Api.EndPoints;
 
