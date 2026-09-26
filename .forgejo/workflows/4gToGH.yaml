@@ -6,10 +6,8 @@
         - master
         
     pull_request:
-      types:
-        - opened
-        - synchronize
-        - reopened
+      branches:
+        - master
   
   jobs:
     sync:
@@ -29,6 +27,6 @@
             git config user.email "forgejo@localhost"
             
             git remote add github \
-              https://x-access-token:${LIBRARYTOKENFORGEJO}@github.com/KarolMaliglowka/SimpleLibrary.git
+              https://x-access-token:${GITHUB_TOKEN}@github.com/KarolMaliglowka/SimpleLibrary.git
             
             git push github HEAD:develop --force
