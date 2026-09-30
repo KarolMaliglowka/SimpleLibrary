@@ -6,13 +6,13 @@ namespace Library.Infrastructure.DAL;
 
 public class LibraryDbContext : DbContext, IUnitOfWork
 {
-    public DbSet<Book> Books { get; set; }
-    public DbSet<Borrow> Borrows { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Author> Authors { get; set; }
-    public DbSet<Publisher> Publishers { get; set; }
-    public DbSet<Archive> Archives { get; set; }
+    public DbSet<Book> Books => Set<Book>();
+    public DbSet<Borrow> Borrows => Set<Borrow>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Author> Authors => Set<Author>();
+    public DbSet<Publisher> Publishers => Set<Publisher>();
+    public DbSet<Archive> Archives => Set<Archive>();
     
     public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
     {
