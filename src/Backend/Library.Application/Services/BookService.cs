@@ -491,24 +491,26 @@ public class BookService(
     {
         var booksList = await bookRepository.GetBorrowBooksWithUsersAsync();
 
-        return booksList.Select(x => new BorrowDto()
-            {
-                Id = x.Id,
-                BookId = x.Id,
-                BookName = x.Book.Name,
-                BookAuthors = x.Book.Authors?.Select(a => new AuthorDto
-                    {
-                        Name = a.Name ?? "",
-                        Surname = a.Surname ?? "",
-                        Id = a.Id
-                    }
-                ).ToList(),
-                UserId = x.User.Id,
-                UserFullName = $"{x.User.Surname} {x.User.Name}",
-                BorrowDate = x.BorrowDate
-            })
-            .OrderBy(x => x.BookName)
-            .ToList();
+        return
+        [
+            .. booksList.Select(x => new BorrowDto()
+                {
+                    Id = x.Id,
+                    BookId = x.Id,
+                    BookName = x.Book.Name,
+                    BookAuthors = x.Book.Authors?.Select(a => new AuthorDto
+                        {
+                            Name = a.Name ?? "",
+                            Surname = a.Surname ?? "",
+                            Id = a.Id
+                        }
+                    ).ToList(),
+                    UserId = x.User.Id,
+                    UserFullName = $"{x.User.Surname} {x.User.Name}",
+                    BorrowDate = x.BorrowDate
+                })
+                .OrderBy(x => x.BookName)
+        ];
     }
 
     /// <summary>
@@ -579,7 +581,6 @@ public class BookService(
         bookRepository.UpdateBook(bookExist);
         await unitOfWork.SaveChangesAsync();
     }
-
 
     private static string CreateBookCode()
     {
