@@ -5,8 +5,8 @@
       context: .
       dockerfile: src/Backend/Library.Api/Dockerfile
 
-    ports:
-      - "5280:5280"
+    expose:
+      - "5280"
 
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
