@@ -16,3 +16,14 @@
           Database=${POSTGRES_DB};
           Username=${POSTGRES_USER};
           Password=${POSTGRES_PASSWORD}
+        
+  library.frontend:
+    image: library.frontend
+    build:
+      context: ./src/Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - library.api
+      
