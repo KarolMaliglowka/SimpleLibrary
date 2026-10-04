@@ -30,7 +30,7 @@ public class PublisherRepository : IPublisherRepository
     
     public async Task<Publisher?> GetPublisherByNameAsync(string name) => 
         await _context.Publishers
-            .SingleOrDefaultAsync(p => p.Name == name);
+            .SingleOrDefaultAsync(p => p.Name.Value.Equals(name, StringComparison.CurrentCultureIgnoreCase));
     
     public async Task<bool> ExistAuthorAsync(Publisher publisher) =>
         await _context.Publishers
