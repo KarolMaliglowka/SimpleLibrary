@@ -107,66 +107,76 @@ public class BookService(
     /// If related entities do not exist, they are created automatically.
     /// </summary>
     /// <param name="book">Book data transfer object containing book information.</param>
-    public async Task CreateBookAsync(BookDto book)
+    public async Task CreateBookAsync(BookDto? book)
     {
-        var publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
-        if (publisher == null)
+        if (book != null)
         {
-            if (publisher != null)
+            var publisher = new Publisher();
+            var category = new Category();
+            if (book.Publisher != null && !string.IsNullOrEmpty(book.Publisher.Name))
             {
-                var newPublisher = new Publisher(publisher.Name);
-                await publisherRepository.AddPublisherAsync(newPublisher);
+                publisher = await publisherRepository.GetPublisherByNameAsync(book.Publisher.Name);
+                if (publisher is null)
+                {
+                    publisher = new Publisher(book.Publisher.Name);
+                    await publisherRepository.AddPublisherAsync(publisher);
+                    await unitOfWork.SaveChangesAsync();
+                    logger.LogInformation("Added new publisher: {PublisherName}", publisher.Name);
+                }
             }
 
-            await unitOfWork.SaveChangesAsync();
-        }
-
-        var category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
-        if (category is null)
-        {
-            category = new Category(book.Category.Name);
-            await categoryRepository.AddCategoryAsync(category);
-            await unitOfWork.SaveChangesAsync();
-        }
-
-        var authors = new List<Author>();
-        var authorsToImport = new List<Author>();
-
-        var listOfAllAuthors = await authorReadRepository.GetAuthorsAsync();
-
-        foreach (var authorName in book.Authors)
-        {
-            var author = listOfAllAuthors.FirstOrDefault(a =>
-                a.Name == authorName.Name && a.Surname == authorName.Surname);
-
-            if (author is null)
+            if (book.Category != null && !string.IsNullOrEmpty(book.Category.Name))
             {
-                author = new Author(authorName.Name, authorName.Surname);
-                authorsToImport.Add(author);
-                listOfAllAuthors.Add(author);
+                category = await categoryRepository.GetCategoryByNameAsync(book.Category.Name);
+                if (category is null)
+                {
+                    category = new Category(book.Category.Name);
+                    await categoryRepository.AddCategoryAsync(category);
+                    await unitOfWork.SaveChangesAsync();
+                    logger.LogInformation("Added new category: {CategoryName}", category.Name);
+                }
             }
 
-            authors.Add(author);
+            var authors = new List<Author>();
+            var authorsToImport = new List<Author>();
+
+            var listOfAllAuthors = await authorReadRepository.GetAuthorsAsync();
+
+            foreach (var authorName in book.Authors)
+            {
+                var author = listOfAllAuthors.FirstOrDefault(a =>
+                    a.Name == authorName.Name && a.Surname == authorName.Surname);
+
+                if (author is null)
+                {
+                    author = new Author(authorName.Name, authorName.Surname);
+                    authorsToImport.Add(author);
+                    listOfAllAuthors.Add(author);
+                }
+
+                authors.Add(author);
+            }
+
+            authorRepository.AddAuthors(authorsToImport);
+            await unitOfWork.SaveChangesAsync();
+
+            var newBook = new Book(
+                book.Name,
+                authors,
+                publisher,
+                category,
+                book.Isbn,
+                book.Description,
+                book.PagesCount,
+                book.YearOfRelease,
+                CreateBookCode()
+            );
+
+            await bookRepository
+                .AddBookAsync(newBook);
+            await unitOfWork.SaveChangesAsync();
+            logger.LogInformation("Added new book: {BookName} with {BookId}", newBook.Name, newBook.Id);
         }
-
-        authorRepository.AddAuthors(authorsToImport);
-        await unitOfWork.SaveChangesAsync();
-
-        var newBook = new Book(
-            book.Name,
-            authors,
-            publisher,
-            category,
-            book.Isbn,
-            book.Description,
-            book.PagesCount,
-            book.YearOfRelease,
-            CreateBookCode()
-        );
-
-        await bookRepository
-            .AddBookAsync(newBook);
-        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
