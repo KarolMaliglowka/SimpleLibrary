@@ -141,7 +141,7 @@ export class AuthorComponent {
                     this.authors = this.authors.filter(x => x.id !== author.id);
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Sukces',
+                        summary: 'Success',
                         detail: 'Author deleted.'
                     });
 

@@ -102,7 +102,13 @@ export class BorrowComponent implements OnInit {
             message: 'Please confirm to proceed.',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
+                this.borrows = this.borrows.filter(x => x.id !== borrow.id);
                 await this.returnBook(borrow);
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Book returned'
+                });
             },
             reject: () => {
                 this.messageService.add({
