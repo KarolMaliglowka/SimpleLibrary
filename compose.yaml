@@ -4,10 +4,8 @@
     build:
       context: .
       dockerfile: src/Backend/Library.Api/Dockerfile
-
     expose:
       - "5280"
-
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__default: >
@@ -16,6 +14,8 @@
           Database=${POSTGRES_DB};
           Username=${POSTGRES_USER};
           Password=${POSTGRES_PASSWORD}
+    restart: unless-stopped
+    command: sleep infinity
         
   library.frontend:
     image: library.frontend
@@ -26,3 +26,5 @@
       - "8080:80"
     depends_on:
       - library.api
+    restart: unless-stopped
+    command: sleep infinity
