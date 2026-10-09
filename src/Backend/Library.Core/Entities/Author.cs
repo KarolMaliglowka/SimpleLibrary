@@ -6,7 +6,7 @@ public class Author : BaseClass
 {
     public Name? Name { get; private set; }
     public string? Surname { get; private set; }
-    public ICollection<Book> Books { get; set; }
+    public ICollection<Book> Books { get; init; }
     public string FullName => $"{Name} {Surname}";
     public bool IsDeleted { get; private set; }
 
@@ -41,4 +41,3 @@ public class Author : BaseClass
         IsDeleted = true;
     }
 }
-

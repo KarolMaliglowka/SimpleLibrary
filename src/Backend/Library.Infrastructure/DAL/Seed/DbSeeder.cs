@@ -5,15 +5,14 @@ namespace Library.Infrastructure.DAL.Seed;
 
 public static class DbSeeder
 {
-    public static async Task SeedAsync(LibraryDbContext context)
+    public static async Task SeedDataAsync(LibraryDbContext context)
     {
         if (await context.Categories.AnyAsync())
             return;
-
         var category = new Category();
         category.SetCategory("Horror");
         context.Categories.Add(category);
-        
+
         if (await context.Publishers.AnyAsync())
             return;
 
