@@ -5,6 +5,8 @@ using Library.Application;
 using Library.Application.DTO;
 using Library.Application.Validators;
 using Library.Infrastructure;
+using Library.Infrastructure.DAL;
+using Library.Infrastructure.DAL.Seed;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,15 +39,19 @@ builder.Services.AddCors(options =>
                 if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                     return false;
 
-                return uri.Host == "localhost"
-                       //|| uri.Host.StartsWith("192.168.77.")
-                       ;
+                return uri.Host == "localhost";
             })
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+    await DbSeeder.SeedDataAsync(context);
+}
 
 if (app.Environment.IsDevelopment())
 {
