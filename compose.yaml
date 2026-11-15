@@ -15,7 +15,7 @@
           Username=${POSTGRES_USER};
           Password=${POSTGRES_PASSWORD}
     restart: unless-stopped
-    command: sleep infinity
+    #command: sleep infinity
         
   library.frontend:
     image: library.frontend
@@ -27,4 +27,4 @@
     depends_on:
       - library.api
     restart: unless-stopped
-    command: sleep infinity
+    #command: sleep infinity
